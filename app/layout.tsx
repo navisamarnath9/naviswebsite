@@ -2,28 +2,27 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dr. Maya Rhodes | Clinical Psychologist",
+  metadataBase: new URL("https://navisamarnath.com"),
+  title: "Navisamarnath | Psychology & Coaching",
   description:
-    "Compassionate, evidence-based online therapy for anxiety, relationships, burnout, and life transitions across New York.",
+    "Thoughtful, evidence-based therapy and coaching for clarity, connection, resilience, and lasting change.",
   openGraph: {
-    title: "Dr. Maya Rhodes | Clinical Psychologist",
-    description:
-      "A softer place to land. A clearer way forward. Online therapy across New York.",
+    title: "Navisamarnath | Psychology & Coaching",
+    description: "Make space for the life waiting within.",
     type: "website",
     images: [
       {
         url: "/og.png",
         width: 1731,
         height: 909,
-        alt: "Dr. Maya Rhodes — A softer place to land. A clearer way forward.",
+        alt: "Navisamarnath — Make space for the life waiting within.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dr. Maya Rhodes | Clinical Psychologist",
-    description:
-      "A softer place to land. A clearer way forward. Online therapy across New York.",
+    title: "Navisamarnath | Psychology & Coaching",
+    description: "Make space for the life waiting within.",
     images: ["/og.png"],
   },
   icons: {
