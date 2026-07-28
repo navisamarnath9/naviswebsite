@@ -8,22 +8,22 @@ export const metadata: Metadata = {
     "Thoughtful, evidence-based therapy and coaching for clarity, connection, resilience, and lasting change.",
   openGraph: {
     title: "Navisamarnath | Psychology & Coaching",
-    description: "Make space for the life waiting within.",
+    description: "Space to understand. Support to move forward.",
     type: "website",
     images: [
       {
-        url: "/og.png",
-        width: 1731,
-        height: 909,
-        alt: "Navisamarnath — Make space for the life waiting within.",
+        url: "/og-home.png",
+        width: 1734,
+        height: 907,
+        alt: "Navisamarnath — Space to understand. Support to move forward.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Navisamarnath | Psychology & Coaching",
-    description: "Make space for the life waiting within.",
-    images: ["/og.png"],
+    description: "Space to understand. Support to move forward.",
+    images: ["/og-home.png"],
   },
   icons: {
     icon: "/favicon.svg",

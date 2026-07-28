@@ -1,614 +1,407 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const services = [
   {
     number: "01",
     title: "Individual therapy",
-    short: "Thrive",
-    copy: "A private space to understand what is weighing on you, build steadier patterns, and feel more like yourself.",
-    focus: ["Anxiety", "Burnout", "Life transitions"],
+    copy: "A private, thoughtful space to understand what is weighing on you and build steadier ways forward.",
+    details: ["Anxiety & stress", "Burnout", "Life transitions"],
+    href: "/services#individual",
   },
   {
     number: "02",
     title: "Personal coaching",
-    short: "Elevate",
-    copy: "Focused support that turns a meaningful ambition into clear decisions, useful habits, and forward momentum.",
-    focus: ["Clarity", "Confidence", "Purpose"],
+    copy: "Focused support for meaningful ambitions, clearer decisions, and momentum that still feels like your own.",
+    details: ["Clarity", "Confidence", "Purpose"],
+    href: "/services#coaching",
   },
   {
     number: "03",
     title: "Couples therapy",
-    short: "Reconnect",
     copy: "Guided conversations that make room for honesty, repair recurring patterns, and deepen connection.",
-    focus: ["Communication", "Trust", "Connection"],
+    details: ["Communication", "Trust", "Connection"],
+    href: "/services#couples",
   },
   {
     number: "04",
     title: "Group sessions",
-    short: "Belong",
-    copy: "Thoughtfully facilitated sessions where shared experience becomes a source of insight and support.",
-    focus: ["Community", "Resilience", "Growth"],
+    copy: "Carefully facilitated spaces where shared experience becomes a source of perspective and support.",
+    details: ["Community", "Resilience", "Growth"],
+    href: "/services#groups",
   },
 ];
 
-const principles = [
+const approach = [
   {
     number: "01",
     title: "See the whole picture",
-    copy: "We begin with your story—not a label. Together, we notice the patterns, pressures, and strengths shaping this moment.",
+    copy: "We begin with your story—not a label—and notice the pressures, patterns, and strengths shaping this moment.",
   },
   {
     number: "02",
     title: "Choose what fits",
-    copy: "Your care draws from evidence-based approaches and is shaped around your pace, personality, and real life.",
+    copy: "Evidence-based care is shaped around your pace, personality, culture, relationships, and real life.",
   },
   {
     number: "03",
     title: "Make change usable",
-    copy: "Insight becomes practical next steps, so the work continues to support you long after each conversation ends.",
+    copy: "Insight becomes practical next steps, so the work continues to support you between conversations.",
   },
 ];
 
-const times = ["9:00 AM", "11:30 AM", "2:00 PM", "4:30 PM"];
-
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
+function Arrow({ down = false }: { down?: boolean }) {
+  return <span aria-hidden="true">{down ? "↓" : "↗"}</span>;
 }
 
 export default function Home() {
-  const [selectedTime, setSelectedTime] = useState(times[1]);
-  const [activeService, setActiveService] = useState(0);
+  const rootRef = useRef<HTMLElement>(null);
+  const [compactNav, setCompactNav] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-  const [message, setMessage] = useState("");
 
-  async function submitBooking(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setStatus("submitting");
-    setMessage("");
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
 
-    const form = new FormData(event.currentTarget);
-    const payload = {
-      name: String(form.get("name") ?? ""),
-      email: String(form.get("email") ?? ""),
-      phone: String(form.get("phone") ?? ""),
-      sessionType: String(form.get("sessionType") ?? ""),
-      appointmentDate: String(form.get("appointmentDate") ?? ""),
-      appointmentTime: selectedTime,
-      note: String(form.get("note") ?? ""),
+    root.classList.add("motion-ready");
+    const revealItems = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-reveal]"),
+    );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.12 },
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    const onScroll = () => {
+      setCompactNav(window.scrollY > 72);
     };
 
-    try {
-      const response = await fetch("/api/appointments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(data.error ?? "Please try again.");
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-      setStatus("success");
-      setMessage(
-        `Thank you, ${payload.name.split(" ")[0]}. Your request for ${payload.appointmentDate} at ${selectedTime} is in. We’ll confirm by email within one business day.`,
-      );
-      event.currentTarget.reset();
-    } catch (error) {
-      setStatus("error");
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "We couldn’t send your request. Please try again.",
-      );
-    }
-  }
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
-  function closeMenu() {
-    setMenuOpen(false);
-  }
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <main id="top">
-      <a className="skip-link" href="#content">
-        Skip to content
+    <main className="sample-home" id="top" ref={rootRef}>
+      <a className="sample-skip" href="#home-content">
+        Skip to main content
       </a>
 
-      <div className="announcement">
-        <p>
-          <span className="availability-dot" aria-hidden="true" />
-          Now welcoming new online clients
-        </p>
-        <a href="#booking">
-          Complimentary consultation <ArrowIcon />
-        </a>
-      </div>
+      <header
+        className={`sample-nav ${compactNav ? "is-compact" : ""} ${
+          menuOpen ? "menu-is-open" : ""
+        }`}
+      >
+        <Link className="sample-nav-brand" href="/" onClick={closeMenu}>
+          <span>Navisamarnath</span>
+          <small>Psychology &amp; coaching</small>
+        </Link>
 
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="Navisamarnath home">
-          <span className="brand-symbol" aria-hidden="true">
-            N
-          </span>
-          <span className="brand-name">
-            Navi
-            <strong>samarnath</strong>
-          </span>
-        </a>
-
-        <nav
-          className={menuOpen ? "nav-links open" : "nav-links"}
-          aria-label="Main navigation"
-        >
-          <a href="#about" onClick={closeMenu}>
-            About
-          </a>
-          <a href="#services" onClick={closeMenu}>
+        <nav className="sample-nav-links" aria-label="Main navigation">
+          <Link href="/services" onClick={closeMenu}>
             Services
-          </a>
-          <a href="#approach" onClick={closeMenu}>
-            Approach
-          </a>
-          <a href="#contact" onClick={closeMenu}>
+          </Link>
+          <Link href="/about" onClick={closeMenu}>
+            About
+          </Link>
+          <Link href="/resources" onClick={closeMenu}>
+            Resources
+          </Link>
+          <Link href="/contact" onClick={closeMenu}>
             Contact
-          </a>
-          <a className="mobile-book" href="#booking" onClick={closeMenu}>
-            Book a session <ArrowIcon />
-          </a>
+          </Link>
         </nav>
 
-        <a className="button button-compact header-cta" href="#booking">
-          Begin your journey <ArrowIcon />
-        </a>
-
         <button
-          className="menu-button"
+          className="sample-menu-button"
           type="button"
-          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((value) => !value)}
+          onClick={() => setMenuOpen((open) => !open)}
         >
           <span />
           <span />
         </button>
       </header>
 
-      <div id="content">
-        <section className="hero" aria-labelledby="hero-heading">
-          <div className="hero-copy">
-            <p className="kicker">
-              <span>Psychology</span>
-              <span>Coaching</span>
-              <span>Connection</span>
-            </p>
-            <h1 id="hero-heading">
-              Make space for the life{" "}
-              <em>
-                waiting <span>within.</span>
-              </em>
+      <section className="sample-hero" aria-labelledby="home-heading">
+        <div className="sample-hero-media" aria-hidden="true">
+          <img src="/navis hero img.webp" alt="" />
+        </div>
+        <div className="sample-hero-shade" />
+        <div className="sample-hero-grid">
+          <div className="sample-hero-copy">
+            <p className="sample-kicker">Psychology · Coaching · Connection</p>
+            <h1 id="home-heading">
+              Space to understand.
+              <span>Support to move forward.</span>
             </h1>
-            <p className="hero-lede">
+            <p>
               Thoughtful, evidence-based support for the moments that ask you
               to pause, understand yourself more deeply, and choose a clearer
               way forward.
             </p>
-            <div className="hero-actions">
-              <a className="button" href="#booking">
-                Start with a conversation <ArrowIcon />
-              </a>
-              <a className="round-link" href="#services" aria-label="Explore services">
-                <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-            <div className="hero-proof" aria-label="Practice highlights">
-              <div>
-                <strong>12+</strong>
-                <span>years of practice</span>
-              </div>
-              <div>
-                <strong>12k+</strong>
-                <span>clinical hours</span>
-              </div>
-              <div>
-                <strong>Online</strong>
-                <span>private & flexible</span>
-              </div>
-            </div>
           </div>
 
-          <div className="hero-stage">
-            <div className="orbit orbit-one" aria-hidden="true" />
-            <div className="orbit orbit-two" aria-hidden="true" />
-            <span className="hero-index" aria-hidden="true">
-              01
-            </span>
-            <div className="hero-image">
-              <img
-                src="/therapy-conversation.jpg"
-                alt="A client and therapist having a calm, engaged conversation"
-              />
-            </div>
-            <div className="hero-card">
-              <span className="spark" aria-hidden="true">
-                ✦
-              </span>
-              <p>You do not have to carry it all alone.</p>
-              <small>A gentler beginning is still a beginning.</small>
-            </div>
-            <div className="hero-seal" aria-hidden="true">
-              <span>Pause · Notice · Grow ·</span>
-              <b>N</b>
-            </div>
+          <div className="sample-hero-actions">
+            <Link href="/contact#booking">
+              Start a conversation <Arrow />
+            </Link>
+            <a href="#home-content" aria-label="Explore the practice">
+              Explore <Arrow down />
+            </a>
           </div>
-        </section>
 
-        <section className="statement" aria-label="Practice philosophy">
-          <span className="statement-mark" aria-hidden="true">
-            “
-          </span>
-          <p>
-            Real change does not ask you to become someone else. It helps you
-            return to yourself with more{" "}
-            <em>clarity, courage, and choice.</em>
+          <p className="sample-hero-note">
+            Private online sessions
+            <br />
+            Welcoming new clients
           </p>
+        </div>
+      </section>
+
+      <div className="sample-surface" id="home-content">
+        <section className="sample-intro sample-section">
+          <p className="sample-side-label" data-reveal>
+            The practice
+          </p>
+          <div className="sample-intro-main">
+            <p className="sample-overline" data-reveal>
+              A human approach to meaningful change
+            </p>
+            <h2 data-reveal>
+              Real change does not ask you to become someone else. It helps you
+              return to yourself with more{" "}
+              <span>clarity, courage, and choice.</span>
+            </h2>
+          </div>
         </section>
 
-        <section className="about section" id="about">
-          <div className="section-label">
-            <span>02</span>
-            <p>Meet your guide</p>
+        <section className="sample-profile sample-section">
+          <div className="sample-profile-image" data-reveal>
+            <img
+              src="/Gemini_Generated_Image_mohymemohymemohy.webp"
+              alt="Dr. Navisamarnath"
+            />
           </div>
 
-          <div className="about-collage">
-            <div className="about-image-main">
-              <img
-                src="/therapy-session.jpg"
-                alt="A therapist listening closely during a session"
-              />
-            </div>
-            <div className="about-block" aria-hidden="true">
-              <span>Care that meets you</span>
-              <strong>where you are.</strong>
-            </div>
-            <div className="credential">
-              <strong>PhD</strong>
-              <span>Licensed psychologist</span>
-            </div>
-          </div>
-
-          <div className="about-copy">
-            <p className="eyebrow">A human approach to meaningful change</p>
-            <h2>
-              You bring your whole story.{" "}
-              <em>We find the thread forward.</em>
-            </h2>
-            <p className="lead">
+          <div className="sample-profile-copy" data-reveal>
+            <p className="sample-overline">Meet your guide</p>
+            <h2>You bring your whole story. We find the thread forward.</h2>
+            <p>
               There is no perfect way to begin. You might feel overwhelmed,
               disconnected, stuck in a familiar pattern—or simply ready for
               something to shift.
             </p>
             <p>
-              Our work makes room for curiosity without judgment. Together, we
-              connect insight with practical tools, creating progress that
-              feels grounded in your values and possible in your everyday
-              life.
+              Our work makes room for curiosity without judgment, connecting
+              insight with practical tools and progress that feels possible in
+              everyday life.
             </p>
-            <a className="line-link" href="#approach">
-              Discover the approach <ArrowIcon />
-            </a>
+            <Link className="sample-text-link" href="/about">
+              About Dr. Navisamarnath <Arrow />
+            </Link>
           </div>
+
+          <aside className="sample-credential" data-reveal>
+            <span>PhD</span>
+            <p>
+              Licensed psychologist
+              <br />
+              Executive coach
+            </p>
+          </aside>
         </section>
 
-        <section className="services section" id="services">
-          <div className="services-heading">
-            <div className="section-label light-label">
-              <span>03</span>
-              <p>Ways to work together</p>
+        <section className="sample-services sample-section" id="services">
+          <div className="sample-section-heading">
+            <p className="sample-side-label" data-reveal>
+              Services
+            </p>
+            <div data-reveal>
+              <p className="sample-overline">Ways to work together</p>
+              <h2>Support shaped around real life.</h2>
             </div>
-            <div>
-              <p className="eyebrow light">Support shaped around real life</p>
-              <h2>
-                Choose the pathway that{" "}
-                <em>meets this moment.</em>
-              </h2>
-            </div>
-            <p>
-              Every path starts with a complimentary conversation. We will
+            <p data-reveal>
+              Every path begins with a complimentary conversation. We will
               explore what you need and decide together what kind of support
               fits best.
             </p>
           </div>
 
-          <div className="service-explorer">
-            <div className="service-tabs" role="tablist" aria-label="Services">
-              {services.map((service, index) => (
-                <button
-                  key={service.title}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeService === index}
-                  aria-controls={`service-panel-${index}`}
-                  id={`service-tab-${index}`}
-                  className={activeService === index ? "active" : ""}
-                  onClick={() => setActiveService(index)}
-                >
-                  <span>{service.number}</span>
-                  <strong>{service.title}</strong>
-                  <i aria-hidden="true">↗</i>
-                </button>
-              ))}
-            </div>
-
-            <article
-              className="service-panel"
-              role="tabpanel"
-              id={`service-panel-${activeService}`}
-              aria-labelledby={`service-tab-${activeService}`}
-              key={services[activeService].title}
-            >
-              <div className="service-orbit" aria-hidden="true">
-                <span>{services[activeService].short}</span>
-              </div>
-              <p className="service-number">
-                {services[activeService].number} / 04
-              </p>
-              <div className="service-panel-copy">
-                <p className="eyebrow light">{services[activeService].short}</p>
-                <h3>{services[activeService].title}</h3>
-                <p>{services[activeService].copy}</p>
+          <div className="sample-service-grid">
+            {services.map((service, index) => (
+              <Link
+                className="sample-service-card"
+                href={service.href}
+                key={service.title}
+                data-reveal
+                style={{ "--card-delay": `${index * 70}ms` } as React.CSSProperties}
+              >
+                <span className="sample-card-number">{service.number}</span>
+                <div>
+                  <h3>{service.title}</h3>
+                  <p>{service.copy}</p>
+                </div>
                 <ul>
-                  {services[activeService].focus.map((item) => (
-                    <li key={item}>{item}</li>
+                  {service.details.map((detail) => (
+                    <li key={detail}>{detail}</li>
                   ))}
                 </ul>
-                <a className="button button-light" href="#booking">
-                  Explore this path <ArrowIcon />
-                </a>
-              </div>
-            </article>
+                <i aria-hidden="true">↗</i>
+              </Link>
+            ))}
           </div>
         </section>
 
-        <section className="approach section" id="approach">
-          <div className="section-label">
-            <span>04</span>
-            <p>How change takes shape</p>
+        <section className="sample-feature">
+          <div className="sample-feature-image" data-reveal>
+            <img
+              src="/therapy-conversation.jpg"
+              alt="A calm one-to-one therapy conversation"
+            />
           </div>
-          <div className="approach-intro">
-            <p className="eyebrow">Thoughtful, tailored, practical</p>
+          <div className="sample-feature-copy" data-reveal>
+            <p className="sample-overline">How change takes shape</p>
             <h2>
-              A process with enough structure to guide you—and enough space to{" "}
-              <em>be fully human.</em>
+              Enough structure to guide you. Enough space to be fully human.
             </h2>
-          </div>
-
-          <div className="principles">
-            {principles.map((principle) => (
-              <article key={principle.number}>
-                <span>{principle.number}</span>
-                <div className="principle-mark" aria-hidden="true">
-                  <i />
-                  <i />
-                </div>
-                <h3>{principle.title}</h3>
-                <p>{principle.copy}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="approach-note">
-            <span aria-hidden="true">✦</span>
             <p>
               Rooted in person-centred care and informed by CBT, DBT,
               trauma-aware practice, mindfulness, and psychodynamic insight.
             </p>
-            <a href="#booking">
-              Take the first step <ArrowIcon />
-            </a>
+            <Link className="sample-text-link sample-text-link-light" href="/services">
+              Explore the approach <Arrow />
+            </Link>
           </div>
         </section>
 
-        <section className="booking section" id="booking">
-          <div className="booking-intro" id="contact">
-            <div className="section-label light-label">
-              <span>05</span>
-              <p>Your next step</p>
+        <section className="sample-approach sample-section">
+          <div className="sample-section-heading">
+            <p className="sample-side-label" data-reveal>
+              The process
+            </p>
+            <div data-reveal>
+              <p className="sample-overline">Thoughtful · Tailored · Practical</p>
+              <h2>Care that meets you where you are.</h2>
             </div>
-            <p className="eyebrow light">A low-pressure place to begin</p>
-            <h2>
-              Let’s start with one{" "}
-              <em>honest conversation.</em>
-            </h2>
-            <p className="booking-lede">
+          </div>
+
+          <div className="sample-approach-list">
+            {approach.map((item) => (
+              <article key={item.number} data-reveal>
+                <span>{item.number}</span>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="sample-journal sample-section">
+          <div className="sample-section-heading">
+            <p className="sample-side-label" data-reveal>
+              Explore
+            </p>
+            <div data-reveal>
+              <p className="sample-overline">Keep the conversation going</p>
+              <h2>Ideas and tools for the space between sessions.</h2>
+            </div>
+          </div>
+
+          <div className="sample-journal-grid">
+            <Link href="/resources" data-reveal>
+              <span>Free guide · 5 minute read</span>
+              <h3>Grounding &amp; nervous system reset</h3>
+              <p>Practical exercises for anxiety and overload.</p>
+              <i>↗</i>
+            </Link>
+            <Link href="/blog" data-reveal>
+              <span>Latest article · 8 minute read</span>
+              <h3>Breaking the cycle of high-functioning burnout</h3>
+              <p>Why achievement does not always bring peace.</p>
+              <i>↗</i>
+            </Link>
+          </div>
+        </section>
+
+        <section className="sample-closing sample-section">
+          <p className="sample-side-label" data-reveal>
+            Your next step
+          </p>
+          <div data-reveal>
+            <p className="sample-overline">A low-pressure place to begin</p>
+            <h2>Let&apos;s start with one honest conversation.</h2>
+            <p>
               Request a complimentary consultation. We will talk about what is
               bringing you here, answer your questions, and see whether working
               together feels right.
             </p>
-
-            <div className="booking-promises">
-              <div>
-                <span>01</span>
-                <p>
-                  <strong>Private online sessions</strong>
-                  <small>Join from a quiet space that feels comfortable.</small>
-                </p>
-              </div>
-              <div>
-                <span>02</span>
-                <p>
-                  <strong>A clear, caring process</strong>
-                  <small>Know what to expect before you commit.</small>
-                </p>
-              </div>
-              <div>
-                <span>03</span>
-                <p>
-                  <strong>Reply within one business day</strong>
-                  <small>Your requested time will be confirmed by email.</small>
-                </p>
-              </div>
-            </div>
+            <Link href="/contact#booking">
+              Request a consultation <Arrow />
+            </Link>
           </div>
-
-          <form className="booking-form" onSubmit={submitBooking}>
-            <div className="form-heading">
-              <div>
-                <span>Complimentary consultation</span>
-                <h3>Find your starting point</h3>
-              </div>
-              <b aria-hidden="true">↗</b>
-            </div>
-
-            <div className="field">
-              <label htmlFor="sessionType">I’m interested in</label>
-              <select
-                id="sessionType"
-                name="sessionType"
-                required
-                defaultValue="Free 15-minute consultation"
-              >
-                <option>Free 15-minute consultation</option>
-                <option>Individual therapy</option>
-                <option>Personal coaching</option>
-                <option>Couples therapy</option>
-                <option>Group session</option>
-              </select>
-            </div>
-
-            <div className="field">
-              <label htmlFor="appointmentDate">Preferred date</label>
-              <input
-                id="appointmentDate"
-                name="appointmentDate"
-                type="date"
-                required
-              />
-            </div>
-
-            <fieldset className="field">
-              <legend>Preferred time</legend>
-              <div className="time-grid">
-                {times.map((time) => (
-                  <button
-                    className={selectedTime === time ? "time active" : "time"}
-                    type="button"
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    aria-pressed={selectedTime === time}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="name">Full name</label>
-                <input
-                  id="name"
-                  name="name"
-                  autoComplete="name"
-                  required
-                  placeholder="Your name"
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="email">Email address</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="phone">
-                Phone <span>(optional)</span>
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                placeholder="+1 555 000 0000"
-              />
-            </div>
-
-            <div className="field">
-              <label htmlFor="note">
-                What would you like support with? <span>(optional)</span>
-              </label>
-              <textarea
-                id="note"
-                name="note"
-                rows={3}
-                placeholder="A short note is plenty."
-              />
-            </div>
-
-            <label className="consent">
-              <input type="checkbox" required />
-              <span>
-                I understand this is a request and is not confirmed until I
-                receive an email.
-              </span>
-            </label>
-
-            <button
-              className="button submit-button"
-              type="submit"
-              disabled={status === "submitting"}
-            >
-              {status === "submitting"
-                ? "Sending request…"
-                : "Request this conversation"}{" "}
-              <ArrowIcon />
-            </button>
-
-            {message && (
-              <div className={`form-message ${status}`} role="status">
-                {message}
-              </div>
-            )}
-          </form>
         </section>
       </div>
 
-      <footer className="footer">
-        <div className="footer-top">
-          <a className="brand footer-brand" href="#top">
-            <span className="brand-symbol inverse" aria-hidden="true">
-              N
-            </span>
-            <span className="brand-name">
-              Navi
-              <strong>samarnath</strong>
-            </span>
-          </a>
-          <p>
-            Space to understand.
-            <br />
-            Support to move forward.
-          </p>
-          <a className="footer-circle" href="#top" aria-label="Back to top">
-            ↑
-          </a>
-        </div>
-        <div className="footer-bottom">
-          <p>© 2026 Navisamarnath. All rights reserved.</p>
-          <nav aria-label="Footer navigation">
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#approach">Approach</a>
-            <a href="#booking">Book</a>
-          </nav>
-          <p>Privacy · Terms · Good Faith Estimate</p>
+      <div className="sample-footer-spacer" aria-hidden="true" />
+
+      <footer className="sample-footer">
+        <div className="sample-footer-inner">
+          <div className="sample-footer-intro">
+            <p>Navisamarnath</p>
+            <h2>
+              Space to understand.
+              <br />
+              Support to move forward.
+            </h2>
+            <Link href="/contact">hello@navisamarnath.com</Link>
+          </div>
+
+          <div className="sample-footer-cards">
+            <Link href="/contact#booking">
+              <span>01</span>
+              <strong>Book a complimentary consultation</strong>
+              <i>↗</i>
+            </Link>
+            <Link href="/resources">
+              <span>02</span>
+              <strong>Explore practical resources</strong>
+              <i>↗</i>
+            </Link>
+            <Link href="/faq">
+              <span>03</span>
+              <strong>Read common questions</strong>
+              <i>↗</i>
+            </Link>
+          </div>
+
+          <div className="sample-footer-bottom">
+            <p>© {new Date().getFullYear()} Navisamarnath</p>
+            <nav aria-label="Footer navigation">
+              <Link href="/about">About</Link>
+              <Link href="/services">Services</Link>
+              <Link href="/blog">Journal</Link>
+              <a href="#top">Back to top ↑</a>
+            </nav>
+          </div>
         </div>
       </footer>
     </main>
