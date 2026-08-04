@@ -57,6 +57,13 @@ export default function Footer() {
           </ul>
         </div>
         <div className="footer-col">
+          <h4>Legal &amp; Privacy</h4>
+          <ul>
+            <li><Link href="/privacy">Privacy Policy</Link></li>
+            <li><Link href="/terms">Terms of Service</Link></li>
+          </ul>
+        </div>
+        <div className="footer-col">
           <h4>Connect</h4>
           <p className="footer-contact-info">
             <a href="mailto:navisamarnathofc@gmail.com" style={{ textDecoration: "underline" }}>navisamarnathofc@gmail.com</a>
@@ -123,6 +130,13 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <p>© {new Date().getFullYear()} Navisamarnath. All rights reserved.</p>
+        <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)", marginTop: "6px", maxWidth: "600px" }}>
+          Privacy Notice: We collect user data strictly for communicating with you. All personal information is deleted once our communication is completed.
+        </p>
+        <div style={{ display: "flex", gap: "16px", marginTop: "8px" }}>
+          <Link href="/privacy" style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.82rem", textDecoration: "underline" }}>Privacy Policy</Link>
+          <Link href="/terms" style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.82rem", textDecoration: "underline" }}>Terms of Service</Link>
+        </div>
       </div>
     </footer>
   );
