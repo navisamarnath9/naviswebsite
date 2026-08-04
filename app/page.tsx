@@ -196,7 +196,7 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [loadingArticles]);
 
   return (
     <main className="sample-home home-page" id="top" ref={rootRef}>
