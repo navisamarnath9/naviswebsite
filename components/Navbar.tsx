@@ -7,71 +7,40 @@ import { useState, useEffect } from "react";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
+  { label: "Services", href: "/#services" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Resources", href: "/resources" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-  { label: "FAQ", href: "/faq" },
 ];
-
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
-}
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [compactNav, setCompactNav] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    function handleScroll() {
-      if (window.scrollY > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    }
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      setCompactNav(window.scrollY > 72);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  function closeMenu() {
-    setMenuOpen(false);
-  }
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
-      <a className="skip-link" href="#main-content">
-        Skip to main content
-      </a>
-
-      <div className="announcement">
-        <p>
-          <span className="availability-dot" aria-hidden="true" />
-          Now welcoming new online clients
-        </p>
-        <Link href="/contact#booking">
-          Complimentary consultation <ArrowIcon />
-        </Link>
-      </div>
-
-      <header className="site-header">
-        <Link className="brand" href="/" aria-label="Navisamarnath home">
-          <span className="brand-symbol" aria-hidden="true">
-            N
-          </span>
-          <span className="brand-name">
-            Navi
-            <strong>samarnath</strong>
-          </span>
+      <header
+        className={`sample-nav ${compactNav ? "is-compact" : ""} ${
+          menuOpen ? "menu-is-open" : ""
+        }`}
+        style={{ position: "sticky", top: 0, zIndex: 100 }}
+      >
+        <Link className="sample-nav-brand" href="/" onClick={closeMenu}>
+          <span>Navisamarnath</span>
         </Link>
 
-        <nav
-          className={menuOpen ? "nav-links open" : "nav-links"}
-          aria-label="Main navigation"
-        >
+        <nav className="sample-nav-links" aria-label="Main navigation">
           {navItems.map((item) => {
             const isActive =
               item.href === "/"
@@ -81,44 +50,47 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={isActive ? "active-nav-item" : ""}
+                className={isActive ? "is-active" : ""}
                 onClick={closeMenu}
               >
                 {item.label}
               </Link>
             );
           })}
+
           <Link
-            className="mobile-book"
-            href="/contact#booking"
+            href="/book-session"
+            className="button book-session-btn sample-nav-booking-link"
             onClick={closeMenu}
           >
-            Book a session <ArrowIcon />
+            Book Session
           </Link>
         </nav>
 
-        <div className="header-actions">
-          <Link
-            className={`button button-compact header-cta ${
-              scrolled ? "scrolled-visible" : ""
-            }`}
-            href="/contact#booking"
-          >
-            Begin your journey <ArrowIcon />
+        <div className="nav-actions">
+          <Link href="/book-session" className="button book-session-btn" onClick={closeMenu}>
+            Book Session
           </Link>
-
-          <button
-            className="menu-button"
-            type="button"
-            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((val) => !val)}
-          >
-            <span />
-            <span />
-          </button>
         </div>
+
+        <button
+          className="sample-menu-button"
+          type="button"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((val) => !val)}
+        >
+          <span />
+          <span />
+        </button>
       </header>
+
+      {/* Floating mobile booking button that appears on all pages */}
+      <div className="mobile-floating-booking">
+        <Link href="/book-session" className="button mobile-booking-btn">
+          Book Session ↗
+        </Link>
+      </div>
     </>
   );
 }

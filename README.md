@@ -92,6 +92,23 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 - `npm test`: build the starter and verify its rendered loading skeleton
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
+## Cloudflare Deployment
+
+This app is already wired for a Cloudflare Worker runtime with a serverless
+booking backend in `worker/index.ts` and the appointment route in
+`app/api/appointments/route.ts`.
+
+Before deploying, set these runtime values in Cloudflare:
+
+- `RESEND_API_KEY`: required for booking email notifications
+- D1 binding `DB`: used by the bookings API when a D1 database is attached
+
+The repo also includes the Cloudflare site metadata in `.openai/hosting.json`
+and keeps the Firestore rules in `firestore.rules` for blog and booking access.
+
+For a production deploy, run the build first, then publish through your
+Cloudflare deployment flow with the Worker and D1 binding connected.
+
 ## Learn More
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)

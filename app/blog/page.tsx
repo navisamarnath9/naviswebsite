@@ -1,105 +1,87 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
-}
-
-interface Article {
-  id: string;
-  title: string;
-  category: string;
-  readTime: string;
-  date: string;
-  excerpt: string;
-  content: string;
-}
-
-const articles: Article[] = [
-  {
-    id: "high-functioning-burnout",
-    title: "Breaking the Cycle of High-Functioning Burnout",
-    category: "Burnout & Purpose",
-    readTime: "6 min read",
-    date: "July 18, 2026",
-    excerpt: "Why achievement doesn't always bring peace, and how high-performers can restore genuine psychological rest without sacrificing excellence.",
-    content: `High-functioning burnout is one of the most deceptive forms of emotional distress because it hides behind a mask of productivity. You continue meeting deadlines, showing up for meetings, and maintaining a composed exterior—yet internally, you feel drained, detached, and perpetually operating on empty.
-
-### The Hidden Roots
-Often, high-functioning burnout stems from an implicit belief that your self-worth is tied to continuous output. When resting feels like guilt or failure, your nervous system remains stuck in chronic sympathetic arousal (fight-or-flight).
-
-### 3 Steps to Recalibrate
-1. **Differentiate Rest from Relief:** Relief is passive scrolling or streaming; true rest requires intentional nervous system down-regulation like nature walks or somatic breathing.
-2. **Set Non-Negotiable Depletion Triggers:** Notice physical warnings (jaw clenching, sleep disruption) before reaching emotional collapse.
-3. **Decouple Value from Production:** Remind yourself that you have intrinsic value simply by existing, separate from your to-do list.`,
-  },
-  {
-    id: "navigating-relationship-patterns",
-    title: "Rewriting Recurring Arguments in Your Relationship",
-    category: "Relationships",
-    readTime: "7 min read",
-    date: "July 10, 2026",
-    excerpt: "Why couples find themselves fighting over the same small things over and over, and how to uncover the core emotional need beneath the surface conflict.",
-    content: `If you and your partner find yourselves repeating the exact same argument—whether about dishes, schedules, or family—it's rarely about the topic itself. It is almost always about connection, appreciation, and safety.
-
-### The Attack-Defend Cycle
-In Gottman's research, perpetual conflicts account for nearly 69% of all relationship disagreements. When one partner feels unheard, they escalate (pursue), while the other feels overwhelmed and retreats (withdraws).
-
-### How to Break the Loop
-- **Name the Cycle, Not the Partner:** Instead of saying "You never listen," try "We are getting caught in our old pattern again."
-- **Speak from Vulnerability:** Swap defensive statements for raw needs: "I feel lonely when we don't connect in the evenings" vs "You always ignore me."`,
-  },
-  {
-    id: "quieting-the-anxious-mind",
-    title: "Quieting the Anxious Mind: Beyond Positive Thinking",
-    category: "Anxiety & Stress",
-    readTime: "5 min read",
-    date: "June 28, 2026",
-    excerpt: "Telling an anxious mind to 'just relax' rarely works. Here is how Acceptance & Commitment Therapy (ACT) helps you unhook from catastrophic thoughts.",
-    content: `When anxiety spikes, our instinct is often to fight the thoughts or force ourselves to feel calm. However, fighting anxious thoughts frequently amplifies their volume.
-
-### Thought Defusion Technique
-Rather than arguing with a catastrophic thought, practice "defusion"—noticing thoughts as passing words rather than absolute truths.
-
-- **Formula:** Instead of thinking *"I am going to fail this presentation,"* reframe to *"I notice my mind is having the thought that I might fail."*
-- **Somatic Anchoring:** Place one hand on your heart and feel the physical breath, anchoring yourself in the present room.`,
-  },
-  {
-    id: "art-of-self-compassion",
-    title: "The Art of Self-Compassion in Times of Transition",
-    category: "Mindfulness",
-    readTime: "6 min read",
-    date: "June 14, 2026",
-    excerpt: "Life transitions—career shifts, breakups, moves—challenge our identity. Discover why self-compassion is your most resilient anchor.",
-    content: `Uncertainty is uncomfortable. During major life shifts, our internal critic often becomes loudest, demanding quick fixes or blaming us for feeling unsettled.
-
-Dr. Kristin Neff identifies three core elements of self-compassion:
-1. **Self-Kindness vs. Self-Judgment:** Treating yourself with the gentleness you would extend to a dear friend.
-2. **Common Humanity vs. Isolation:** Recognizing that struggle is a shared human experience, not a personal flaw.
-3. **Mindfulness vs. Over-Identification:** Holding pain in balanced awareness without being overwhelmed by it.`,
-  },
-];
-
-const categories = ["All", "Anxiety & Stress", "Relationships", "Burnout & Purpose", "Mindfulness"];
+import { collection, getDocs, doc, setDoc, query, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 
 export default function BlogPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [articles, setArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [seeding, setSeeding] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeArticle, setActiveArticle] = useState<Article | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        const q = query(collection(db, "blogs"), orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
+        const docs: BlogArticle[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          docs.push({
+            id: doc.id,
+            title: data.title || "",
+            category: data.category || "",
+            readTime: data.readTime || "",
+            date: data.date || "",
+            excerpt: data.excerpt || "",
+            content: data.content || "",
+          });
+        });
+        setArticles(docs);
+      } catch (err) {
+        console.error("Error fetching articles from Firestore:", err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Could not connect to Firestore. Please verify your config."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, []);
+
+  useEffect(() => {
+  }, [articles]);
+
+  async function handleSeed() {
+    setSeeding(true);
+    setError(null);
+    try {
+      for (const article of defaultArticles) {
+        await setDoc(doc(db, "blogs", article.id), {
+          title: article.title,
+          category: article.category,
+          readTime: article.readTime,
+          date: article.date,
+          excerpt: article.excerpt,
+          content: article.content,
+        });
+      }
+      window.location.reload();
+    } catch (err) {
+      console.error("Seeding failed:", err);
+      setError("Failed to seed database: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setSeeding(false);
+    }
+  }
+
   const filteredArticles = articles.filter((article) => {
-    const matchesCategory =
-      selectedCategory === "All" || article.category === selectedCategory;
     const matchesSearch =
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   function handleSubscribe(e: React.FormEvent) {
@@ -111,7 +93,7 @@ export default function BlogPage() {
   }
 
   return (
-    <main id="top">
+    <main id="top" className="blog-page">
       <Navbar />
 
       <div id="main-content">
@@ -122,7 +104,7 @@ export default function BlogPage() {
             Perspectives on <em>growth & connection.</em>
           </h1>
           <p className="page-lead">
-            Articles on psychology, emotional regulation, relationships, and sustainable living written by Dr. Navisamarnath.
+            Articles on psychology, emotional regulation, relationships, and sustainable living written by Navisamarnath.
           </p>
         </section>
 
@@ -139,122 +121,94 @@ export default function BlogPage() {
             />
           </div>
 
-          <div className="faq-tabs">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`faq-tab-btn ${selectedCategory === cat ? "active" : ""}`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* ERROR STATUS */}
+          {error && (
+            <div style={{ background: "rgba(220, 53, 69, 0.1)", border: "1px solid rgba(220, 53, 69, 0.3)", padding: "20px 24px", borderRadius: "16px", marginBottom: "32px", color: "#dc3545" }}>
+              <p style={{ fontWeight: 600, marginBottom: "8px", margin: 0 }}>⚠️ Firestore Database Error</p>
+              <p style={{ fontSize: "0.92rem", margin: "4px 0 0 0", color: "var(--grey)" }}>{error}</p>
+              <p style={{ fontSize: "0.85rem", marginTop: "12px", color: "var(--grey)", margin: "12px 0 0 0" }}>
+                Make sure you have created a <code>.env.local</code> file based on <code>.env.example</code> containing your Firebase project configuration credentials.
+              </p>
+            </div>
+          )}
 
           {/* ARTICLES GRID */}
-          {filteredArticles.length === 0 ? (
+          {loading ? (
+            <>
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes pulse {
+                  0%, 100% { opacity: 0.6; }
+                  50% { opacity: 1; }
+                }
+              `}} />
+              <div className="sample-journal-grid" style={{ marginTop: "40px" }}>
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <div className="sample-journal-card" key={idx} style={{ animation: "pulse 1.5s infinite ease-in-out", minHeight: "240px" }}>
+                    <div style={{ height: "14px", width: "30%", background: "var(--line)", borderRadius: "4px", marginBottom: "16px" }} />
+                    <div style={{ height: "24px", width: "80%", background: "var(--line)", borderRadius: "4px", marginBottom: "16px" }} />
+                    <div style={{ height: "14px", width: "100%", background: "var(--line)", borderRadius: "4px", marginBottom: "8px" }} />
+                    <div style={{ height: "14px", width: "90%", background: "var(--line)", borderRadius: "4px", marginBottom: "24px" }} />
+                    <div className="sample-card-meta" style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", borderTop: "1px solid var(--line)", paddingTop: "12px" }}>
+                      <div style={{ height: "12px", width: "40%", background: "var(--line)", borderRadius: "4px" }} />
+                      <div style={{ height: "12px", width: "10%", background: "var(--line)", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : articles.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--grey)", border: "1px dashed var(--line)", borderRadius: "16px" }}>
+              <p style={{ fontSize: "1.2rem", marginBottom: "20px" }}>No articles found in the database.</p>
+              {process.env.NODE_ENV === "development" && (
+                <button
+                  type="button"
+                  className="button"
+                  disabled={seeding}
+                  onClick={handleSeed}
+                  style={{ background: "var(--cyan)", color: "var(--blue-deep)", fontWeight: 700 }}
+                >
+                  {seeding ? "Seeding database..." : "Seed Firestore with Sample Blogs"}
+                </button>
+              )}
+            </div>
+          ) : filteredArticles.length === 0 ? (
             <div style={{ textAlign: "center", padding: "60px 0", color: "var(--grey)" }}>
               <p style={{ fontSize: "1.2rem" }}>No articles found matching your criteria.</p>
               <button
                 type="button"
                 className="button button-light"
-                onClick={() => {
-                  setSelectedCategory("All");
-                  setSearchQuery("");
-                }}
+                onClick={() => setSearchQuery("")}
               >
-                Reset Filters
+                Reset Search
               </button>
             </div>
           ) : (
-            <div className="blog-grid">
+            <div className="sample-journal-grid" style={{ marginTop: "40px" }}>
               {filteredArticles.map((article) => (
-                <div className="blog-card" key={article.id}>
-                  <div className="blog-card-body">
-                    <div className="blog-meta">
-                      <span>{article.category}</span> · <span>{article.readTime}</span>
-                    </div>
-                    <h3>{article.title}</h3>
-                    <p>{article.excerpt}</p>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: "16px", borderTop: "1px solid var(--line)" }}>
-                      <span style={{ fontSize: "0.82rem", color: "var(--grey)" }}>{article.date}</span>
-                      <button
-                        type="button"
-                        className="read-more-btn"
-                        onClick={() => setActiveArticle(article)}
-                      >
-                        Read Article <ArrowIcon />
-                      </button>
-                    </div>
+                <Link
+                  className="sample-journal-card"
+                  key={article.id}
+                  href={`/blogs/${article.id}`}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    border: "1px solid var(--line)",
+                  }}
+                >
+                  <p className="sample-card-tag">{article.category}</p>
+                  <h3 style={{ fontSize: "1.35rem", lineHeight: "1.4", margin: "12px 0", color: "var(--sample-ink)", fontFamily: "var(--display)" }}>{article.title}</h3>
+                  <p className="sample-card-deck" style={{ flexGrow: 1, fontSize: "0.88rem", lineHeight: "1.6", color: "var(--sample-muted)", marginBottom: "24px" }}>{article.excerpt}</p>
+                  <div className="sample-card-meta" style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", borderTop: "1px solid var(--sample-line)", paddingTop: "12px" }}>
+                    <span style={{ fontSize: "0.78rem", color: "var(--sample-muted)" }}>{article.readTime} · {article.date}</span>
+                    <i aria-hidden="true" style={{ fontSize: "0.85rem", color: "var(--sample-ink)", fontStyle: "normal" }}>→</i>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
-
-          {/* NEWSLETTER BOX */}
-          <div style={{ marginTop: "80px", background: "var(--blue-deep)", color: "var(--white)", padding: "48px", borderRadius: "24px", textAlign: "center" }}>
-            <span style={{ fontSize: "0.75rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--cyan)", fontWeight: 600 }}>
-              Monthly Reflections
-            </span>
-            <h3 style={{ fontSize: "2.2rem", margin: "12px 0 16px 0", color: "var(--white)" }}>
-              Subscribe to Gentle Thought Letters
-            </h3>
-            <p style={{ maxWidth: "560px", margin: "0 auto 28px", color: "rgba(255,255,255,0.85)" }}>
-              Join over 4,000 readers receiving monthly essays on psychology, mindfulness, and practical mental health tools. No spam, ever.
-            </p>
-
-            {subscribed ? (
-              <div style={{ background: "rgba(58, 166, 185, 0.2)", border: "1px solid var(--cyan)", padding: "16px 24px", borderRadius: "999px", display: "inline-block", color: "var(--white)", fontWeight: 600 }}>
-                ✓ Thank you for subscribing! Check your inbox soon.
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} style={{ display: "flex", justifyContent: "center", gap: "12px", maxWidth: "480px", margin: "0 auto", flexWrap: "wrap" }}>
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter your email address"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  style={{ flexGrow: 1, padding: "14px 20px", borderRadius: "999px", border: "none", fontSize: "0.95rem", outline: "none" }}
-                />
-                <button type="submit" className="button" style={{ background: "var(--cyan)", color: "var(--blue-deep)", fontWeight: 700 }}>
-                  Subscribe
-                </button>
-              </form>
-            )}
-          </div>
         </section>
-
-        {/* MODAL ARTICLE READER */}
-        {activeArticle && (
-          <div className="modal-overlay" onClick={() => setActiveArticle(null)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setActiveArticle(null)}
-                aria-label="Close article"
-              >
-                ✕
-              </button>
-              <div className="blog-meta" style={{ marginBottom: "8px" }}>
-                <span>{activeArticle.category}</span> · <span>{activeArticle.readTime}</span>
-              </div>
-              <h2 style={{ fontSize: "2.2rem", marginBottom: "12px", color: "var(--blue)" }}>{activeArticle.title}</h2>
-              <div style={{ fontSize: "0.85rem", color: "var(--grey)", marginBottom: "28px" }}>Published on {activeArticle.date} by Dr. Navisamarnath</div>
-              <div style={{ fontSize: "1.08rem", lineHeight: "1.8", color: "var(--grey)", whiteSpace: "pre-line" }}>
-                {activeArticle.content}
-              </div>
-              <div style={{ marginTop: "40px", paddingTop: "24px", borderTop: "1px solid var(--line)", textAlign: "center" }}>
-                <Link className="button" href="/contact#booking" onClick={() => setActiveArticle(null)}>
-                  Book a Session with Dr. Navisamarnath <ArrowIcon />
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       <Footer />

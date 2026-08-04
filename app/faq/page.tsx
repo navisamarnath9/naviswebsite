@@ -5,180 +5,265 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
-}
-
-interface FAQItem {
+export interface FAQItem {
   id: string;
   category: string;
   question: string;
   answer: string;
 }
 
-const faqs: FAQItem[] = [
+export const faqs: FAQItem[] = [
+  {
+    id: "sessions-format",
+    category: "Sessions & Logistics",
+    question: "Are sessions in-person or virtual?",
+    answer:
+      "Currently, all sessions are conducted virtually to ensure flexibility and convenience for clients. This allows you to attend sessions from anywhere with privacy and ease.",
+  },
+  {
+    id: "confidentiality",
+    category: "Privacy & Ethics",
+    question: "Are your services confidential?",
+    answer:
+      "Yes, all sessions are strictly confidential. I adhere to professional guidelines and ethics to ensure your privacy and trust are respected at all times.",
+  },
+  {
+    id: "therapy-expectations",
+    category: "Therapy Process",
+    question: "What can I expect from a therapy session?",
+    answer:
+      "In therapy, you can expect a safe, non-judgmental space where we explore your thoughts, emotions, and behaviors. Together, we work through challenges using various therapeutic modalities, including CBT, DBT, psychoanalysis, and trauma-informed care, to support your healing and personal growth.",
+  },
   {
     id: "therapy-vs-coaching",
-    category: "Therapy vs Coaching",
-    question: "What is the difference between individual therapy and personal coaching?",
+    category: "Services Overview",
+    question: "What is the difference between therapy and coaching?",
     answer:
-      "Therapy focuses on clinical mental health, emotional healing, resolving past trauma, and managing conditions like anxiety or depression. Coaching is goal-oriented, focusing on forward momentum, career transitions, habit formation, and performance optimization for mentally healthy individuals.",
+      "Therapy focuses on exploring past experiences, healing emotional pain, and managing mental health challenges. Coaching is future-oriented, helping you set and achieve personal or professional goals. Both approaches offer guidance but have different focuses based on your objectives.",
   },
   {
-    id: "first-session-expectations",
-    category: "First Session",
-    question: "What happens during the initial consultation and first session?",
+    id: "choosing-service",
+    category: "Services Overview",
+    question: "How do I know which service is right for me?",
     answer:
-      "Our initial 15-minute consultation is a complimentary, low-pressure conversation to discuss what brings you here and ensure we are a good clinical fit. In your first full 50-minute session, we dive deeper into your history, current challenges, and co-create a personalized plan tailored to your goals.",
+      "Choosing a service depends on your goals. Therapy is ideal for addressing mental health concerns, while coaching focuses on personal and professional development. Group sessions provide a supportive environment to share and heal collectively. During an initial consultation, we can discuss what suits your needs best.",
   },
   {
-    id: "insurance-reimbursement",
-    category: "Insurance & Fees",
+    id: "fees-pricing",
+    category: "Fees & Accessibility",
+    question: "What are the fees for your services?",
+    answer:
+      "Services are priced as follows:\n• Individual Therapy: ₹3000 per session\n• Couples Therapy: ₹4000 per session\n• Coaching: ₹3500 per session\n\nI’m committed to making therapy accessible to everyone. To support this, I offer a sliding scale to ensure services remain available to all those in need. Please feel free to reach out to explore flexible options.",
+  },
+  {
+    id: "services-offered",
+    category: "Services Overview",
+    question: "What services do you offer?",
+    answer:
+      "I offer a range of services, including Therapy, Coaching, Christian Counseling, Group Therapy Sessions, and Couples Therapy. Each service is designed to support your personal growth and well-being, tailored to your individual needs.",
+  },
+  {
+    id: "session-duration",
+    category: "Sessions & Logistics",
+    question: "How long does a typical session last?",
+    answer:
+      "Most sessions are 45 minutes long. Depending on your needs, we may adjust session length or frequency to ensure the best outcomes for your personal journey.",
+  },
+  {
+    id: "session-count",
+    category: "Therapy Process",
+    question: "How many sessions will I need?",
+    answer:
+      "The number of sessions varies depending on your goals. Therapy can be short-term or long-term, depending on your progress and the issues being addressed. Coaching typically involves a set number of sessions with a clear focus on goal achievement.",
+  },
+  {
+    id: "insurance-coverage",
+    category: "Fees & Accessibility",
     question: "Do you accept insurance?",
     answer:
-      "Dr. Navisamarnath is an out-of-network provider. This ensures your care is completely private and not limited by insurance company mandates. We provide detailed monthly superbills which you can submit to your PPO insurance for partial reimbursement.",
+      "Please check with your insurance provider to confirm if they cover therapy or counseling services. You’ll receive a receipt after each session, which you can submit to your provider for reimbursement if applicable.",
   },
   {
-    id: "cancellation-policy",
-    category: "Insurance & Fees",
-    question: "What is your session cancellation policy?",
-    answer:
-      "We require at least 24 hours advance notice to cancel or reschedule a session without charge. Cancellations with less than 24 hours notice incur the standard session fee, as that time block is reserved exclusively for you.",
-  },
-  {
-    id: "telehealth-security",
-    category: "Telehealth & Tech",
-    question: "How does online therapy work and is it secure?",
-    answer:
-      "All sessions are conducted via a encrypted, HIPAA-compliant video platform. You simply click a secure link sent to your email from your computer, tablet, or smartphone in a private room. Studies show telehealth therapy is just as effective as in-person therapy.",
-  },
-  {
-    id: "frequency-of-sessions",
+    id: "first-session",
     category: "First Session",
-    question: "How often will we meet?",
+    question: "What can I expect during my first session?",
     answer:
-      "Most clients begin with weekly 50-minute sessions to build momentum and establish strong therapeutic rapport. As progress is made and tools are integrated, we often transition to bi-weekly or monthly maintenance sessions.",
+      "Your first session will focus on understanding your unique situation, discussing your goals, and creating a personalized plan for your therapeutic or coaching journey. This session is an opportunity to ask any questions and share your concerns.",
   },
   {
-    id: "confidentiality-privacy",
-    category: "Therapy vs Coaching",
-    question: "Is everything I share kept strictly confidential?",
+    id: "modalities-approaches",
+    category: "Therapy Process",
+    question: "What therapeutic approaches do you use?",
     answer:
-      "Yes. Confidentiality is the cornerstone of therapy. Everything discussed remains strictly private between you and Dr. Navisamarnath, subject only to standard legal boundaries (e.g., imminent harm to self/others, child/elder abuse, or court order).",
+      "The foundational approach is person-centered therapy, which prioritizes your unique experiences and needs. Additionally, therapy may incorporate various modalities, including Cognitive Behavioral Therapy (CBT), Dialectical Behavior Therapy (DBT), trauma-informed care, psychoanalysis, and psychodynamics, all tailored to support your personal growth and healing journey.",
+  },
+  {
+    id: "virtual-preparation",
+    category: "Sessions & Logistics",
+    question: "How do I prepare for my virtual session?",
+    answer:
+      "Ensure you have a quiet, private space with a reliable internet connection for your session. It’s helpful to come prepared with any specific concerns or questions you want to address during your session.",
+  },
+  {
+    id: "couples-therapy-offer",
+    category: "Couples Therapy",
+    question: "Do you offer Couples Therapy?",
+    answer:
+      "Yes, I provide Couples Therapy to help partners navigate their relationship challenges. Together, we work to improve communication, resolve conflicts, and strengthen your emotional connection.",
+  },
+  {
+    id: "couples-therapy-benefits",
+    category: "Couples Therapy",
+    question: "How can couples therapy benefit my relationship?",
+    answer:
+      "Couples therapy can enhance understanding between partners, facilitate conflict resolution, and provide tools to navigate challenges, ultimately fostering a healthier and more fulfilling relationship.",
+  },
+  {
+    id: "couples-session-expectations",
+    category: "Couples Therapy",
+    question: "What can I expect during a couples therapy session?",
+    answer:
+      "In couples therapy, sessions typically involve guided discussions about relationship dynamics, identifying patterns, and developing strategies for effective communication and problem-solving.",
   },
 ];
 
-const categories = ["All", "Therapy vs Coaching", "Insurance & Fees", "First Session", "Telehealth & Tech"];
-
 export default function FAQPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [openIds, setOpenIds] = useState<string[]>(["therapy-vs-coaching", "insurance-reimbursement"]);
+  const [openId, setOpenId] = useState<string | null>("sessions-format");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const filteredFaqs = faqs.filter((faq) => {
-    const matchesCategory =
-      selectedCategory === "All" || faq.category === selectedCategory;
-    const matchesSearch =
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const categories = ["All", ...Array.from(new Set(faqs.map((f) => f.category)))];
 
-  function toggleFaq(id: string) {
-    setOpenIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  }
+  const filteredFaqs =
+    selectedCategory === "All"
+      ? faqs
+      : faqs.filter((f) => f.category === selectedCategory);
+
+  const toggle = (id: string) => {
+    setOpenId((prev) => (prev === id ? null : id));
+  };
 
   return (
-    <main id="top">
+    <main id="top" className="sample-home faq-page">
       <Navbar />
 
-      <div id="main-content">
-        {/* BANNER */}
-        <section className="page-banner">
-          <span className="kicker">Clear Answers</span>
-          <h1>
-            Frequently asked <em>questions.</em>
-          </h1>
-          <p className="page-lead">
-            Find answers regarding session structure, fees, insurance reimbursement, confidentiality, and what to expect on your journey.
+      <section className="about-top-hero">
+        <div className="about-top-hero-copy">
+          <span className="sample-overline" style={{ color: "var(--brand-accent)", fontWeight: 700 }}>
+            TRANSPARENCY &amp; CARE
+          </span>
+          <h1 className="about-hero-title">Frequently Asked Questions</h1>
+          <h2 className="about-hero-subtitle">
+            Clear Answers to Your Practice &amp; Therapy Questions
+          </h2>
+          <p className="about-hero-text">
+            Everything you need to know about our virtual sessions, fees, therapeutic modalities, and what to expect on your journey with Navisamarnath.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section className="subpage-container">
-          {/* SEARCH BOX */}
-          <div className="faq-search-box">
-            <span className="faq-search-icon">🔍</span>
-            <input
-              type="text"
-              className="faq-search-input"
-              placeholder="Search questions (e.g., insurance, first session, cancellation)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          {/* TABS */}
-          <div className="faq-tabs">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`faq-tab-btn ${selectedCategory === cat ? "active" : ""}`}
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* ACCORDION LIST */}
-          <div className="faq-accordion-list">
-            {filteredFaqs.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px", color: "var(--grey)" }}>
-                <p>No questions matched your search query.</p>
+      <div id="main-content" className="sample-surface">
+        <section className="sample-section faq-content-section" style={{ padding: "80px 24px" }}>
+          <div className="faq-content" style={{ maxWidth: "1000px", margin: "0 auto" }}>
+            
+            {/* CATEGORY TABS */}
+            <div className="credentials-filter-tabs mobile-scroll-tabs" style={{ marginBottom: "56px" }}>
+              {categories.map((cat) => (
                 <button
+                  key={cat}
                   type="button"
-                  className="button button-light"
-                  onClick={() => {
-                    setSelectedCategory("All");
-                    setSearchQuery("");
-                  }}
+                  className={`credentials-filter-btn ${
+                    selectedCategory === cat ? "is-active" : ""
+                  }`}
+                  onClick={() => setSelectedCategory(cat)}
                 >
-                  Clear Filters
+                  {cat}
                 </button>
-              </div>
-            ) : (
-              filteredFaqs.map((faq) => {
-                const isOpen = openIds.includes(faq.id);
+              ))}
+            </div>
+
+            {/* ACCORDION LIST */}
+            <div className="mobile-faq-list" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {filteredFaqs.map((faq) => {
+                const isOpen = openId === faq.id;
                 return (
-                  <div key={faq.id} className={`faq-item ${isOpen ? "open" : ""}`}>
+                  <div
+                    className="mobile-faq-item"
+                    key={faq.id}
+                    style={{
+                      background: "#ffffff",
+                      border: "1px solid var(--sample-line)",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      transition: "box-shadow 200ms ease",
+                      boxShadow: isOpen ? "0 8px 24px rgba(0,0,0,0.03)" : "none",
+                    }}
+                  >
                     <button
+                      className="mobile-faq-question"
                       type="button"
-                      className="faq-question-btn"
-                      onClick={() => toggleFaq(faq.id)}
-                      aria-expanded={isOpen}
+                      onClick={() => toggle(faq.id)}
+                      style={{
+                        width: "100%",
+                        padding: "22px 28px",
+                        textAlign: "left",
+                        background: "none",
+                        border: "none",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        gap: "16px",
+                      }}
                     >
-                      <span>{faq.question}</span>
-                      <span className="faq-icon">+</span>
+                      <span style={{ fontSize: "1.1rem", fontWeight: 600, color: "#18181b", lineHeight: 1.4 }}>
+                        {faq.question}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "1.4rem",
+                          color: "var(--brand-accent)",
+                          transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                          transition: "transform 200ms ease",
+                          lineHeight: 1,
+                        }}
+                      >
+                        +
+                      </span>
                     </button>
-                    {isOpen && <div className="faq-answer">{faq.answer}</div>}
+
+                    {isOpen && (
+                      <div className="mobile-faq-answer" style={{ padding: "0 28px 24px 28px", borderTop: "1px solid var(--sample-line)" }}>
+                        <p style={{ fontSize: "0.98rem", color: "var(--sample-muted)", lineHeight: 1.7, margin: "16px 0 0 0", whitespace: "pre-line" }}>
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 );
-              })
-            )}
-          </div>
+              })}
+            </div>
 
-          {/* CTA */}
-          <div style={{ textAlign: "center", marginTop: "80px", background: "var(--mist)", padding: "48px", borderRadius: "24px", border: "1px solid var(--line)" }}>
-            <h3 style={{ fontSize: "2rem", marginBottom: "12px" }}>Didn’t find the answer you were looking for?</h3>
-            <p style={{ color: "var(--grey)", marginBottom: "28px", maxWidth: "560px", margin: "0 auto 28px" }}>
-              We are happy to answer any questions about our practice, approach, or scheduling. Reach out to us anytime.
-            </p>
-            <Link className="button" href="/contact">
-              Ask a Question or Book <ArrowIcon />
-            </Link>
+            <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)" }}>
+              <h3 style={{ fontSize: "1.4rem", margin: "0 0 10px 0", color: "#18181b" }}>Have additional questions?</h3>
+              <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", margin: "0 0 24px 0" }}>
+                Reach out directly or schedule a complimentary 15-minute consultation.
+              </p>
+              <Link
+                href="/book-session"
+                style={{
+                  display: "inline-block",
+                  background: "var(--brand-accent)",
+                  color: "#ffffff",
+                  padding: "12px 28px",
+                  borderRadius: "24px",
+                  fontWeight: 600,
+                  fontSize: "0.92rem",
+                  textDecoration: "none",
+                }}
+              >
+                Schedule Free Consultation ↗
+              </Link>
+            </div>
           </div>
         </section>
       </div>

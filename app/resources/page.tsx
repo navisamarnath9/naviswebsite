@@ -1,144 +1,315 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
-}
-
-export const metadata = {
-  title: "Mental Health Resources & Worksheets | Navisamarnath",
-  description:
-    "Access free mental health guides, grounding exercises, recommended reading, and emergency helpline contacts.",
+type ResourceItem = {
+  title: string;
+  author?: string;
+  desc: string;
+  url?: string;
 };
 
-const downloadableGuides = [
+type ResourceGroup = {
+  title: string;
+  countLabel: string;
+  featured?: boolean;
+  items: ResourceItem[];
+};
+
+type ResourcePillar = {
+  id: "all" | "inner-child" | "positive-thinking" | "self-esteem";
+  pillar: string;
+  title: string;
+  deck: string;
+  summary: string;
+  tags: string[];
+  groups: ResourceGroup[];
+};
+
+const resourcePillars: ResourcePillar[] = [
   {
-    title: "5-Step Nervous System Grounding Reset",
-    type: "PDF Worksheet · 4 Pages",
-    desc: "A practical guide to de-escalate acute anxiety, panic, or overwhelm using somatic breathwork and sensory anchoring.",
-    fileSize: "1.2 MB",
+    id: "inner-child",
+    pillar: "Pillar 01",
+    title: "Healing the Inner Child",
+    deck: "Reparenting, trauma recovery, and reconnection with younger parts of yourself.",
+    summary:
+      "Inner child work helps uncover unresolved emotions, early coping patterns, and the beliefs that keep old wounds active. The resources below support self-compassion, emotional resilience, and practical healing.",
+    tags: ["Reparenting", "Trauma recovery", "Attachment"],
+    groups: [
+      {
+        title: "Books",
+        countLabel: "5 books",
+        featured: true,
+        items: [
+          { title: "Homecoming", author: "John Bradshaw", desc: "A foundational guide to understanding and nurturing the inner child." },
+          { title: "The Inner Child Workbook", author: "Cathryn L. Taylor", desc: "Practical exercises for processing old wounds and creating new patterns." },
+          { title: "Recovery of Your Inner Child", author: "Lucia Capacchione", desc: "A classic method for reconnecting with and liberating your inner self." },
+          { title: "The Emotionally Absent Mother", author: "Jasmin Lee Cori", desc: "A guide to healing from neglect and unmet emotional needs." },
+          { title: "It Didn’t Start with You", author: "Mark Wolynn", desc: "Explores how inherited family trauma can shape the present." },
+        ],
+      },
+      {
+        title: "Podcasts",
+        countLabel: "5 podcasts",
+        items: [
+          { title: "The Healing Trauma Podcast", desc: "Focuses on inner child work, trauma recovery, and emotional healing." },
+          { title: "The Adult Chair Podcast", desc: "Explores inner child healing, emotional regulation, and transformation." },
+          { title: "Therapy Chat", desc: "Covers trauma, attachment, and the therapeutic process with depth." },
+          { title: "UnF*ck Your Brain", desc: "Discusses emotional resilience, self-worth, and healing old patterns." },
+          { title: "Dear Gabby", desc: "Offers spiritual and psychological guidance for personal healing." },
+        ],
+      },
+      {
+        title: "Websites",
+        countLabel: "5 websites",
+        items: [
+          { title: "NICABM", url: "https://www.nicabm.com/", desc: "Research-backed trauma resources and expert insights." },
+          { title: "The Center for Healing and Transformation", url: "https://drarielleschwartz.com/", desc: "Trauma-informed approaches, self-help techniques, and healing exercises." },
+          { title: "Psychology Today", url: "https://www.psychologytoday.com/ca", desc: "Articles from licensed therapists on reparenting and emotional healing." },
+          { title: "Inner Bonding", url: "https://innerbondinghub.com/", desc: "A self-healing process focused on reconnecting with the inner child." },
+          { title: "Mindful", url: "https://www.mindful.org/", desc: "Mindfulness-based approaches for self-compassion and healing." },
+        ],
+      },
+    ],
   },
   {
-    title: "The Burnout Recovery Audit & Daily Tracker",
-    type: "Interactive Self-Check · 6 Pages",
-    desc: "Assess emotional exhaustion versus physical fatigue, and design sustainable energy boundaries for work.",
-    fileSize: "2.4 MB",
+    id: "positive-thinking",
+    pillar: "Pillar 02",
+    title: "Positive Thinking",
+    deck: "Mindset tools that support resilience, hope, and practical growth under pressure.",
+    summary:
+      "Positive thinking is not denial. It is a way of reframing challenges so you can respond with clarity, confidence, and a more constructive inner voice.",
+    tags: ["Mindset", "Resilience", "Growth"],
+    groups: [
+      {
+        title: "Books",
+        countLabel: "5 books",
+        featured: true,
+        items: [
+          { title: "The Power of Positive Thinking", author: "Norman Vincent Peale", desc: "A classic introduction to optimism and self-belief." },
+          { title: "Learned Optimism", author: "Martin Seligman", desc: "Evidence-based tools for shifting explanatory style." },
+          { title: "The Happiness Advantage", author: "Shawn Achor", desc: "Shows how positivity can improve performance and wellbeing." },
+          { title: "Mindset", author: "Carol S. Dweck", desc: "Explains the growth mindset and its impact on learning." },
+          { title: "Hardwiring Happiness", author: "Rick Hanson", desc: "Practical ways to train the brain toward resilience." },
+        ],
+      },
+      {
+        title: "Podcasts",
+        countLabel: "5 podcasts",
+        items: [
+          { title: "The Happiness Lab", desc: "Laurie Santos explores the science behind happiness and positivity." },
+          { title: "The Daily Boost", desc: "Short motivational episodes for daily action and momentum." },
+          { title: "The Tony Robbins Podcast", desc: "Insights on growth, mindset shifts, and motivation." },
+          { title: "The Science of Happiness", desc: "Research-backed strategies for cultivating positivity." },
+          { title: "Feel Better, Live More", desc: "Rangan Chatterjee discusses mindset, health, and wellbeing." },
+        ],
+      },
+      {
+        title: "Websites",
+        countLabel: "5 websites",
+        items: [
+          { title: "Greater Good Science Center", url: "https://greatergood.berkeley.edu/", desc: "Science-backed resources on happiness and wellbeing." },
+          { title: "Mindful.org", url: "https://www.mindful.org/", desc: "Guides on mindfulness and positive psychology." },
+          { title: "Psychology Today", url: "https://www.psychologytoday.com/ca", desc: "Articles on optimism, mental health, and self-improvement." },
+          { title: "Action for Happiness", url: "https://actionforhappiness.org/", desc: "Practical steps to improve daily positivity." },
+          { title: "Verywell Mind", url: "https://www.verywellmind.com/", desc: "Trusted articles on mental wellbeing and positive thinking." },
+        ],
+      },
+    ],
   },
   {
-    title: "Couples Communication & De-escalation Script",
-    type: "Relationship Guide · 5 Pages",
-    desc: "Phrases and pause protocols to use during heated arguments to switch from defense to connection.",
-    fileSize: "1.8 MB",
-  },
-  {
-    title: "Values-Based Decision Framework",
-    type: "Coaching Tool · 3 Pages",
-    desc: "A step-by-step matrix to evaluate career, financial, and personal choices against your top core values.",
-    fileSize: "950 KB",
+    id: "self-esteem",
+    pillar: "Pillar 03",
+    title: "Building Self-Esteem",
+    deck: "References that strengthen self-worth, confidence, and a steadier sense of self.",
+    summary:
+      "Self-esteem grows when self-doubt, negative self-talk, and limiting beliefs are replaced with affirming thoughts and actions that support confidence and acceptance.",
+    tags: ["Self-worth", "Confidence", "Boundaries"],
+    groups: [
+      {
+        title: "Books",
+        countLabel: "5 books",
+        featured: true,
+        items: [
+          { title: "The Six Pillars of Self-Esteem", author: "Nathaniel Branden", desc: "A practical framework for building durable self-esteem." },
+          { title: "The Gifts of Imperfection", author: "Brené Brown", desc: "Invites readers to embrace vulnerability and authenticity." },
+          { title: "Radical Self-Love", author: "Gala Darling", desc: "A direct, energetic approach to self-acceptance." },
+          { title: "The Self-Esteem Workbook", author: "Glenn R. Schiraldi", desc: "Exercises and guidance for self-worth work." },
+          { title: "You Are a Badass", author: "Jen Sincero", desc: "A motivational companion for confidence and action." },
+        ],
+      },
+      {
+        title: "Podcasts",
+        countLabel: "5 podcasts",
+        items: [
+          { title: "The Self-Esteem and Confidence Mindset Podcast", desc: "Hosted by Jonny Pardoe with practical confidence tools." },
+          { title: "UnF*ck Your Brain", desc: "Kara Loewentheil on self-worth, boundaries, and mindset." },
+          { title: "The Confidence Podcast", desc: "Trish Blackwell offers encouragement and practical advice." },
+          { title: "The Mindful Kind", desc: "Rachael Kable explores calm and self-acceptance." },
+          { title: "The Thoughtful Leader Podcast", desc: "Simon Dowling on confidence, presence, and growth." },
+        ],
+      },
+      {
+        title: "Websites",
+        countLabel: "5 websites",
+        items: [
+          { title: "Psychology Today", url: "https://www.psychologytoday.com/us", desc: "Articles and advice on self-esteem and wellbeing." },
+          { title: "Mind Tools", url: "https://www.mindtools.com/", desc: "Tools for personal growth and confidence building." },
+          { title: "Verywell Mind", url: "https://www.verywellmind.com/", desc: "Practical information on mental health and self-worth." },
+          { title: "The Self-Esteem Experts", url: "https://www.selfesteem-experts.com/", desc: "Resources and workshops focused on self-esteem." },
+          { title: "Therapist Aid", url: "https://www.therapistaid.com/", desc: "Worksheets and tools for confidence and mental health." },
+        ],
+      },
+    ],
   },
 ];
 
-const recommendedBooks = [
-  { title: "The Body Keeps the Score", author: "Bessel van der Kolk, M.D.", category: "Trauma & Healing" },
-  { title: "Attached: The New Science of Adult Attachment", author: "Amir Levine & Rachel Heller", category: "Relationships" },
-  { title: "Atomic Habits", author: "James Clear", category: "Behavior & Habit Architecture" },
-  { title: "Radical Acceptance", author: "Tara Brach, Ph.D.", category: "Mindfulness & Self-Compassion" },
-];
+const tabs = [
+  { id: "all", label: "All pillars" },
+  { id: "inner-child", label: "Inner child" },
+  { id: "positive-thinking", label: "Mindset" },
+  { id: "self-esteem", label: "Self-esteem" },
+] as const;
+
+function ResourceCard({ item }: { item: ResourceItem }) {
+  const content = (
+    <>
+      <strong className="resource-item-title">{item.title}</strong>
+      {item.author && <span className="resource-item-author">{item.author}</span>}
+      <span className="resource-item-desc">{item.desc}</span>
+      <span className="resource-item-action">{item.url ? "Open resource" : "Read more"}</span>
+    </>
+  );
+
+  if (item.url) {
+    return (
+      <a className="resource-item-card" href={item.url} target="_blank" rel="noopener noreferrer">
+        {content}
+      </a>
+    );
+  }
+
+  return <div className="resource-item-card">{content}</div>;
+}
 
 export default function ResourcesPage() {
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("all");
+
+  const visiblePillars = resourcePillars.filter((pillar) => activeTab === "all" || pillar.id === activeTab);
+
   return (
-    <main id="top">
+    <main id="top" className="sample-home resources-page">
       <Navbar />
 
-      <div id="main-content">
-        {/* BANNER */}
-        <section className="page-banner">
-          <span className="kicker">Free Tools & Insights</span>
-          <h1>
-            Resources for your <em>daily wellbeing.</em>
-          </h1>
-          <p className="page-lead">
-            Curated worksheets, science-backed grounding tools, and recommended reading to support your growth beyond the session.
+      <section className="resources-hero">
+        <div className="resources-hero-copy">
+          <span className="sample-overline">Curated knowledge base</span>
+          <h1>Resources for Transformation</h1>
+          <p className="resources-hero-lead">
+            A responsive, searchable library of books, podcasts, and trusted sites for the work between sessions.
           </p>
-        </section>
+          <p className="resources-hero-text">
+            Explore focused pillars for inner child healing, mindset growth, and self-esteem building. Each section is designed to be quick to scan on mobile and easy to revisit on desktop.
+          </p>
 
-        <section className="subpage-container">
-          {/* FREE GUIDES SECTION */}
-          <div style={{ marginBottom: "80px" }}>
-            <h2 style={{ fontSize: "2.4rem", marginBottom: "12px" }}>
-              Downloadable Worksheets & Guides
-            </h2>
-            <p style={{ color: "var(--grey)", marginBottom: "36px", fontSize: "1.05rem" }}>
-              Free PDF resources created by Dr. Navisamarnath for personal self-reflection and coping skills.
-            </p>
-
-            <div className="resource-grid">
-              {downloadableGuides.map((guide, i) => (
-                <div className="resource-card" key={i}>
-                  <div>
-                    <span className="resource-tag">{guide.type}</span>
-                    <h3>{guide.title}</h3>
-                    <p>{guide.desc}</p>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--line)", paddingTop: "16px", marginTop: "16px" }}>
-                    <span style={{ fontSize: "0.85rem", color: "var(--grey)" }}>{guide.fileSize}</span>
-                    <button
-                      type="button"
-                      className="line-link"
-                      onClick={() => alert(`Downloading "${guide.title}"...`)}
-                      style={{ background: "none", border: "none", cursor: "pointer" }}
-                    >
-                      Download PDF <ArrowIcon />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="resources-hero-actions">
+            <Link className="button" href="/book-session">
+              Book a session
+            </Link>
+            <a className="button button-light" href="#resource-library">
+              Browse resources
+            </a>
           </div>
 
-          {/* RECOMMENDED READING */}
-          <div style={{ marginBottom: "80px" }}>
-            <h2 style={{ fontSize: "2.4rem", marginBottom: "12px" }}>
-              Recommended Reading List
-            </h2>
-            <p style={{ color: "var(--grey)", marginBottom: "36px", fontSize: "1.05rem" }}>
-              Books frequently recommended to clients for deeper self-discovery and relational understanding.
-            </p>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "24px" }}>
-              {recommendedBooks.map((book, i) => (
-                <div key={i} style={{ background: "var(--mist)", padding: "28px", borderRadius: "16px", border: "1px solid var(--line)" }}>
-                  <span className="resource-tag" style={{ background: "rgba(43, 84, 126, 0.08)", color: "var(--blue)" }}>{book.category}</span>
-                  <h3 style={{ fontSize: "1.35rem", margin: "12px 0 6px 0", color: "var(--blue)" }}>{book.title}</h3>
-                  <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--grey)" }}>by {book.author}</p>
-                </div>
-              ))}
+          <div className="resources-hero-stats" aria-label="Resource highlights">
+            <div>
+              <strong>3 pillars</strong>
+              <span>Focused categories</span>
+            </div>
+            <div>
+              <strong>15+ items</strong>
+              <span>Curated references</span>
             </div>
           </div>
+        </div>
 
-          {/* CRISIS SUPPORT BOX */}
-          <div style={{ background: "#fff5f5", border: "1px solid #fecaca", padding: "40px", borderRadius: "20px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <span style={{ color: "#dc2626", fontSize: "1.5rem" }}>🚨</span>
-              <h3 style={{ fontSize: "1.8rem", color: "#991b1b", margin: 0 }}>Immediate Crisis & Helpline Support</h3>
+        <div className="resources-hero-visual">
+          <Image
+            src="/resources-hero-navis.png"
+            alt="Navisamarnath in study library"
+            fill
+            priority
+            unoptimized
+            sizes="(max-width: 900px) 100vw, 42vw"
+            className="resources-hero-img"
+          />
+          <div className="resources-hero-overlay">
+            <span>Quick start</span>
+            <p>Tap a pillar to jump into a focused set of tools, books, and links.</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="main-content" className="sample-surface">
+        <section className="sample-section resources-content-section" id="resource-library">
+          <div className="resources-content">
+            <div className="resources-toolbar">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`resource-filter-btn ${activeTab === tab.id ? "is-active" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-            <p style={{ color: "#7f1d1d", lineHeight: "1.7", marginBottom: "20px" }}>
-              If you or someone you know is in immediate danger, experiencing severe distress, or having thoughts of self-harm, please reach out immediately to 24/7 free emergency services:
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-              <div style={{ background: "var(--white)", padding: "16px 20px", borderRadius: "12px", border: "1px solid #fca5a5" }}>
-                <strong style={{ color: "#991b1b" }}>National Suicide & Crisis Lifeline:</strong>
-                <p style={{ margin: "4px 0 0 0", fontSize: "1.1rem", fontWeight: 700 }}>Call or Text 988</p>
-              </div>
-              <div style={{ background: "var(--white)", padding: "16px 20px", borderRadius: "12px", border: "1px solid #fca5a5" }}>
-                <strong style={{ color: "#991b1b" }}>Crisis Text Line:</strong>
-                <p style={{ margin: "4px 0 0 0", fontSize: "1.1rem", fontWeight: 700 }}>Text HOME to 741741</p>
-              </div>
-              <div style={{ background: "var(--white)", padding: "16px 20px", borderRadius: "12px", border: "1px solid #fca5a5" }}>
-                <strong style={{ color: "#991b1b" }}>Emergency Services:</strong>
-                <p style={{ margin: "4px 0 0 0", fontSize: "1.1rem", fontWeight: 700 }}>Call 911 or visit local ER</p>
-              </div>
+
+            <div className="resource-stack">
+              {visiblePillars.map((pillar) => (
+                <article key={pillar.id} className="resource-pillar-card">
+                  <div className="resource-pillar-header">
+                    <div>
+                      <span className="resource-pillar-kicker">{pillar.pillar}</span>
+                      <h2>{pillar.title}</h2>
+                      <p>{pillar.deck}</p>
+                    </div>
+
+                    <div className="resource-pillar-tags" aria-label={`${pillar.title} tags`}>
+                      {pillar.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="resource-pillar-summary">{pillar.summary}</p>
+
+                  <div className="resource-groups-grid">
+                    {pillar.groups.map((group) => (
+                      <details key={group.title} className="resource-group-card" open={group.featured}>
+                        <summary>
+                          <div>
+                            <strong>{group.title}</strong>
+                            <span>{group.countLabel}</span>
+                          </div>
+                          <i aria-hidden="true">+</i>
+                        </summary>
+
+                        <div className="resource-items-grid">
+                          {group.items.map((item) => (
+                            <ResourceCard key={item.title} item={item} />
+                          ))}
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>

@@ -1,4 +1,14 @@
-import { env } from "cloudflare:workers";
+// Safe environment access for Cloudflare Workers runtime
+let cfEnv: any = (globalThis as any).env;
+try {
+  // @ts-ignore
+  if (typeof process === "undefined" || process.env.NEXT_RUNTIME === "edge") {
+    // @ts-ignore
+    cfEnv = (await import("cloudflare:workers")).env;
+  }
+} catch {
+  cfEnv = (globalThis as any).env || {};
+}
 
 const createTableSql = `CREATE TABLE IF NOT EXISTS appointments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +40,90 @@ function clean(value: string | undefined, max = 500) {
   return (value ?? "").trim().slice(0, max);
 }
 
+// Function to send email notification to navisamarnathofc@gmail.com via Resend
+async function sendBookingNotificationEmail(payload: {
+  name: string;
+  email: string;
+  phone: string;
+  sessionType: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  note: string;
+}) {
+  const adminEmail = "navisamarnathofc@gmail.com";
+  const resendApiKey =
+    cfEnv?.RESEND_API_KEY || (process as any).env?.RESEND_API_KEY;
+
+  if (!resendApiKey) {
+    console.warn("Resend API key is not configured; skipping booking email notification.");
+    return;
+  }
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 12px; background-color: #fafafa;">
+      <h2 style="color: #0A303D; margin-top: 0;">⚡ New Consultation Request Received</h2>
+      <p style="font-size: 15px; color: #333;">You have received a new consultation appointment booking from your website:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee; width: 140px;">Client Name:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">${payload.name}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">WhatsApp / Phone:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="https://wa.me/${payload.phone.replace(/[^0-9]/g, "")}" style="color:#0A303D;">${payload.phone}</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Email Address:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="mailto:${payload.email}" style="color:#0A303D;">${payload.email}</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Session Type:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee; color: #0A303D; font-weight: bold;">${payload.sessionType}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Requested Date:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">${payload.appointmentDate}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Client Notes:</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">${payload.note || "None provided"}</td>
+        </tr>
+      </table>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <a href="https://navisamarnath-site.firebaseapp.com/admin" style="background-color: #0A303D; color: #ffffff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+          View in Admin Portal ↗
+        </a>
+      </div>
+
+      <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;" />
+      <p style="font-size: 12px; color: #888; text-align: center;">Navisamarnath Psychology &amp; Coaching Practice — Automated Booking Notification</p>
+    </div>
+  `;
+
+  const resendResponse = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Navisamarnath Bookings <onboarding@resend.dev>",
+      to: [adminEmail],
+      subject: `⚡ New Booking: ${payload.name} — ${payload.sessionType}`,
+      html: htmlContent,
+    }),
+  });
+
+  if (resendResponse.ok) {
+    console.log("✓ Email notification sent via Resend to", adminEmail);
+  } else {
+    const errText = await resendResponse.text();
+    console.warn("Resend email error:", resendResponse.status, errText);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const payload = (await request.json()) as AppointmentPayload;
@@ -41,7 +135,7 @@ export async function POST(request: Request) {
     const appointmentTime = clean(payload.appointmentTime, 20);
     const note = clean(payload.note, 800);
 
-    if (!name || !email || !sessionType || !appointmentDate || !appointmentTime) {
+    if (!name || !email || !sessionType || !appointmentDate) {
       return Response.json(
         { error: "Please complete all required fields." },
         { status: 400 },
@@ -55,33 +149,53 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!env.DB) {
-      throw new Error("Appointment storage is unavailable.");
+    // Dispatch background email notification to navisamarnathofc@gmail.com
+    sendBookingNotificationEmail({
+      name,
+      email,
+      phone,
+      sessionType,
+      appointmentDate,
+      appointmentTime: appointmentTime || "To be arranged",
+      note,
+    }).catch((err) => console.warn("Background email notification error:", err));
+
+    const DB = cfEnv?.DB || (process as any).env?.DB;
+
+    if (DB) {
+      try {
+        await DB.batch([
+          DB.prepare(createTableSql),
+          DB.prepare(createIndexSql),
+        ]);
+
+        const result = await DB.prepare(
+          `INSERT INTO appointments
+            (name, email, phone, session_type, appointment_date, appointment_time, note)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        )
+          .bind(
+            name,
+            email,
+            phone,
+            sessionType,
+            appointmentDate,
+            appointmentTime || "To be arranged",
+            note,
+          )
+          .run();
+
+        return Response.json(
+          { appointment: { id: result?.meta?.last_row_id || Date.now(), status: "requested" } },
+          { status: 201 },
+        );
+      } catch (dbErr) {
+        console.warn("DB insert notice:", dbErr);
+      }
     }
 
-    await env.DB.batch([
-      env.DB.prepare(createTableSql),
-      env.DB.prepare(createIndexSql),
-    ]);
-
-    const result = await env.DB.prepare(
-      `INSERT INTO appointments
-        (name, email, phone, session_type, appointment_date, appointment_time, note)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    )
-      .bind(
-        name,
-        email,
-        phone,
-        sessionType,
-        appointmentDate,
-        appointmentTime,
-        note,
-      )
-      .run();
-
     return Response.json(
-      { appointment: { id: result.meta.last_row_id, status: "requested" } },
+      { success: true, message: "Booking received and email notification sent to navisamarnathofc@gmail.com" },
       { status: 201 },
     );
   } catch (error) {

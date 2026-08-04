@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { faqs } from "./faq/page";
+import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 
 const services = [
   {
@@ -9,48 +16,120 @@ const services = [
     title: "Individual therapy",
     copy: "A private, thoughtful space to understand what is weighing on you and build steadier ways forward.",
     details: ["Anxiety & stress", "Burnout", "Life transitions"],
-    href: "/services#individual",
+    href: "/services/individual",
+    image: "/service-individual.png",
   },
   {
     number: "02",
     title: "Personal coaching",
     copy: "Focused support for meaningful ambitions, clearer decisions, and momentum that still feels like your own.",
     details: ["Clarity", "Confidence", "Purpose"],
-    href: "/services#coaching",
+    href: "/services/coaching",
+    image: "/service-coaching.png",
   },
   {
     number: "03",
     title: "Couples therapy",
     copy: "Guided conversations that make room for honesty, repair recurring patterns, and deepen connection.",
     details: ["Communication", "Trust", "Connection"],
-    href: "/services#couples",
+    href: "/services/couples",
+    image: "/service-couples.png",
   },
   {
     number: "04",
     title: "Group sessions",
     copy: "Carefully facilitated spaces where shared experience becomes a source of perspective and support.",
     details: ["Community", "Resilience", "Growth"],
-    href: "/services#groups",
+    href: "/services/groups",
+    image: "/service-groups.png",
   },
 ];
 
-const approach = [
-  {
-    number: "01",
-    title: "See the whole picture",
-    copy: "We begin with your story—not a label—and notice the pressures, patterns, and strengths shaping this moment.",
-  },
-  {
-    number: "02",
-    title: "Choose what fits",
-    copy: "Evidence-based care is shaped around your pace, personality, culture, relationships, and real life.",
-  },
-  {
-    number: "03",
-    title: "Make change usable",
-    copy: "Insight becomes practical next steps, so the work continues to support you between conversations.",
-  },
+const introWords = [
+  { text: "Where", highlight: false },
+  { text: "aspiration", highlight: false },
+  { text: "meets", highlight: false },
+  { text: "transformation.", highlight: false },
+  { text: "A", highlight: false },
+  { text: "space", highlight: false },
+  { text: "to", highlight: false },
+  { text: "embrace", highlight: false },
+  { text: "continuous", highlight: false },
+  { text: "personal", highlight: false },
+  { text: "growth,", highlight: false },
+  { text: "build", highlight: false },
+  { text: "lasting", highlight: false },
+  { text: "resilience,", highlight: false },
+  { text: "and", highlight: false },
+  { text: "unlock", highlight: true, brandColor: true },
+  { text: "your", highlight: true, brandColor: true },
+  { text: "fullest", highlight: true, brandColor: true },
+  { text: "potential.", highlight: true, brandColor: true },
 ];
+
+function ScrollRevealHeading() {
+  const containerRef = useRef<HTMLHeadingElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    function handleScroll() {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate scroll progress through the viewport:
+      // Starts revealing when top enters 85% of viewport
+      // Fully revealed when top reaches 35% of viewport
+      const start = windowHeight * 0.85;
+      const end = windowHeight * 0.35;
+
+      const current = rect.top;
+      let rawProgress = (start - current) / (start - end);
+      if (rawProgress < 0) rawProgress = 0;
+      if (rawProgress > 1) rawProgress = 1;
+
+      setScrollProgress(rawProgress);
+    }
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const totalWords = introWords.length;
+
+  return (
+    <h2 className="scroll-reveal-h2" ref={containerRef}>
+      {introWords.map((word, idx) => {
+        const wordStart = idx / totalWords;
+        const wordEnd = Math.min(1, (idx + 1.5) / totalWords);
+
+        let wordProgress = (scrollProgress - wordStart) / (wordEnd - wordStart);
+        if (wordProgress < 0) wordProgress = 0;
+        if (wordProgress > 1) wordProgress = 1;
+
+        // Opacity ranges from 0.2 (light version) to 1.0 (dark solid version)
+        const opacity = 0.2 + 0.8 * wordProgress;
+
+        return (
+          <span
+            key={idx}
+            className={`scroll-word ${word.highlight ? "highlight-word" : ""} ${word.brandColor ? "brand-word" : ""}`}
+            style={{
+              opacity,
+              transition: "opacity 160ms cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
+            {word.text}{" "}
+          </span>
+        );
+      })}
+    </h2>
+  );
+}
 
 function Arrow({ down = false }: { down?: boolean }) {
   return <span aria-hidden="true">{down ? "↓" : "↗"}</span>;
@@ -58,8 +137,39 @@ function Arrow({ down = false }: { down?: boolean }) {
 
 export default function Home() {
   const rootRef = useRef<HTMLElement>(null);
-  const [compactNav, setCompactNav] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [latestArticles, setLatestArticles] = useState<BlogArticle[]>([]);
+  const [loadingArticles, setLoadingArticles] = useState(true);
+  const [openFaqId, setOpenFaqId] = useState<string | null>("sessions-format");
+
+  useEffect(() => {
+    async function fetchLatestArticles() {
+      try {
+        const q = query(collection(db, "blogs"), orderBy("date", "desc"), limit(4));
+        const querySnapshot = await getDocs(q);
+        const docs: BlogArticle[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          docs.push({
+            id: doc.id,
+            title: data.title || "",
+            category: data.category || "",
+            readTime: data.readTime || "",
+            date: data.date || "",
+            excerpt: data.excerpt || "",
+            content: data.content || "",
+          });
+        });
+        setLatestArticles(docs);
+      } catch (err) {
+        console.error("Error fetching latest articles:", err);
+      } finally {
+        setLoadingArticles(false);
+      }
+    }
+    fetchLatestArticles();
+  }, []);
+
+  const displayArticles = latestArticles.length > 0 ? latestArticles : defaultArticles.slice(0, 4);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -83,152 +193,120 @@ export default function Home() {
 
     revealItems.forEach((item) => observer.observe(item));
 
-    const onScroll = () => {
-      setCompactNav(window.scrollY > 72);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
     return () => {
       observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
-    <main className="sample-home" id="top" ref={rootRef}>
+    <main className="sample-home home-page" id="top" ref={rootRef}>
       <a className="sample-skip" href="#home-content">
         Skip to main content
       </a>
 
-      <header
-        className={`sample-nav ${compactNav ? "is-compact" : ""} ${
-          menuOpen ? "menu-is-open" : ""
-        }`}
-      >
-        <Link className="sample-nav-brand" href="/" onClick={closeMenu}>
-          <span>Navisamarnath</span>
-          <small>Psychology &amp; coaching</small>
-        </Link>
-
-        <nav className="sample-nav-links" aria-label="Main navigation">
-          <Link href="/services" onClick={closeMenu}>
-            Services
-          </Link>
-          <Link href="/about" onClick={closeMenu}>
-            About
-          </Link>
-          <Link href="/resources" onClick={closeMenu}>
-            Resources
-          </Link>
-          <Link href="/contact" onClick={closeMenu}>
-            Contact
-          </Link>
-        </nav>
-
-        <button
-          className="sample-menu-button"
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span />
-          <span />
-        </button>
-      </header>
+      <Navbar />
 
       <section className="sample-hero" aria-labelledby="home-heading">
-        <div className="sample-hero-media" aria-hidden="true">
-          <img src="/navis hero img.webp" alt="" />
+        <div className="sample-hero-media">
+          <Image
+            src="/home-hero-navis.png"
+            alt="Navisamarnath"
+            fill
+            priority
+            unoptimized
+            sizes="(max-width: 900px) 100vw, 55vw"
+            className="sample-hero-img"
+          />
         </div>
-        <div className="sample-hero-shade" />
+
         <div className="sample-hero-grid">
           <div className="sample-hero-copy">
-            <p className="sample-kicker">Psychology · Coaching · Connection</p>
             <h1 id="home-heading">
-              Space to understand.
-              <span>Support to move forward.</span>
+              <small className="hero-lead">Step into your greater self.</small>
+              <span>Where Aspiration Meets Transformation.</span>
             </h1>
-            <p>
-              Thoughtful, evidence-based support for the moments that ask you
-              to pause, understand yourself more deeply, and choose a clearer
-              way forward.
-            </p>
           </div>
 
-          <div className="sample-hero-actions">
-            <Link href="/contact#booking">
-              Start a conversation <Arrow />
-            </Link>
-            <a href="#home-content" aria-label="Explore the practice">
-              Explore <Arrow down />
-            </a>
-          </div>
 
-          <p className="sample-hero-note">
-            Private online sessions
-            <br />
-            Welcoming new clients
-          </p>
         </div>
       </section>
 
       <div className="sample-surface" id="home-content">
-        <section className="sample-intro sample-section">
-          <p className="sample-side-label" data-reveal>
-            The practice
-          </p>
-          <div className="sample-intro-main">
-            <p className="sample-overline" data-reveal>
-              A human approach to meaningful change
-            </p>
-            <h2 data-reveal>
-              Real change does not ask you to become someone else. It helps you
-              return to yourself with more{" "}
-              <span>clarity, courage, and choice.</span>
-            </h2>
+        <section className="sample-section mobile-intro-reel" id="intro-reel" style={{ padding: "80px 24px 0", background: "var(--sample-paper)" }}>
+          <div className="intro-reel-inner" style={{ maxWidth: "1180px", margin: "0 auto" }}>
+
+            {/* EDITORIAL LABEL + HEADING */}
+            <div className="intro-reel-heading" data-reveal style={{ display: "flex", alignItems: "flex-start", gap: "clamp(24px, 4vw, 64px)", marginBottom: "48px", flexWrap: "wrap" }}>
+              <div className="intro-reel-label" style={{ flex: "0 0 auto" }}>
+                <span style={{
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "var(--brand-accent)",
+                  fontWeight: 700,
+                  display: "block",
+                  writingMode: "vertical-rl",
+                  transform: "rotate(180deg)",
+                  paddingTop: "4px",
+                }}>
+                  Inspired by Magis
+                </span>
+              </div>
+
+              <div className="intro-reel-copy" style={{ flex: 1, minWidth: "280px" }}>
+                <p style={{ fontSize: "0.78rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--brand-accent)", fontWeight: 700, margin: "0 0 16px 0" }}>
+                  Seeking the Greater
+                </p>
+                <ScrollRevealHeading />
+              </div>
+            </div>
+
+            {/* FULL-WIDTH 16:9 VIDEO */}
+            <div
+              className="intro-reel-video"
+              data-reveal
+              style={{
+                position: "relative",
+                width: "100%",
+                paddingTop: "56.25%",
+                borderRadius: "20px",
+                overflow: "hidden",
+                background: "#0a0a0a",
+                boxShadow: "0 32px 80px rgba(0,0,0,0.12)",
+              }}
+            >
+              <video
+                src="https://res.cloudinary.com/ndgpjcbs/video/upload/v1785835870/f_out_1_z2fwcd.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+                aria-label="Navisamarnath Introduction — Inspired by Magis"
+              />
+              {/* Bottom gradient fade */}
+              <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "120px",
+                background: "linear-gradient(to top, rgba(245,243,239,0.6), transparent)",
+                pointerEvents: "none",
+              }} />
+            </div>
+
           </div>
         </section>
 
-        <section className="sample-profile sample-section">
-          <div className="sample-profile-image" data-reveal>
-            <img
-              src="/Gemini_Generated_Image_mohymemohymemohy.webp"
-              alt="Dr. Navisamarnath"
-            />
-          </div>
-
-          <div className="sample-profile-copy" data-reveal>
-            <p className="sample-overline">Meet your guide</p>
-            <h2>You bring your whole story. We find the thread forward.</h2>
-            <p>
-              There is no perfect way to begin. You might feel overwhelmed,
-              disconnected, stuck in a familiar pattern—or simply ready for
-              something to shift.
-            </p>
-            <p>
-              Our work makes room for curiosity without judgment, connecting
-              insight with practical tools and progress that feels possible in
-              everyday life.
-            </p>
-            <Link className="sample-text-link" href="/about">
-              About Dr. Navisamarnath <Arrow />
-            </Link>
-          </div>
-
-          <aside className="sample-credential" data-reveal>
-            <span>PhD</span>
-            <p>
-              Licensed psychologist
-              <br />
-              Executive coach
-            </p>
-          </aside>
-        </section>
 
         <section className="sample-services sample-section" id="services">
           <div className="sample-section-heading">
@@ -255,7 +333,15 @@ export default function Home() {
                 data-reveal
                 style={{ "--card-delay": `${index * 70}ms` } as React.CSSProperties}
               >
-                <span className="sample-card-number">{service.number}</span>
+                <div className="sample-service-card-image">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="sample-card-img"
+                  />
+                </div>
                 <div>
                   <h3>{service.title}</h3>
                   <p>{service.copy}</p>
@@ -271,74 +357,114 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="sample-feature">
-          <div className="sample-feature-image" data-reveal>
-            <img
-              src="/therapy-conversation.jpg"
-              alt="A calm one-to-one therapy conversation"
-            />
-          </div>
-          <div className="sample-feature-copy" data-reveal>
-            <p className="sample-overline">How change takes shape</p>
-            <h2>
-              Enough structure to guide you. Enough space to be fully human.
-            </h2>
-            <p>
-              Rooted in person-centred care and informed by CBT, DBT,
-              trauma-aware practice, mindfulness, and psychodynamic insight.
-            </p>
-            <Link className="sample-text-link sample-text-link-light" href="/services">
-              Explore the approach <Arrow />
-            </Link>
-          </div>
-        </section>
-
-        <section className="sample-approach sample-section">
-          <div className="sample-section-heading">
-            <p className="sample-side-label" data-reveal>
-              The process
-            </p>
-            <div data-reveal>
-              <p className="sample-overline">Thoughtful · Tailored · Practical</p>
-              <h2>Care that meets you where you are.</h2>
-            </div>
-          </div>
-
-          <div className="sample-approach-list">
-            {approach.map((item) => (
-              <article key={item.number} data-reveal>
-                <span>{item.number}</span>
-                <h3>{item.title}</h3>
-                <p>{item.copy}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section className="sample-journal sample-section">
           <div className="sample-section-heading">
             <p className="sample-side-label" data-reveal>
-              Explore
+              Blogs
             </p>
             <div data-reveal>
-              <p className="sample-overline">Keep the conversation going</p>
-              <h2>Ideas and tools for the space between sessions.</h2>
+              <p className="sample-overline">Recent writing</p>
+              <h2>Ideas, reflections, and practical tools.</h2>
             </div>
           </div>
 
           <div className="sample-journal-grid">
-            <Link href="/resources" data-reveal>
-              <span>Free guide · 5 minute read</span>
-              <h3>Grounding &amp; nervous system reset</h3>
-              <p>Practical exercises for anxiety and overload.</p>
-              <i>↗</i>
-            </Link>
-            <Link href="/blog" data-reveal>
-              <span>Latest article · 8 minute read</span>
-              <h3>Breaking the cycle of high-functioning burnout</h3>
-              <p>Why achievement does not always bring peace.</p>
-              <i>↗</i>
-            </Link>
+            {loadingArticles ? (
+              Array.from({ length: 2 }).map((_, idx) => (
+                <div key={idx} className="sample-service-card" style={{ opacity: 0.6, padding: "24px", minHeight: "180px", background: "var(--white)", border: "1px solid var(--line)", borderRadius: "12px" }}>
+                  <div style={{ height: "14px", width: "40%", background: "var(--line)", borderRadius: "4px", marginBottom: "12px" }} />
+                  <div style={{ height: "22px", width: "80%", background: "var(--line)", borderRadius: "4px", marginBottom: "12px" }} />
+                  <div style={{ height: "14px", width: "100%", background: "var(--line)", borderRadius: "4px" }} />
+                </div>
+              ))
+            ) : (
+              displayArticles.map((article) => (
+                <Link href={`/blogs/${article.id}`} key={article.id} data-reveal style={{ display: "flex", flexDirection: "column", border: "1px solid var(--line)" }}>
+                  <span>{article.category} · {article.readTime}</span>
+                  <h3>{article.title}</h3>
+                  <p style={{ marginTop: "auto" }}>{article.excerpt}</p>
+                  <i>↗</i>
+                </Link>
+              ))
+            )}
+          </div>
+        </section>
+
+        {/* FAQ ACCORDION SECTION ON HOME PAGE */}
+        <section className="sample-section home-faq" id="faq" style={{ padding: "80px 24px", background: "var(--sample-paper)", borderTop: "1px solid var(--sample-line)" }}>
+          <div className="sample-section-heading" style={{ marginBottom: "48px" }}>
+            <p className="sample-side-label" data-reveal>
+              FAQ
+            </p>
+            <div data-reveal>
+              <p className="sample-overline">Transparency &amp; Practice Details</p>
+              <h2>Frequently Asked Questions</h2>
+            </div>
+            <p data-reveal>
+              Answers regarding virtual sessions, fees, therapeutic modalities, and what to expect during your journey with Navisamarnath.
+            </p>
+          </div>
+
+          <div className="mobile-faq-list" style={{ maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "14px" }}>
+            {faqs.map((faq) => {
+              const isOpen = openFaqId === faq.id;
+              return (
+                <div
+                  className="mobile-faq-item"
+                  key={faq.id}
+                  data-reveal
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid var(--sample-line)",
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                    boxShadow: isOpen ? "0 6px 20px rgba(0,0,0,0.02)" : "none",
+                  }}
+                >
+                  <button
+                    className="mobile-faq-question"
+                    type="button"
+                    onClick={() => setOpenFaqId(isOpen ? null : faq.id)}
+                    style={{
+                      width: "100%",
+                      padding: "20px 24px",
+                      textAlign: "left",
+                      background: "none",
+                      border: "none",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      gap: "16px",
+                    }}
+                  >
+                    <span style={{ fontSize: "1.05rem", fontWeight: 600, color: "#18181b", lineHeight: 1.4 }}>
+                      {faq.question}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "1.3rem",
+                        color: "var(--brand-accent)",
+                        transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                        transition: "transform 200ms ease",
+                        lineHeight: 1,
+                        fontWeight: 700,
+                      }}
+                    >
+                      +
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="mobile-faq-answer" style={{ padding: "0 24px 22px 24px", borderTop: "1px solid var(--sample-line)" }}>
+                      <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", lineHeight: 1.7, margin: "14px 0 0 0", whitespace: "pre-line" }}>
+                        {faq.answer}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -354,56 +480,16 @@ export default function Home() {
               bringing you here, answer your questions, and see whether working
               together feels right.
             </p>
-            <Link href="/contact#booking">
+            <Link href="/book-session">
               Request a consultation <Arrow />
             </Link>
           </div>
         </section>
       </div>
 
-      <div className="sample-footer-spacer" aria-hidden="true" />
-
-      <footer className="sample-footer">
-        <div className="sample-footer-inner">
-          <div className="sample-footer-intro">
-            <p>Navisamarnath</p>
-            <h2>
-              Space to understand.
-              <br />
-              Support to move forward.
-            </h2>
-            <Link href="/contact">hello@navisamarnath.com</Link>
-          </div>
-
-          <div className="sample-footer-cards">
-            <Link href="/contact#booking">
-              <span>01</span>
-              <strong>Book a complimentary consultation</strong>
-              <i>↗</i>
-            </Link>
-            <Link href="/resources">
-              <span>02</span>
-              <strong>Explore practical resources</strong>
-              <i>↗</i>
-            </Link>
-            <Link href="/faq">
-              <span>03</span>
-              <strong>Read common questions</strong>
-              <i>↗</i>
-            </Link>
-          </div>
-
-          <div className="sample-footer-bottom">
-            <p>© {new Date().getFullYear()} Navisamarnath</p>
-            <nav aria-label="Footer navigation">
-              <Link href="/about">About</Link>
-              <Link href="/services">Services</Link>
-              <Link href="/blog">Journal</Link>
-              <a href="#top">Back to top ↑</a>
-            </nav>
-          </div>
-        </div>
-      </footer>
+      <div className="sample-footer">
+        <Footer />
+      </div>
     </main>
   );
 }
