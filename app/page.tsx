@@ -338,6 +338,7 @@ export default function Home() {
                     src={service.image}
                     alt={service.title}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, 25vw"
                     className="sample-card-img"
                   />

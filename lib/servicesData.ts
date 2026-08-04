@@ -64,7 +64,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Healing Trauma",
         description:
           "Process and heal from past emotional wounds or trauma in a supportive space.",
-        image: "/therapy-session.jpg",
+        image: "/therapy-conversation.jpg",
       },
       {
         title: "Life Transitions",
@@ -175,7 +175,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Rebuilding Trust",
         description:
           "Work through breaches of trust and rebuild emotional safety in the relationship.",
-        image: "/therapy-session.jpg",
+        image: "/therapy-conversation.jpg",
       },
       {
         title: "Strengthening Connection",
@@ -292,7 +292,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Stress and Burnout",
         description:
           "Identifying stressors and implementing techniques to increase resilience.",
-        image: "/therapy-session.jpg",
+        image: "/therapy-conversation.jpg",
       },
       {
         title: "Personal Growth",
@@ -408,7 +408,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Facilitated Guidance",
         description:
           "Receive professional support to navigate group dynamics and ensure a productive environment.",
-        image: "/therapy-session.jpg",
+        image: "/therapy-conversation.jpg",
       },
       {
         title: "Empowerment",
