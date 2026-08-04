@@ -3,10 +3,10 @@ import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
-const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
-  "00000000-0000-4000-8000-000000000000";
-
 const { d1, r2 } = hostingConfig;
+const d1DatabaseId = process.env.CF_D1_DATABASE_ID?.trim();
+const d1BindingName = d1?.trim();
+const r2BindingName = r2?.trim();
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
@@ -14,19 +14,19 @@ const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
 const localBindingConfig = {
   main: "./worker/index.ts",
   compatibility_flags: ["nodejs_compat"],
-  d1_databases: d1
+  d1_databases: d1BindingName && d1DatabaseId
     ? [
         {
-          binding: d1,
+          binding: d1BindingName,
           database_name: "site-creator-d1",
-          database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+          database_id: d1DatabaseId,
         },
       ]
     : [],
-  r2_buckets: r2
+  r2_buckets: r2BindingName
     ? [
         {
-          binding: r2,
+          binding: r2BindingName,
           bucket_name: "site-creator-r2",
         },
       ]
