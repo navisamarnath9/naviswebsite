@@ -10,22 +10,6 @@ try {
   cfEnv = (globalThis as any).env || {};
 }
 
-const createTableSql = `CREATE TABLE IF NOT EXISTS appointments (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT NOT NULL DEFAULT '',
-  session_type TEXT NOT NULL,
-  appointment_date TEXT NOT NULL,
-  appointment_time TEXT NOT NULL,
-  note TEXT NOT NULL DEFAULT '',
-  status TEXT NOT NULL DEFAULT 'requested',
-  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-)`;
-
-const createIndexSql =
-  "CREATE INDEX IF NOT EXISTS appointments_date_idx ON appointments (appointment_date, appointment_time)";
-
 type AppointmentPayload = {
   name?: string;
   email?: string;
@@ -159,40 +143,6 @@ export async function POST(request: Request) {
       appointmentTime: appointmentTime || "To be arranged",
       note,
     }).catch((err) => console.warn("Background email notification error:", err));
-
-    const DB = cfEnv?.DB || (process as any).env?.DB;
-
-    if (DB) {
-      try {
-        await DB.batch([
-          DB.prepare(createTableSql),
-          DB.prepare(createIndexSql),
-        ]);
-
-        const result = await DB.prepare(
-          `INSERT INTO appointments
-            (name, email, phone, session_type, appointment_date, appointment_time, note)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        )
-          .bind(
-            name,
-            email,
-            phone,
-            sessionType,
-            appointmentDate,
-            appointmentTime || "To be arranged",
-            note,
-          )
-          .run();
-
-        return Response.json(
-          { appointment: { id: result?.meta?.last_row_id || Date.now(), status: "requested" } },
-          { status: 201 },
-        );
-      } catch (dbErr) {
-        console.warn("DB insert notice:", dbErr);
-      }
-    }
 
     return Response.json(
       { success: true, message: "Booking received and email notification sent to navisamarnathofc@gmail.com" },
