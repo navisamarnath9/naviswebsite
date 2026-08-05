@@ -220,7 +220,7 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
-  }, [loadingArticles, playlists.length]);
+  }, [loadingArticles, latestArticles, playlists]);
 
   return (
     <main className="sample-home home-page" id="top" ref={rootRef}>
@@ -458,11 +458,31 @@ export default function Home() {
               </div>
             ) : (
               displayArticles.map((article) => (
-                <Link href={`/blogs/${article.id}`} key={article.id} data-reveal style={{ display: "flex", flexDirection: "column", border: "1px solid var(--line)" }}>
-                  <span>{article.category} · {article.readTime}</span>
-                  <h3>{article.title}</h3>
-                  <p style={{ marginTop: "auto" }}>{article.excerpt}</p>
-                  <i>↗</i>
+                <Link
+                  href={`/blogs/${article.id}`}
+                  key={article.id}
+                  className="sample-journal-card"
+                  data-reveal
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    textDecoration: "none",
+                    height: "100%",
+                  }}
+                >
+                  <p className="sample-card-tag" style={{ margin: 0 }}>
+                    {article.category} • {article.readTime}
+                  </p>
+                  <h3 style={{ fontSize: "1.3rem", lineHeight: "1.4", margin: "12px 0 8px 0" }}>
+                    {article.title}
+                  </h3>
+                  <p className="sample-card-deck" style={{ flexGrow: 1, fontSize: "0.9rem", lineHeight: "1.6", color: "var(--sample-muted)", marginBottom: "20px" }}>
+                    {article.excerpt}
+                  </p>
+                  <div className="sample-card-meta" style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", borderTop: "1px solid var(--sample-line)", paddingTop: "12px" }}>
+                    <span style={{ fontSize: "0.8rem", color: "var(--sample-muted)" }}>{article.date}</span>
+                    <i aria-hidden="true" style={{ fontStyle: "normal", fontSize: "0.9rem", color: "var(--brand-accent)", fontWeight: 700 }}>↗</i>
+                  </div>
                 </Link>
               ))
             )}
