@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import {
   collection,
   getDocs,
@@ -65,7 +65,7 @@ export default function AdminPage() {
       }
 
       if (user.email.toLowerCase() !== ADMIN_EMAIL) {
-        setAuthError(`Please sign in with ${ADMIN_EMAIL}.`);
+        setAuthError(`Email ${user.email} is not authorized. Please sign in with ${ADMIN_EMAIL}.`);
         setIsAuthenticated(false);
         setSignedInEmail("");
         await signOut(auth);
@@ -89,16 +89,20 @@ export default function AdminPage() {
 
   const handleGoogleLogin = async (e: FormEvent) => {
     e.preventDefault();
+    setAuthError("");
 
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-
-      setAuthError("");
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Unable to sign in with Google.";
-      setAuthError(message);
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithRedirect(auth, provider);
+      } catch (fallbackErr) {
+        const message = fallbackErr instanceof Error ? fallbackErr.message : "Unable to sign in with Google.";
+        setAuthError(message);
+      }
     }
   };
 

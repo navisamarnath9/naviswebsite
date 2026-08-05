@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -159,6 +160,25 @@ export default function FAQPage() {
             Everything you need to know about our virtual sessions, fees, therapeutic modalities, and what to expect on your journey with Navisamarnath.
           </p>
         </div>
+
+        <div className="about-top-hero-visual">
+          <div className="about-top-hero-img-wrap">
+            <Image
+              src="/DSC_5301c.jpg"
+              alt="Navisamarnath in consultation"
+              fill
+              priority
+              unoptimized
+              sizes="(max-width: 900px) 100vw, 50vw"
+              className="about-top-hero-img"
+              style={{ objectFit: "cover", objectPosition: "center 25%" }}
+            />
+            <div className="about-top-hero-badge">
+              <span>CLEAR ANSWERS</span>
+              <span>PERSONALIZED CARE</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div id="main-content" className="sample-surface">
@@ -243,9 +263,18 @@ export default function FAQPage() {
               })}
             </div>
 
-            <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)" }}>
+            <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "48px 40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div style={{ width: "72px", height: "72px", borderRadius: "50%", overflow: "hidden", marginBottom: "20px", position: "relative", boxShadow: "0 8px 20px rgba(0,0,0,0.1)", flexShrink: 0 }}>
+                <Image
+                  src="/DSC_5301c.jpg"
+                  alt="Navisamarnath"
+                  fill
+                  unoptimized
+                  style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                />
+              </div>
               <h3 style={{ fontSize: "1.4rem", margin: "0 0 10px 0", color: "#18181b" }}>Have additional questions?</h3>
-              <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", margin: "0 0 24px 0" }}>
+              <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", margin: "0 0 24px 0", maxWidth: "480px" }}>
                 Reach out directly or schedule a complimentary 15-minute consultation.
               </p>
               <Link
