@@ -9,17 +9,22 @@ service cloud.firestore {
 
     match /blogs/{blogId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if request.auth != null;
     }
 
-    match /videos/{videoId} {
+    match /playlists/{playlistId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if request.auth != null;
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
     }
 
     match /bookings/{bookingId} {
       allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow read, update, delete: if request.auth != null;
     }
 
     match /{document=**} {

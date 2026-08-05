@@ -3,12 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
-import { defaultVideos, getYouTubeEmbedUrl, getYouTubeThumbnail, type YouTubeVideo } from "@/lib/videoSeries";
+import { defaultPlaylists, type PlaylistThumbnail } from "@/lib/playlists";
+import { doc, getDoc } from "firebase/firestore";
 
 const services = [
   {
@@ -142,9 +141,8 @@ export default function Home() {
   const [loadingArticles, setLoadingArticles] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // YouTube Videos State
-  const [youtubeVideos, setYoutubeVideos] = useState<YouTubeVideo[]>([]);
-  const [selectedVideoModal, setSelectedVideoModal] = useState<YouTubeVideo | null>(null);
+  // Playlists State (3 Featured Playlists)
+  const [playlists, setPlaylists] = useState<PlaylistThumbnail[]>(defaultPlaylists);
 
   useEffect(() => {
     async function fetchLatestArticles() {
@@ -172,27 +170,23 @@ export default function Home() {
       }
     }
 
-    async function fetchYouTubeVideos() {
+    async function fetchPlaylists() {
       try {
-        const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        const docs: YouTubeVideo[] = [];
-        snapshot.forEach((doc) => {
-          docs.push({ id: doc.id, ...(doc.data() as Omit<YouTubeVideo, "id">) });
-        });
-        setYoutubeVideos(docs);
+        const docRef = doc(db, "settings", "playlists");
+        const snapshot = await getDoc(docRef);
+        if (snapshot.exists() && Array.isArray(snapshot.data().items)) {
+          setPlaylists(snapshot.data().items);
+        }
       } catch (err) {
-        console.error("Error fetching YouTube videos:", err);
-        setYoutubeVideos([]);
+        console.error("Error fetching playlists:", err);
       }
     }
 
     fetchLatestArticles();
-    fetchYouTubeVideos();
+    fetchPlaylists();
   }, []);
 
   const displayArticles = latestArticles.length > 0 ? latestArticles : defaultArticles.slice(0, 4);
-  const displayVideos = youtubeVideos.length > 0 ? youtubeVideos : defaultVideos;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -219,7 +213,7 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
-  }, [loadingArticles, youtubeVideos.length]);
+  }, [loadingArticles, playlists.length]);
 
   return (
     <main className="sample-home home-page" id="top" ref={rootRef}>
@@ -464,235 +458,150 @@ export default function Home() {
           </div>
         </section>
 
-        {/* YOUTUBE VIDEO SERIES SECTION (SHOWN ONLY WHEN REAL DATA IS LOADED FROM BACKEND) */}
-        {youtubeVideos.length > 0 && (
-          <section className="sample-section sample-video-series" id="videos" style={{ padding: "80px 24px", background: "var(--sample-paper)", borderTop: "1px solid var(--sample-line)" }}>
-            <div className="sample-section-heading">
-              <p className="sample-side-label" data-reveal>
-                Videos
-              </p>
-              <div data-reveal>
-                <p className="sample-overline">YouTube Series</p>
-                <h2>Conversations, Reflections &amp; Insights.</h2>
-              </div>
-              <p data-reveal>
-                Explore our YouTube video series dedicated to personal growth, emotional health, and practical wisdom for life&apos;s transitions.
-              </p>
+        {/* YOUTUBE PLAYLIST THUMBNAILS SECTION */}
+        <section className="sample-section sample-video-series" id="videos" style={{ padding: "80px 24px", background: "var(--sample-paper)", borderTop: "1px solid var(--sample-line)" }}>
+          <div className="sample-section-heading">
+            <p className="sample-side-label" data-reveal>
+              Playlists
+            </p>
+            <div data-reveal>
+              <p className="sample-overline">YouTube Series</p>
+              <h2>Conversations, Reflections &amp; Insights.</h2>
             </div>
+            <p data-reveal>
+              Explore our featured YouTube playlists dedicated to personal growth, emotional health, and practical wisdom for life&apos;s transitions.
+            </p>
+          </div>
 
-            <div
-              className="sample-video-series-grid"
-              data-reveal
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                gap: "28px",
-                marginTop: "48px",
-              }}
-            >
-              {youtubeVideos.map((vid, idx) => (
-                <div
-                  key={vid.id || idx}
-                  className="sample-video-card"
-                  onClick={() => setSelectedVideoModal(vid)}
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid var(--sample-line)",
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    transition: "transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease",
-                  }}
-                >
-                  {/* THUMBNAIL WITH PLAY ICON OVERLAY */}
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      paddingTop: "56.25%",
-                      background: "#0a0a0a",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <img
-                      src={getYouTubeThumbnail(vid.youtubeUrl)}
-                      alt={vid.title}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        transition: "transform 400ms ease",
-                      }}
-                    />
-                    {/* PLAY OVERLAY BUTTON */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: "60px",
-                        height: "60px",
-                        borderRadius: "50%",
-                        background: "rgba(49, 72, 81, 0.9)",
-                        backdropFilter: "blur(6px)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-                        transition: "transform 200ms ease, background 200ms ease",
-                      }}
-                    >
-                      <svg width="22" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: "3px" }}>
-                        <path d="M5 3L19 12L5 21V3Z" fill="#ffffff" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        position: "absolute",
-                        bottom: "12px",
-                        right: "12px",
-                        background: "rgba(0, 0, 0, 0.8)",
-                        color: "#ffffff",
-                        fontSize: "0.72rem",
-                        fontWeight: 700,
-                        padding: "4px 8px",
-                        borderRadius: "6px",
-                        letterSpacing: "0.05em",
-                      }}
-                    >
-                      ▶ WATCH NOW
-                    </span>
-                  </div>
-
-                  <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
-                    <h3 style={{ fontSize: "1.15rem", margin: "0 0 10px 0", color: "#18181b", lineHeight: 1.35 }}>
-                      {vid.title}
-                    </h3>
-                    {vid.description && (
-                      <p style={{ fontSize: "0.88rem", color: "var(--sample-muted)", margin: "0 0 16px 0", lineHeight: 1.5, flex: 1 }}>
-                        {vid.description}
-                      </p>
-                    )}
-                    <div style={{ marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.82rem", fontWeight: 600, color: "var(--brand-accent)" }}>
-                      <span>Watch episode ↗</span>
-                      <span style={{ fontSize: "0.75rem", color: "var(--sample-muted)", fontWeight: 400 }}>YouTube</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ marginTop: "40px", textAlign: "center" }}>
+          <div
+            className="sample-video-series-grid"
+            data-reveal
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "28px",
+              marginTop: "48px",
+            }}
+          >
+            {playlists.map((pl, idx) => (
               <a
-                href="https://www.youtube.com/@navisamarnath"
+                key={pl.id || idx}
+                href={pl.playlistUrl || "https://www.youtube.com/@navisamarnath/playlists"}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="sample-video-card"
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  color: "var(--brand-accent)",
-                  fontWeight: 600,
-                  fontSize: "0.95rem",
+                  background: "#ffffff",
+                  border: "1px solid var(--sample-line)",
+                  borderRadius: "16px",
+                  overflow: "hidden",
                   textDecoration: "none",
-                  borderBottom: "1.5px solid var(--brand-accent)",
-                  paddingBottom: "4px",
-                }}
-              >
-                Visit Navisamarnath YouTube Channel ↗
-              </a>
-            </div>
-          </section>
-        )}
-
-        {/* YOUTUBE EMBED MODAL OVERLAY */}
-        {selectedVideoModal && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(0, 0, 0, 0.85)",
-              backdropFilter: "blur(10px)",
-              zIndex: 99999,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "24px",
-            }}
-            onClick={() => setSelectedVideoModal(null)}
-          >
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                maxWidth: "960px",
-                background: "#000",
-                borderRadius: "16px",
-                overflow: "hidden",
-                boxShadow: "0 32px 80px rgba(0,0,0,0.5)",
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedVideoModal(null)}
-                aria-label="Close Video Modal"
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  right: "16px",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  color: "#ffffff",
-                  border: "none",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  fontSize: "1.2rem",
-                  cursor: "pointer",
-                  zIndex: 10,
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  flexDirection: "column",
+                  transition: "transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease",
                 }}
               >
-                ✕
-              </button>
-
-              <div style={{ position: "relative", width: "100%", paddingTop: "56.25%" }}>
-                <iframe
-                  src={getYouTubeEmbedUrl(selectedVideoModal.youtubeUrl)}
-                  title={selectedVideoModal.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
+                {/* PLAYLIST THUMBNAIL */}
+                <div
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
+                    position: "relative",
                     width: "100%",
-                    height: "100%",
-                    border: "none",
+                    paddingTop: "56.25%",
+                    background: "#0a0a0a",
+                    overflow: "hidden",
                   }}
-                />
-              </div>
+                >
+                  <img
+                    src={pl.imageUrl || "/homepage-video-thumbnail.png"}
+                    alt={pl.title}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/homepage-video-thumbnail.png";
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      transition: "transform 400ms ease",
+                    }}
+                  />
+                  {/* PLAY OVERLAY BUTTON */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      background: "rgba(49, 72, 81, 0.9)",
+                      backdropFilter: "blur(6px)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                      transition: "transform 200ms ease, background 200ms ease",
+                    }}
+                  >
+                    <svg width="22" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: "3px" }}>
+                      <path d="M5 3L19 12L5 21V3Z" fill="#ffffff" />
+                    </svg>
+                  </div>
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: "12px",
+                      right: "12px",
+                      background: "rgba(0, 0, 0, 0.8)",
+                      color: "#ffffff",
+                      fontSize: "0.72rem",
+                      fontWeight: 700,
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    ▶ WATCH PLAYLIST
+                  </span>
+                </div>
 
-              <div style={{ padding: "20px 24px", background: "#0a0a0a", color: "#fff" }}>
-                <h3 style={{ margin: "0 0 6px 0", color: "#fff", fontSize: "1.2rem" }}>{selectedVideoModal.title}</h3>
-                {selectedVideoModal.description && (
-                  <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: "0.9rem" }}>{selectedVideoModal.description}</p>
-                )}
-              </div>
-            </div>
+                <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
+                  <h3 style={{ fontSize: "1.15rem", margin: "0 0 10px 0", color: "#18181b", lineHeight: 1.35 }}>
+                    {pl.title}
+                  </h3>
+                  <div style={{ marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.82rem", fontWeight: 600, color: "var(--brand-accent)" }}>
+                    <span>Open YouTube Playlist ↗</span>
+                    <span style={{ fontSize: "0.75rem", color: "var(--sample-muted)", fontWeight: 400 }}>YouTube</span>
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
-        )}
+
+          <div style={{ marginTop: "40px", textAlign: "center" }}>
+            <a
+              href="https://www.youtube.com/@navisamarnath/playlists"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "var(--brand-accent)",
+                fontWeight: 600,
+                fontSize: "0.95rem",
+                textDecoration: "none",
+                borderBottom: "1.5px solid var(--brand-accent)",
+                paddingBottom: "4px",
+              }}
+            >
+              Visit Navisamarnath YouTube Channel ↗
+            </a>
+          </div>
+        </section>
 
         <section className="sample-closing sample-section">
           <p className="sample-side-label" data-reveal>

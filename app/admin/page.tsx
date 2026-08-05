@@ -20,8 +20,9 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-import { YouTubeVideo, getYouTubeVideoId, getYouTubeThumbnail } from "@/lib/videoSeries";
+import { PlaylistThumbnail, defaultPlaylists } from "@/lib/playlists";
 
 const ALLOWED_ADMIN_EMAILS = [
   "navisamarnathtech@gmail.com",
@@ -59,7 +60,7 @@ export default function AdminPage() {
   const [authError, setAuthError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showDiagnostics, setShowDiagnostics] = useState(false);
-  const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "videos">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "playlists">("bookings");
 
   // Blog State
   const [articles, setArticles] = useState<Article[]>([]);
@@ -71,11 +72,10 @@ export default function AdminPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
-  // YouTube Videos State
-  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
-  const [editingVideo, setEditingVideo] = useState<Partial<YouTubeVideo> | null>(null);
-  const [isVideoSaving, setIsVideoSaving] = useState(false);
-  const [videoStatusMsg, setVideoStatusMsg] = useState("");
+  // Playlists State (3 Playlists)
+  const [playlists, setPlaylists] = useState<PlaylistThumbnail[]>(defaultPlaylists);
+  const [isPlaylistSaving, setIsPlaylistSaving] = useState(false);
+  const [playlistStatusMsg, setPlaylistStatusMsg] = useState("");
 
   // Handle Firebase Auth Redirect Result on Page Mount
   useEffect(() => {
@@ -125,12 +125,12 @@ export default function AdminPage() {
     return unsubscribe;
   }, []);
 
-  // Fetch blogs, bookings & videos when authenticated
+  // Fetch blogs, bookings & playlists when authenticated
   useEffect(() => {
     if (!isAuthenticated) return;
     fetchArticles();
     fetchBookings();
-    fetchVideos();
+    fetchPlaylists();
   }, [isAuthenticated]);
 
   const handleGoogleLoginPopup = async (e?: FormEvent) => {
@@ -228,72 +228,34 @@ export default function AdminPage() {
     }
   }
 
-  // Fetch YouTube Videos from Firestore
-  async function fetchVideos() {
+  // Fetch Playlists from Firestore
+  async function fetchPlaylists() {
     try {
-      const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      const docs: YouTubeVideo[] = [];
-      snapshot.forEach((d) => {
-        docs.push({ id: d.id, ...(d.data() as Omit<YouTubeVideo, "id">) });
-      });
-      setVideos(docs);
+      const docRef = doc(db, "settings", "playlists");
+      const snapshot = await getDoc(docRef);
+      if (snapshot.exists() && Array.isArray(snapshot.data().items)) {
+        setPlaylists(snapshot.data().items);
+      }
     } catch (err) {
-      console.warn("Videos fetch error:", err);
-      setVideos([]);
+      console.warn("Playlists fetch error:", err);
     }
   }
 
-  // Save YouTube Video Link (Create or Edit)
-  async function saveVideo(e: FormEvent) {
+  // Save all 3 Playlist Thumbnails to Firestore
+  async function savePlaylists(e: FormEvent) {
     e.preventDefault();
-    if (!editingVideo || !editingVideo.youtubeUrl || !editingVideo.title) return;
-
-    const youtubeId = getYouTubeVideoId(editingVideo.youtubeUrl);
-    if (!youtubeId) {
-      setVideoStatusMsg("⚠️ Please enter a valid YouTube video link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)");
-      return;
-    }
-
-    const currentUser = auth.currentUser;
-    if (!currentUser?.email || currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
-      setVideoStatusMsg(`Please sign in with ${ADMIN_EMAIL} before saving.`);
-      return;
-    }
-
-    await currentUser.getIdToken(true).catch(() => undefined);
-
-    setIsVideoSaving(true);
-    setVideoStatusMsg("");
-
-    const docId = editingVideo.id || `video-${Date.now()}`;
-    const payload: Omit<YouTubeVideo, "id"> = {
-      youtubeUrl: editingVideo.youtubeUrl,
-      title: editingVideo.title,
-      description: editingVideo.description || "",
-      createdAt: editingVideo.createdAt || new Date().toISOString().split("T")[0],
-    };
+    setIsPlaylistSaving(true);
+    setPlaylistStatusMsg("");
 
     try {
-      await setDoc(doc(db, "videos", docId), payload);
-      setVideoStatusMsg("✓ YouTube Video link saved successfully!");
-      setEditingVideo(null);
-      fetchVideos();
+      const docRef = doc(db, "settings", "playlists");
+      await setDoc(docRef, { items: playlists, updatedAt: new Date().toISOString() });
+      setPlaylistStatusMsg("✓ All 3 Playlist Thumbnails saved successfully!");
+      fetchPlaylists();
     } catch (err: any) {
-      setVideoStatusMsg("Error saving video link: " + err.message);
+      setPlaylistStatusMsg("Error saving playlists: " + err.message);
     } finally {
-      setIsVideoSaving(false);
-    }
-  }
-
-  // Delete YouTube Video Link
-  async function deleteVideo(id: string) {
-    if (!confirm(`Are you sure you want to remove this video link?`)) return;
-    try {
-      await deleteDoc(doc(db, "videos", id));
-      setVideos((prev) => prev.filter((v) => v.id !== id));
-    } catch (err: any) {
-      alert("Error deleting video link: " + err.message);
+      setIsPlaylistSaving(false);
     }
   }
 
@@ -569,10 +531,10 @@ export default function AdminPage() {
               </button>
               <button
                 type="button"
-                className={`credentials-filter-btn ${activeTab === "videos" ? "is-active" : ""}`}
-                onClick={() => setActiveTab("videos")}
+                className={`credentials-filter-btn ${activeTab === "playlists" ? "is-active" : ""}`}
+                onClick={() => setActiveTab("playlists")}
               >
-                YouTube Videos ({videos.length})
+                YouTube Playlists ({playlists.length})
               </button>
             </div>
 
@@ -942,289 +904,162 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* TAB 3: YOUTUBE VIDEOS */}
-            {activeTab === "videos" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-                {/* VIDEO EDIT / CREATE FORM */}
-                {editingVideo && (
-                  <div
-                    style={{
-                      background: "#ffffff",
-                      border: "1px solid var(--brand-accent-border)",
-                      borderRadius: "20px",
-                      padding: "clamp(24px, 4vw, 36px)",
-                      boxShadow: "0 12px 36px rgba(0,0,0,0.03)",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                      <h2 style={{ fontSize: "1.4rem", margin: 0, color: "#18181b" }}>
-                        {editingVideo.id ? "Edit YouTube Video Link" : "Add New YouTube Video Link"}
-                      </h2>
-                      <button
-                        type="button"
-                        onClick={() => { setEditingVideo(null); setVideoStatusMsg(""); }}
-                        style={{ background: "none", border: "none", color: "var(--sample-muted)", cursor: "pointer", fontSize: "1.2rem" }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    <form onSubmit={saveVideo} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-                      <div>
-                        <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
-                          YouTube Video URL *
-                        </label>
-                        <input
-                          type="url"
-                          required
-                          placeholder="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/..."
-                          value={editingVideo.youtubeUrl || ""}
-                          onChange={(e) => setEditingVideo({ ...editingVideo, youtubeUrl: e.target.value })}
-                          style={{
-                            width: "100%",
-                            padding: "12px 16px",
-                            borderRadius: "10px",
-                            border: "1px solid var(--sample-line)",
-                            fontSize: "0.92rem",
-                          }}
-                        />
-                      </div>
-
-                      {/* LIVE THUMBNAIL PREVIEW */}
-                      {editingVideo.youtubeUrl && getYouTubeVideoId(editingVideo.youtubeUrl) && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px", padding: "12px", background: "#f8fafc", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
-                          <img
-                            src={getYouTubeThumbnail(editingVideo.youtubeUrl)}
-                            alt="YouTube Thumbnail Preview"
-                            style={{ width: "120px", height: "68px", borderRadius: "8px", objectFit: "cover" }}
-                          />
-                          <div>
-                            <span style={{ fontSize: "0.72rem", color: "#16a34a", fontWeight: 700, textTransform: "uppercase" }}>✓ Valid YouTube Video ID</span>
-                            <p style={{ margin: "2px 0 0 0", fontSize: "0.82rem", color: "#475569" }}>
-                              ID: <code>{getYouTubeVideoId(editingVideo.youtubeUrl)}</code>
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      <div>
-                        <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
-                          Video Title *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Episode 1: Where Aspiration Meets Transformation"
-                          value={editingVideo.title || ""}
-                          onChange={(e) => setEditingVideo({ ...editingVideo, title: e.target.value })}
-                          style={{
-                            width: "100%",
-                            padding: "12px 16px",
-                            borderRadius: "10px",
-                            border: "1px solid var(--sample-line)",
-                            fontSize: "0.92rem",
-                          }}
-                        />
-                      </div>
-
-                      <div>
-                        <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
-                          Short Description (Optional)
-                        </label>
-                        <textarea
-                          rows={2}
-                          placeholder="Brief summary or key takeaways from this video episode..."
-                          value={editingVideo.description || ""}
-                          onChange={(e) => setEditingVideo({ ...editingVideo, description: e.target.value })}
-                          style={{
-                            width: "100%",
-                            padding: "12px 16px",
-                            borderRadius: "10px",
-                            border: "1px solid var(--sample-line)",
-                            fontSize: "0.92rem",
-                            resize: "vertical",
-                          }}
-                        />
-                      </div>
-
-                      {videoStatusMsg && (
-                        <p style={{ margin: 0, fontSize: "0.9rem", color: videoStatusMsg.startsWith("✓") ? "#16a34a" : "#dc2626", fontWeight: 600 }}>
-                          {videoStatusMsg}
-                        </p>
-                      )}
-
-                      <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                        <button
-                          type="submit"
-                          disabled={isVideoSaving}
-                          style={{
-                            background: "var(--brand-accent)",
-                            color: "#ffffff",
-                            border: "none",
-                            padding: "12px 28px",
-                            borderRadius: "12px",
-                            fontSize: "0.92rem",
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            opacity: isVideoSaving ? 0.7 : 1,
-                          }}
-                        >
-                          {isVideoSaving ? "Saving..." : "Save Video Link"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { setEditingVideo(null); setVideoStatusMsg(""); }}
-                          style={{
-                            background: "none",
-                            border: "1px solid var(--sample-line)",
-                            color: "var(--sample-muted)",
-                            padding: "12px 24px",
-                            borderRadius: "12px",
-                            fontSize: "0.92rem",
-                            fontWeight: 600,
-                            cursor: "pointer",
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                )}
-
-                {/* YOUTUBE VIDEOS LIST */}
-                <div
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid var(--sample-line)",
-                    borderRadius: "20px",
-                    padding: "clamp(24px, 4vw, 40px)",
-                    boxShadow: "0 8px 30px rgba(0,0,0,0.015)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", paddingBottom: "20px", borderBottom: "1px solid var(--sample-line)", flexWrap: "wrap", gap: "16px" }}>
-                    <div>
-                      <h2 style={{ fontSize: "1.6rem", margin: "0 0 4px 0", color: "#18181b", letterSpacing: "-0.02em" }}>
-                        YouTube Video Series
-                      </h2>
-                      <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--sample-muted)" }}>
-                        Add and manage YouTube video links displayed on the home page.
-                      </p>
-                    </div>
-                    {!editingVideo && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingVideo({ title: "", youtubeUrl: "", description: "" });
-                          setVideoStatusMsg("");
-                        }}
-                        style={{
-                          background: "var(--brand-accent)",
-                          color: "#ffffff",
-                          border: "none",
-                          padding: "12px 24px",
-                          borderRadius: "12px",
-                          fontSize: "0.9rem",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        + Add YouTube Video Link
-                      </button>
-                    )}
-                  </div>
-
-                  {videos.length === 0 ? (
-                    <div style={{ padding: "48px", textAlign: "center", color: "var(--sample-muted)", background: "#fcfcfb", borderRadius: "14px", border: "1px solid var(--sample-line)" }}>
-                      <p style={{ fontSize: "1.1rem", margin: "0 0 8px 0" }}>No YouTube videos added yet.</p>
-                      <p style={{ fontSize: "0.88rem", margin: 0 }}>Click "+ Add YouTube Video Link" above to add your first episode.</p>
-                    </div>
-                  ) : (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "24px" }}>
-                      {videos.map((vid) => (
-                        <div
-                          key={vid.id}
-                          style={{
-                            background: "#fafafa",
-                            border: "1px solid var(--sample-line)",
-                            borderRadius: "16px",
-                            overflow: "hidden",
-                            display: "flex",
-                            flexDirection: "column",
-                            transition: "transform 200ms ease, box-shadow 200ms ease",
-                          }}
-                        >
-                          <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "#0a0a0a" }}>
-                            <img
-                              src={getYouTubeThumbnail(vid.youtubeUrl)}
-                              alt={vid.title}
-                              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                            <div style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.75)", color: "#fff", padding: "4px 8px", borderRadius: "6px", fontSize: "0.72rem", fontWeight: 700 }}>
-                              ▶ YouTube
-                            </div>
-                          </div>
-
-                          <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1 }}>
-                            <h3 style={{ fontSize: "1.05rem", margin: "0 0 8px 0", color: "#18181b", lineHeight: 1.35 }}>
-                              {vid.title}
-                            </h3>
-                            {vid.description && (
-                              <p style={{ fontSize: "0.84rem", color: "var(--sample-muted)", margin: "0 0 16px 0", lineHeight: 1.5, flex: 1 }}>
-                                {vid.description}
-                              </p>
-                            )}
-
-                            <div style={{ marginTop: "auto", paddingTop: "12px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <a
-                                href={vid.youtubeUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ fontSize: "0.8rem", color: "var(--brand-accent)", fontWeight: 600, textDecoration: "none" }}
-                              >
-                                Watch on YouTube ↗
-                              </a>
-
-                              <div style={{ display: "flex", gap: "8px" }}>
-                                <button
-                                  type="button"
-                                  onClick={() => setEditingVideo(vid)}
-                                  style={{
-                                    background: "rgba(49, 72, 81, 0.08)",
-                                    color: "var(--brand-accent)",
-                                    border: "none",
-                                    padding: "6px 14px",
-                                    borderRadius: "12px",
-                                    fontSize: "0.78rem",
-                                    fontWeight: 600,
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => deleteVideo(vid.id)}
-                                  style={{
-                                    background: "none",
-                                    border: "1px solid #fca5a5",
-                                    color: "#dc2626",
-                                    padding: "6px 14px",
-                                    borderRadius: "12px",
-                                    fontSize: "0.78rem",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            {/* TAB 3: YOUTUBE PLAYLIST THUMBNAILS */}
+            {activeTab === "playlists" && (
+              <div
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid var(--sample-line)",
+                  borderRadius: "20px",
+                  padding: "clamp(24px, 4vw, 40px)",
+                  boxShadow: "0 8px 30px rgba(0,0,0,0.015)",
+                }}
+              >
+                <div style={{ marginBottom: "28px", paddingBottom: "20px", borderBottom: "1px solid var(--sample-line)" }}>
+                  <h2 style={{ fontSize: "1.6rem", margin: "0 0 4px 0", color: "#18181b", letterSpacing: "-0.02em" }}>
+                    Manage YouTube Playlists (3 Thumbnails)
+                  </h2>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--sample-muted)" }}>
+                    Configure the 3 featured playlist thumbnail images and their target YouTube links displayed on the home page.
+                  </p>
                 </div>
+
+                <form onSubmit={savePlaylists} style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+                    {playlists.map((pl, index) => (
+                      <div
+                        key={pl.id || index}
+                        style={{
+                          background: "#fafafa",
+                          border: "1px solid var(--sample-line)",
+                          borderRadius: "16px",
+                          padding: "24px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "16px",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--brand-accent)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                            Playlist {index + 1}
+                          </span>
+                        </div>
+
+                        {/* LIVE THUMBNAIL PREVIEW */}
+                        <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "#0a0a0a", borderRadius: "10px", overflow: "hidden" }}>
+                          <img
+                            src={pl.imageUrl || "/homepage-video-thumbnail.png"}
+                            alt={pl.title || `Playlist ${index + 1}`}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/homepage-video-thumbnail.png";
+                            }}
+                            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                          <div style={{ position: "absolute", bottom: "10px", right: "10px", background: "rgba(0,0,0,0.75)", color: "#fff", padding: "4px 8px", borderRadius: "6px", fontSize: "0.7rem", fontWeight: 700 }}>
+                            ▶ PLAYLIST
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
+                            Playlist Title *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={pl.title || ""}
+                            onChange={(e) => {
+                              const updated = [...playlists];
+                              updated[index] = { ...updated[index], title: e.target.value };
+                              setPlaylists(updated);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid var(--sample-line)",
+                              fontSize: "0.9rem",
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
+                            Thumbnail Image URL *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. /thumbnail.jpeg or https://..."
+                            value={pl.imageUrl || ""}
+                            onChange={(e) => {
+                              const updated = [...playlists];
+                              updated[index] = { ...updated[index], imageUrl: e.target.value };
+                              setPlaylists(updated);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid var(--sample-line)",
+                              fontSize: "0.9rem",
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
+                            YouTube Playlist Link *
+                          </label>
+                          <input
+                            type="url"
+                            required
+                            placeholder="https://www.youtube.com/@navisamarnath/playlists"
+                            value={pl.playlistUrl || ""}
+                            onChange={(e) => {
+                              const updated = [...playlists];
+                              updated[index] = { ...updated[index], playlistUrl: e.target.value };
+                              setPlaylists(updated);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid var(--sample-line)",
+                              fontSize: "0.9rem",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {playlistStatusMsg && (
+                    <p style={{ margin: 0, fontSize: "0.92rem", color: playlistStatusMsg.startsWith("✓") ? "#16a34a" : "#dc2626", fontWeight: 700 }}>
+                      {playlistStatusMsg}
+                    </p>
+                  )}
+
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isPlaylistSaving}
+                      style={{
+                        background: "var(--brand-accent)",
+                        color: "#ffffff",
+                        border: "none",
+                        padding: "14px 32px",
+                        borderRadius: "12px",
+                        fontSize: "0.95rem",
+                        fontWeight: 600,
+                        cursor: isPlaylistSaving ? "not-allowed" : "pointer",
+                        opacity: isPlaylistSaving ? 0.7 : 1,
+                      }}
+                    >
+                      {isPlaylistSaving ? "Saving Playlists..." : "Save Playlist Changes"}
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
           </div>
