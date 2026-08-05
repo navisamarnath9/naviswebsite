@@ -83,6 +83,8 @@ export default function ServiceDetailPage({
   const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const root = rootRef.current;
     if (!root) return;
 
@@ -90,6 +92,11 @@ export default function ServiceDetailPage({
     const revealItems = Array.from(
       root.querySelectorAll<HTMLElement>("[data-reveal]"),
     );
+
+    revealItems.forEach((item) => {
+      item.classList.remove("is-visible");
+    });
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -103,8 +110,9 @@ export default function ServiceDetailPage({
     );
 
     revealItems.forEach((item) => observer.observe(item));
+
     return () => observer.disconnect();
-  }, []);
+  }, [resolvedParams.id]);
 
   if (!service) {
     return (

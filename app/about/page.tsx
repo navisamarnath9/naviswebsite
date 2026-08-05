@@ -179,7 +179,7 @@ export default function AboutPage() {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [activeTab, filterCategory]);
 
   return (
     <main className="sample-home about-page" id="top" ref={rootRef}>

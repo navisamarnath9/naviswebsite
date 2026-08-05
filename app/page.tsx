@@ -219,7 +219,7 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
-  }, [loadingArticles]);
+  }, [loadingArticles, youtubeVideos.length]);
 
   return (
     <main className="sample-home home-page" id="top" ref={rootRef}>
