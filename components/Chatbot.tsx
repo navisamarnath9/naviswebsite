@@ -357,18 +357,18 @@ export default function Chatbot() {
           width: "56px",
           height: "56px",
           borderRadius: "50%",
-          background: "#0A303D",
+          background: "#314851",
           color: "#fff",
           border: "none",
           cursor: "pointer",
-          boxShadow: "0 8px 24px rgba(10,48,61,0.35)",
+          boxShadow: "0 8px 24px rgba(49,72,81,0.35)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           transition: "transform 200ms ease, box-shadow 200ms ease",
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.08)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(10,48,61,0.45)"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(10,48,61,0.35)"; }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.08)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(49,72,81,0.45)"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(49,72,81,0.35)"; }}
       >
         {isOpen ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -399,12 +399,12 @@ export default function Chatbot() {
             borderRadius: "20px",
             boxShadow: "0 24px 64px rgba(0,0,0,0.14)",
             overflow: "hidden",
-            border: "1px solid rgba(10,48,61,0.12)",
+            border: "1px solid rgba(49,72,81,0.12)",
           }}
         >
           {/* HEADER */}
           <div style={{
-            background: "#0A303D",
+            background: "#314851",
             padding: "16px 20px",
             display: "flex",
             alignItems: "center",
@@ -435,7 +435,7 @@ export default function Chatbot() {
                   maxWidth: "88%",
                   padding: "10px 14px",
                   borderRadius: msg.from === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                  background: msg.from === "user" ? "#0A303D" : "#ffffff",
+                  background: msg.from === "user" ? "#314851" : "#ffffff",
                   color: msg.from === "user" ? "#ffffff" : "#18181b",
                   fontSize: "0.875rem",
                   lineHeight: 1.55,
@@ -455,9 +455,9 @@ export default function Chatbot() {
                         rel={lnk.href.startsWith("http") ? "noopener noreferrer" : undefined}
                         style={{
                           fontSize: "0.78rem", fontWeight: 600,
-                          color: "#0A303D", background: "rgba(10,48,61,0.07)",
+                          color: "#314851", background: "rgba(49,72,81,0.07)",
                           padding: "5px 12px", borderRadius: "20px",
-                          textDecoration: "none", border: "1px solid rgba(10,48,61,0.15)",
+                          textDecoration: "none", border: "1px solid rgba(49,72,81,0.15)",
                         }}
                       >
                         {lnk.label}
@@ -474,12 +474,12 @@ export default function Chatbot() {
                         onClick={() => send(s)}
                         style={{
                           fontSize: "0.76rem", fontWeight: 600,
-                          color: "#0A303D", background: "#fff",
+                          color: "#314851", background: "#fff",
                           padding: "4px 10px", borderRadius: "20px",
-                          textDecoration: "none", border: "1px solid rgba(10,48,61,0.2)",
+                          textDecoration: "none", border: "1px solid rgba(49,72,81,0.2)",
                           cursor: "pointer", transition: "background 150ms",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(10,48,61,0.06)")}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(49,72,81,0.06)")}
                         onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
                       >
                         {s}
@@ -500,7 +500,7 @@ export default function Chatbot() {
                   <span style={{ display: "flex", gap: "4px" }}>
                     {[0, 1, 2].map((i) => (
                       <span key={i} style={{
-                        width: "7px", height: "7px", borderRadius: "50%", background: "#0A303D",
+                        width: "7px", height: "7px", borderRadius: "50%", background: "#314851",
                         animation: `chatBotBounce 1s ease-in-out ${i * 0.15}s infinite`,
                         display: "inline-block",
                       }} />
@@ -547,7 +547,7 @@ export default function Chatbot() {
               aria-label="Send message"
               style={{
                 width: "40px", height: "40px", borderRadius: "50%",
-                background: input.trim() ? "#0A303D" : "#e4e4e7",
+                background: input.trim() ? "#314851" : "#e4e4e7",
                 color: "#fff", border: "none", cursor: input.trim() ? "pointer" : "default",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "background 150ms",

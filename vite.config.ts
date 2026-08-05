@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
-const { d1, r2 } = hostingConfig;
+const { d1, r2 } = hostingConfig as unknown as { d1?: string | null; r2?: string | null };
 const d1DatabaseId = process.env.CF_D1_DATABASE_ID?.trim();
 const d1BindingName = d1?.trim();
 const r2BindingName = r2?.trim();

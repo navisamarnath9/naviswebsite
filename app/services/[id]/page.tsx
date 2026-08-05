@@ -278,7 +278,7 @@ export default function ServiceDetailPage({
           <div className="service-booking-copy" data-reveal>
             <div className="service-booking-full-image">
               <Image
-                src="/DSC_5301c.jpg"
+                src={service.bookingImage || "/Individual Therapy.jpg"}
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized

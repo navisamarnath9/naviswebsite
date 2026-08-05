@@ -45,7 +45,7 @@ async function sendBookingNotificationEmail(payload: {
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 12px; background-color: #fafafa;">
-      <h2 style="color: #0A303D; margin-top: 0;">⚡ New Consultation Request Received</h2>
+      <h2 style="color: #314851; margin-top: 0;">⚡ New Consultation Request Received</h2>
       <p style="font-size: 15px; color: #333;">You have received a new consultation appointment booking from your website:</p>
 
       <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -55,15 +55,15 @@ async function sendBookingNotificationEmail(payload: {
         </tr>
         <tr>
           <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">WhatsApp / Phone:</td>
-          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="https://wa.me/${payload.phone.replace(/[^0-9]/g, "")}" style="color:#0A303D;">${payload.phone}</a></td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="https://wa.me/${payload.phone.replace(/[^0-9]/g, "")}" style="color:#314851;">${payload.phone}</a></td>
         </tr>
         <tr>
           <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Email Address:</td>
-          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="mailto:${payload.email}" style="color:#0A303D;">${payload.email}</a></td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;"><a href="mailto:${payload.email}" style="color:#314851;">${payload.email}</a></td>
         </tr>
         <tr>
           <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Session Type:</td>
-          <td style="padding: 10px; border-bottom: 1px solid #eee; color: #0A303D; font-weight: bold;">${payload.sessionType}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee; color: #314851; font-weight: bold;">${payload.sessionType}</td>
         </tr>
         <tr>
           <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Requested Date:</td>
@@ -76,7 +76,7 @@ async function sendBookingNotificationEmail(payload: {
       </table>
 
       <div style="margin-top: 24px; text-align: center;">
-        <a href="https://navisamarnath-site.firebaseapp.com/admin" style="background-color: #0A303D; color: #ffffff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+        <a href="https://navisamarnath-site.firebaseapp.com/admin" style="background-color: #314851; color: #ffffff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
           View in Admin Portal ↗
         </a>
       </div>

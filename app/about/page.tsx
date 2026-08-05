@@ -212,7 +212,7 @@ export default function AboutPage() {
         <div className="about-top-hero-visual" data-reveal>
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/594A1309.JPG"
+              src="/About - cut.jpg"
               alt="Navisamarnath in his therapy studio"
               fill
               priority
@@ -289,7 +289,7 @@ export default function AboutPage() {
                     <p style={{ margin: 0 }}>
                       Dedicated to ongoing professional development, I continue to pursue advanced training and remain informed by current research to provide effective and evidence-based care.
                     </p>
-                    <p style={{ margin: "8px 0 0", fontStyle: "italic", color: "#0A303D", borderLeft: "3px solid #0A303D", paddingLeft: "18px", fontWeight: 500, fontSize: "1.02rem" }}>
+                    <p style={{ margin: "8px 0 0", fontStyle: "italic", color: "#314851", borderLeft: "3px solid #314851", paddingLeft: "18px", fontWeight: 500, fontSize: "1.02rem" }}>
                       &ldquo;It would be an honor to support you on your journey toward greater well-being, meaningful growth, and a more fulfilling and balanced life.&rdquo;
                     </p>
                   </div>

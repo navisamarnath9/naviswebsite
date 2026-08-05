@@ -164,7 +164,7 @@ export default function FAQPage() {
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/DSC_5301c.jpg"
+              src="/About - cut.jpg"
               alt="Navisamarnath in consultation"
               fill
               priority
@@ -253,7 +253,7 @@ export default function FAQPage() {
 
                     {isOpen && (
                       <div className="mobile-faq-answer" style={{ padding: "0 28px 24px 28px", borderTop: "1px solid var(--sample-line)" }}>
-                        <p style={{ fontSize: "0.98rem", color: "var(--sample-muted)", lineHeight: 1.7, margin: "16px 0 0 0", whitespace: "pre-line" }}>
+                        <p style={{ fontSize: "0.98rem", color: "var(--sample-muted)", lineHeight: 1.7, margin: "16px 0 0 0", whiteSpace: "pre-line" }}>
                           {faq.answer}
                         </p>
                       </div>
@@ -266,7 +266,7 @@ export default function FAQPage() {
             <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "48px 40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)", display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ width: "72px", height: "72px", borderRadius: "50%", overflow: "hidden", marginBottom: "20px", position: "relative", boxShadow: "0 8px 20px rgba(0,0,0,0.1)", flexShrink: 0 }}>
                 <Image
-                  src="/DSC_5301c.jpg"
+                  src="/About - cut.jpg"
                   alt="Navisamarnath"
                   fill
                   unoptimized

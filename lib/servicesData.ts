@@ -22,6 +22,7 @@ export interface ServiceDetail {
   heroHeadline: string;
   heroIntro: string;
   image: string;
+  bookingImage?: string;
   whyTitle: string;
   whySubheading: string;
   whyReasons: WhyReason[];
@@ -44,6 +45,7 @@ export const servicesData: ServiceDetail[] = [
     heroIntro:
       "Are you feeling overwhelmed, stuck, or searching for clarity? Life’s challenges—whether emotional, relational, or situational—can sometimes leave us feeling lost and unsure of the next step. Therapy offers a safe and supportive space where you can explore your emotions, heal from past wounds, and gain the tools you need to move forward. It’s a journey toward self-discovery and personal growth, where you’ll uncover insights, develop resilience, and unlock your full potential.",
     image: "/service-individual.png",
+    bookingImage: "/Individual Therapy.jpg",
     whyTitle: "Why Therapy?",
     whySubheading:
       "Therapy can provide valuable support across many aspects of life. Here are a few reasons to consider therapy:",
@@ -64,7 +66,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Healing Trauma",
         description:
           "Process and heal from past emotional wounds or trauma in a supportive space.",
-        image: "/DSC_5254c.jpg",
+        image: "/About - cut.jpg",
       },
       {
         title: "Life Transitions",
@@ -76,7 +78,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Behavioral Insight",
         description:
           "Gain understanding of recurring emotional patterns and behaviors that may hold you back.",
-        image: "/594A1309.JPG",
+        image: "/About - cut.jpg",
       },
       {
         title: "Personal Growth",
@@ -155,6 +157,7 @@ export const servicesData: ServiceDetail[] = [
     heroIntro:
       "Are you and your partner feeling disconnected, facing recurring conflicts, or struggling to navigate life’s challenges together?\n\nRelationships require effort, understanding, and growth, yet it can be hard to find clarity amidst the challenges. Couples therapy offers a supportive and nonjudgmental space where you can rebuild trust, improve communication, and foster deeper connection. It’s a journey toward a stronger, healthier partnership.",
     image: "/service-couples.png",
+    bookingImage: "/Couple.jpg",
     whyTitle: "Why Couples Therapy?",
     whySubheading:
       "Couples therapy can support your relationship in meaningful ways. Here are some reasons to consider it:",
@@ -169,13 +172,13 @@ export const servicesData: ServiceDetail[] = [
         title: "Conflict Resolution",
         description:
           "Address recurring arguments and resolve underlying issues with empathy and understanding.",
-        image: "/DSC_5254c.jpg",
+        image: "/About - cut.jpg",
       },
       {
         title: "Rebuilding Trust",
         description:
           "Work through breaches of trust and rebuild emotional safety in the relationship.",
-        image: "/DSC_5301c.jpg",
+        image: "/service-couples.png",
       },
       {
         title: "Strengthening Connection",
@@ -266,6 +269,7 @@ export const servicesData: ServiceDetail[] = [
     heroIntro:
       "Are you ready to take charge of your life and reach new heights? Personalized coaching services are designed to empower individuals to achieve their personal and professional aspirations. Coaching is a collaborative process that helps clarify goals, identify obstacles, and create actionable strategies for success.",
     image: "/service-coaching.png",
+    bookingImage: "/Coaching.jpg",
     whyTitle: "Why Coaching?",
     whySubheading:
       "Coaching is an effective approach for individuals looking to enhance their lives and reach their full potential. Common issues addressed through coaching include:",
@@ -292,13 +296,13 @@ export const servicesData: ServiceDetail[] = [
         title: "Stress and Burnout",
         description:
           "Identifying stressors and implementing techniques to increase resilience.",
-        image: "/DSC_5254c.jpg",
+        image: "/About - cut.jpg",
       },
       {
         title: "Personal Growth",
         description:
           "Enhancing self-awareness, confidence, and emotional intelligence.",
-        image: "/Antony.jpg",
+        image: "/Home Page.jpg",
       },
       {
         title: "Relationship Building",
@@ -376,6 +380,7 @@ export const servicesData: ServiceDetail[] = [
     heroIntro:
       "Looking to explore your thoughts and feelings in a supportive group setting? Group sessions provide a unique opportunity for individuals to come together and share their experiences in a safe, supportive environment. Facilitated by a trained professional, these sessions foster a sense of belonging and community, enabling participants to connect with others who may be facing similar challenges.",
     image: "/service-groups.png",
+    bookingImage: "/Group Sessions.jpg",
     whyTitle: "Why Join Group Sessions?",
     whySubheading:
       "Participating in group therapy offers numerous advantages, including:",
@@ -384,37 +389,37 @@ export const servicesData: ServiceDetail[] = [
         title: "Shared Experiences",
         description:
           "Engage with others facing similar struggles, fostering a sense of connection and understanding.",
-        image: "/service-groups.png",
+        image: "/Group Sessions.jpg",
       },
       {
         title: "Emotional Support",
         description:
           "Benefit from the encouragement and empathy of fellow participants, helping to reduce feelings of isolation.",
-        image: "/DSC_5254c.jpg",
+        image: "/About - cut.jpg",
       },
       {
         title: "Diverse Perspectives",
         description:
           "Gain insights from different viewpoints, broadening your understanding of personal challenges and solutions.",
-        image: "/service-individual.png",
+        image: "/Individual Therapy.jpg",
       },
       {
         title: "Skill Development",
         description:
           "Learn new coping strategies and interpersonal skills that can be applied to everyday life.",
-        image: "/service-coaching.png",
+        image: "/Coaching.jpg",
       },
       {
         title: "Facilitated Guidance",
         description:
           "Receive professional support to navigate group dynamics and ensure a productive environment.",
-        image: "/594A1309.JPG",
+        image: "/About - cut.jpg",
       },
       {
         title: "Empowerment",
         description:
           "Experience a sense of strength and motivation through collective discussions and shared goals.",
-        image: "/service-couples.png",
+        image: "/Couple.jpg",
       },
     ],
     benefitsTitle: "Benefits of Group Sessions",

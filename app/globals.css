@@ -5,30 +5,30 @@
   --white: #ffffff;
   --linen: #f1f5f8;
   --slate: #18181b;
-  --sage: #0A303D;
-  --sage-dark: #062029;
-  --sage-light: #f0f6f8;
-  --blue: #0A303D;
-  --blue-deep: #062029;
-  --silver: #0A303D;
+  --sage: #314851;
+  --sage-dark: #23343b;
+  --sage-light: #f0f4f6;
+  --blue: #314851;
+  --blue-deep: #23343b;
+  --silver: #314851;
   --grey: #27272a;
-  --cyan: #0A303D;
-  --sample-cyan: #0A303D;
-  --sample-blue: #0A303D;
-  --cyan-light: rgba(10, 48, 61, 0.08);
-  --cyan-glow: rgba(10, 48, 61, 0.18);
-  --brand-accent: #0A303D;
-  --brand-accent-hover: #062029;
-  --brand-accent-light: rgba(10, 48, 61, 0.06);
-  --brand-accent-border: rgba(10, 48, 61, 0.22);
+  --cyan: #314851;
+  --sample-cyan: #314851;
+  --sample-blue: #314851;
+  --cyan-light: rgba(49, 72, 81, 0.08);
+  --cyan-glow: rgba(49, 72, 81, 0.18);
+  --brand-accent: #314851;
+  --brand-accent-hover: #23343b;
+  --brand-accent-light: rgba(49, 72, 81, 0.06);
+  --brand-accent-border: rgba(49, 72, 81, 0.22);
   --mist: #f1f5f8;
   --line: #e4e4e7;
-  --blue-line: rgba(10, 48, 61, 0.18);
+  --blue-line: rgba(49, 72, 81, 0.18);
   --display: "Newsreader", Georgia, serif;
   --sans: "DM Sans", Arial, sans-serif;
 }
 
-/* UNIFIED #0A303D HIGHLIGHTED TEXT COLOR SYSTEM */
+/* UNIFIED #314851 HIGHLIGHTED TEXT COLOR SYSTEM */
 em,
 mark,
 .highlight-text,
@@ -38,18 +38,18 @@ mark,
 .about-overline,
 .kicker,
 .about-hero-subtitle {
-  color: #0A303D !important;
+  color: #314851 !important;
 }
 
 .scroll-word.brand-word,
 .scroll-word.highlight-word {
-  color: #0A303D !important;
+  color: #314851 !important;
   font-weight: 600;
 }
 
 ::selection {
-  background: rgba(10, 48, 61, 0.18);
-  color: #0A303D;
+  background: rgba(49, 72, 81, 0.18);
+  color: #314851;
 }
 
 *,
@@ -2747,7 +2747,7 @@ body:has(.sample-home) {
   --sample-paper: #fafafa;
   --sample-line: #e4e4e7;
   --sample-muted: #52525b;
-  --sample-cyan: #0A303D;
+  --sample-cyan: #314851;
   --sample-linen: #f1f5f8;
   background: var(--sample-black);
   color: var(--sample-ink);
@@ -3391,7 +3391,7 @@ body:has(.sample-home) {
 .sample-service-card:focus-visible {
   background: #f0f5f7 !important;
   border-color: var(--brand-accent) !important;
-  box-shadow: 0 16px 36px rgba(10, 48, 61, 0.14), inset 0 3px 0 0 #0A303D !important;
+  box-shadow: 0 16px 36px rgba(49, 72, 81, 0.14), inset 0 3px 0 0 #314851 !important;
   transform: translateY(-6px) !important;
   z-index: 5;
 }
@@ -3670,7 +3670,7 @@ body:has(.sample-home) {
 .sample-journal-grid a:hover,
 .sample-journal-grid a:focus-visible {
   background: var(--white) !important;
-  box-shadow: 0 16px 36px rgba(10, 48, 61, 0.12), inset 0 3px 0 0 #0A303D !important;
+  box-shadow: 0 16px 36px rgba(49, 72, 81, 0.12), inset 0 3px 0 0 #314851 !important;
   transform: translateY(-4px) !important;
   z-index: 5;
 }
@@ -4364,8 +4364,8 @@ body:has(.sample-home) {
 }
 
 .service-reasons-list article:hover {
-  background: rgba(10, 48, 61, 0.04);
-  border-left-color: #0A303D;
+  background: rgba(49, 72, 81, 0.04);
+  border-left-color: #314851;
   padding-left: clamp(28px, 3vw, 52px);
   transform: translateX(4px);
 }
@@ -4384,7 +4384,7 @@ body:has(.sample-home) {
 }
 
 .service-reasons-list article:hover h3 {
-  color: #0A303D;
+  color: #314851;
 }
 
 .service-reasons-list p {
@@ -4402,7 +4402,7 @@ body:has(.sample-home) {
 }
 
 .service-benefits {
-  background: #0A303D;
+  background: #314851;
   color: #fff;
 }
 
@@ -4438,7 +4438,7 @@ body:has(.sample-home) {
 }
 
 .service-benefits-grid article {
-  background: #062029;
+  background: #23343b;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   border-right: 1px solid rgba(255, 255, 255, 0.16);
   border-top: 1px solid rgba(255, 255, 255, 0.16);
@@ -4452,7 +4452,7 @@ body:has(.sample-home) {
 .service-benefits-grid article:hover {
   background: #ffffff !important;
   border-color: var(--brand-accent) !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35), inset 0 4px 0 0 #0A303D !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35), inset 0 4px 0 0 #314851 !important;
   transform: translateY(-6px) !important;
   z-index: 5;
 }
@@ -4700,8 +4700,8 @@ body:has(.sample-home) {
 .service-more-grid a:hover,
 .service-more-grid a:focus-visible {
   background: #f0f6f8 !important;
-  border-color: #0A303D !important;
-  box-shadow: 0 16px 36px rgba(10, 48, 61, 0.14), inset 0 3px 0 0 #0A303D !important;
+  border-color: #314851 !important;
+  box-shadow: 0 16px 36px rgba(49, 72, 81, 0.14), inset 0 3px 0 0 #314851 !important;
   transform: translateY(-6px) !important;
   z-index: 5;
 }
@@ -4714,7 +4714,7 @@ body:has(.sample-home) {
 }
 
 .service-more-grid p {
-  color: #0A303D !important;
+  color: #314851 !important;
   font-size: 0.68rem !important;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -4738,12 +4738,12 @@ body:has(.sample-home) {
 }
 
 .service-more-grid a:hover h3 {
-  color: #0A303D !important;
+  color: #314851 !important;
 }
 
 .service-more-grid i {
   bottom: 22px;
-  color: #0A303D;
+  color: #314851;
   font-size: 1rem;
   font-style: normal;
   opacity: 0;
@@ -5079,7 +5079,7 @@ body:has(.sample-home) {
 }
 
 /* ==========================================================================
-   Comprehensive Site-Wide Brand Accent Hover Animation System (#0A303D)
+   Comprehensive Site-Wide Brand Accent Hover Animation System (#314851)
    ========================================================================== */
 
 /* 1. Global Link Hover Animations & Underlines */
@@ -5128,7 +5128,7 @@ input[type="submit"]:hover,
   border-color: var(--brand-accent) !important;
   color: #ffffff !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(10, 48, 61, 0.28) !important;
+  box-shadow: 0 8px 24px rgba(49, 72, 81, 0.28) !important;
 }
 
 /* 3. Card & Interactive Item Hover Animations */
@@ -5157,7 +5157,7 @@ article:hover,
 .sample-feature-card:hover,
 .sample-card:hover {
   border-color: var(--brand-accent-border) !important;
-  box-shadow: 0 12px 32px rgba(10, 48, 61, 0.09) !important;
+  box-shadow: 0 12px 32px rgba(49, 72, 81, 0.09) !important;
   transform: translateY(-2px);
 }
 
@@ -5184,7 +5184,7 @@ article:hover h4,
 .icon-btn:hover {
   border-color: var(--brand-accent) !important;
   color: var(--brand-accent) !important;
-  background: rgba(10, 48, 61, 0.08) !important;
+  background: rgba(49, 72, 81, 0.08) !important;
   transform: translateY(-2px) scale(1.05);
 }
 
@@ -5213,7 +5213,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
   border-color: var(--brand-accent) !important;
-  box-shadow: 0 0 0 3px rgba(10, 48, 61, 0.14) !important;
+  box-shadow: 0 0 0 3px rgba(49, 72, 81, 0.14) !important;
   outline: none !important;
 }
 
@@ -5598,7 +5598,7 @@ mark,
   background: #ffffff;
   border-color: var(--brand-accent);
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(10, 48, 61, 0.08), inset 0 3px 0 0 #0A303D;
+  box-shadow: 0 10px 25px rgba(49, 72, 81, 0.08), inset 0 3px 0 0 #314851;
 }
 
 .credential-item-left {
@@ -5611,7 +5611,7 @@ mark,
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(10, 48, 61, 0.06);
+  background: rgba(49, 72, 81, 0.06);
   color: var(--brand-accent);
   display: flex;
   align-items: center;
@@ -6488,8 +6488,25 @@ mark,
   .sample-service-card:hover,
   .sample-journal-grid a:hover,
   .credential-item-card:hover,
-  .service-more-grid a:hover {
+  .service-more-grid a:hover,
+  .sample-video-card:hover {
     box-shadow: none !important;
     transform: none !important;
   }
+}
+
+/* Sample Video Card Hover Effects */
+.sample-video-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 16px 36px rgba(49, 72, 81, 0.14), inset 0 3px 0 0 #314851 !important;
+  border-color: var(--brand-accent) !important;
+}
+
+.sample-video-card:hover img {
+  transform: scale(1.05) !important;
+}
+
+.sample-video-card:hover div[style*="borderRadius: 50%"] {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  background: #314851 !important;
 }

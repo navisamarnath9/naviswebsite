@@ -279,7 +279,7 @@ export default function ResourcesPage() {
 
         <div className="resources-hero-visual">
           <Image
-            src="/DSC_5254c.jpg"
+            src="/About - cut.jpg"
             alt="Navisamarnath in study library"
             fill
             priority

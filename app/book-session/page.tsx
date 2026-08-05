@@ -12,9 +12,21 @@ function ArrowIcon() {
   return <span aria-hidden="true">↗</span>;
 }
 
+const serviceJpgMap: Record<string, string> = {
+  "Individual Therapy": "/Individual Therapy.jpg",
+  "Couples/Family Therapy": "/Couple.jpg",
+  "Coaching": "/Coaching.jpg",
+  "Group Sessions": "/Group Sessions.jpg",
+  "individual": "/Individual Therapy.jpg",
+  "couples": "/Couple.jpg",
+  "coaching": "/Coaching.jpg",
+  "groups": "/Group Sessions.jpg",
+};
+
 export default function BookSessionPage() {
   const searchParams = useSearchParams();
   const selectedService = searchParams.get("service") ?? undefined;
+  const bookingImage = (selectedService && serviceJpgMap[selectedService]) || "/Individual Therapy.jpg";
 
   return (
     <main id="top" className="sample-home book-session-page">
@@ -25,7 +37,7 @@ export default function BookSessionPage() {
           <div className="service-booking-copy">
             <div className="service-booking-full-image">
               <Image
-                src="/DSC_5301c.jpg"
+                src={bookingImage}
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized
