@@ -152,7 +152,7 @@ function Arrow({ down = false }: { down?: boolean }) {
 export default function AboutPage() {
   const rootRef = useRef<HTMLElement>(null);
   const [activeTab, setActiveTab] = useState<"story" | "journey">("story");
-  const [filterCategory, setFilterCategory] = useState<string>("All");
+  const [filterCategory, setFilterCategory] = useState<string>("Counseling and Psychotherapy");
 
   useEffect(() => {
     const root = rootRef.current;
@@ -189,17 +189,16 @@ export default function AboutPage() {
 
       <Navbar />
 
-      {/* ABOUT PAGE TOP HERO SECTION (MATCHING SCREENSHOT LAYOUT) */}
+      {/* ABOUT PAGE TOP HERO SECTION */}
       <section className="about-top-hero">
-        <div className="about-top-hero-copy" data-reveal>
-          <h1 className="about-hero-title">About Navisamarnath</h1>
-          <h2 className="about-hero-subtitle">
-            Where Aspiration Meets Transformation.
-          </h2>
-          <p className="about-hero-text">
+        <div className="about-top-hero-copy" data-reveal style={{ padding: "clamp(100px, 12vh, 128px) clamp(32px, 5vw, 80px) clamp(48px, 6vw, 80px)" }}>
+          <h1 className="about-hero-title" style={{ marginBottom: "28px" }}>
+            About Navisamarnath
+          </h1>
+          <p className="about-hero-text" style={{ marginBottom: "44px", fontSize: "clamp(0.96rem, 1.15vw, 1.1rem)", lineHeight: 1.75 }}>
             Are you feeling overwhelmed, stuck, or searching for clarity? Life’s challenges—whether emotional, relational, or situational—can leave us feeling unsure of the next step. Therapy and coaching offer a safe, supportive space where you can explore your emotions, heal from past wounds, and gain the tools you need to move forward.
           </p>
-          <div className="about-hero-actions">
+          <div className="about-hero-actions" style={{ gap: "32px" }}>
             <Link href="/book-session" className="about-btn-primary">
               BOOK A FREE CONSULTATION <Arrow />
             </Link>
@@ -231,14 +230,14 @@ export default function AboutPage() {
       {/* MAIN SURFACE WITH COMPACT SPACING */}
       <div className="sample-surface" id="about-content">
         
-        {/* SECTION 1: PHILOSOPHY & JOURNEY (FULL WIDTH CONTENT WITH ANIMATED PARAGRAPHS) */}
+        {/* SECTION 1: PHILOSOPHY & JOURNEY */}
         <section className="about-story-section" style={{ padding: "60px 24px", borderBottom: "1px solid var(--sample-line)" }}>
           <div className="about-story-layout" style={{ maxWidth: "1140px", margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(260px, 320px) 1fr", gap: "48px", alignItems: "start" }}>
             
-            {/* LEFT COLUMN: MEMBERSHIPS & ETHICS / RECOGNIZED AFFILIATIONS */}
+            {/* LEFT COLUMN: MEMBERSHIPS */}
             <div className="about-affiliations" data-reveal style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <span style={{ fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--brand-accent)", fontWeight: 700 }}>
-                Memberships &amp; Ethics
+                Memberships
               </span>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {memberships.map((m) => (
@@ -255,7 +254,7 @@ export default function AboutPage() {
               {/* Tab Navigation */}
               <div className="about-story-tabs" style={{ display: "flex", gap: "10px", borderBottom: "1px solid var(--sample-line)", paddingBottom: "14px", flexWrap: "wrap" }}>
                 {[
-                  { id: "story", label: "My Philosophy" },
+                  { id: "story", label: "Who I Am" },
                   { id: "journey", label: "Professional Journey" }
                 ].map((tab) => (
                   <button
@@ -279,7 +278,7 @@ export default function AboutPage() {
                 ))}
               </div>
 
-              {/* Tab Content Panels with Paragraph Text Animations */}
+              {/* Tab Content Panels */}
               <div style={{ minHeight: "260px", fontSize: "1rem", lineHeight: "1.75", color: "#3f3f46" }}>
                 {activeTab === "story" && (
                   <div key="story" className="about-tab-panel" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
@@ -320,7 +319,7 @@ export default function AboutPage() {
               <h2>Grounded in Learning. Shaped by Experience.</h2>
             </div>
 
-            {/* CATEGORY FILTER TABS */}
+            {/* CATEGORY FILTER TABS (SHOWING ONLY SELECTED CATEGORY) */}
             <div className="credentials-filter-tabs" data-reveal>
               {[
                 "Counseling and Psychotherapy",
@@ -330,7 +329,7 @@ export default function AboutPage() {
                   key={cat}
                   type="button"
                   className={`credentials-filter-btn ${
-                    filterCategory === cat || (filterCategory === "All" && cat === "Counseling and Psychotherapy") ? "is-active" : ""
+                    filterCategory === cat ? "is-active" : ""
                   }`}
                   onClick={() => setFilterCategory(cat)}
                 >
@@ -359,10 +358,7 @@ export default function AboutPage() {
 
                 <div className="credential-items-list">
                   {educationalCredentials
-                    .filter(
-                      (item) =>
-                        filterCategory === "All" || item.category === filterCategory || (filterCategory === "All" && item.category === "Counseling and Psychotherapy")
-                    )
+                    .filter((item) => item.category === filterCategory)
                     .map((cred) => (
                       <div key={cred.title} className="credential-item-card">
                         <div className="credential-item-left">
@@ -395,10 +391,7 @@ export default function AboutPage() {
 
                 <div className="credential-items-list">
                   {professionalCertifications
-                    .filter(
-                      (item) =>
-                        filterCategory === "All" || item.category === filterCategory || (filterCategory === "All" && item.category === "Counseling and Psychotherapy")
-                    )
+                    .filter((item) => item.category === filterCategory)
                     .map((cert) => (
                       <div key={cert.title} className="credential-item-card">
                         <div className="credential-item-left">
@@ -416,7 +409,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* COMPACT SECTION 2: SIDE BY SIDE (HOW I DO? + WHY I DO WHAT I DO) */}
+        {/* COMPACT SECTION 2: APPROACH & PURPOSE */}
         <section style={{ padding: "48px 24px", borderBottom: "1px solid var(--sample-line)" }}>
           <div style={{ maxWidth: "1140px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "48px" }}>
             
@@ -461,7 +454,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* COMPACT SECTION 3: MISSION & VISION SIDE BY SIDE */}
+        {/* COMPACT SECTION 3: MISSION & VISION */}
         <section style={{ padding: "48px 24px", borderBottom: "1px solid var(--sample-line)", background: "rgba(0,0,0,0.015)" }}>
           <div style={{ maxWidth: "1140px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
             
@@ -490,20 +483,36 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* COMPACT CLOSING CTA */}
-        <section className="sample-closing sample-section" style={{ padding: "48px 24px" }}>
+        {/* PROMINENT BOTTOM CLOSING CTA */}
+        <section className="sample-closing sample-section" style={{ padding: "64px 24px" }}>
           <p className="sample-side-label" data-reveal>
             Your next step
           </p>
           <div data-reveal>
             <p className="sample-overline">A low-pressure place to begin</p>
             <h2>Let&apos;s start with one honest conversation.</h2>
-            <p>
+            <p style={{ marginBottom: "28px" }}>
               Request a complimentary consultation. We will talk about what is
               bringing you here, answer your questions, and see whether working
               together feels right.
             </p>
-            <Link href="/book-session">
+            <Link
+              href="/book-session"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                padding: "16px 36px",
+                borderRadius: "999px",
+                background: "#314851",
+                color: "#ffffff",
+                fontWeight: 600,
+                fontSize: "1.05rem",
+                boxShadow: "0 10px 25px rgba(49, 72, 81, 0.25)",
+                textDecoration: "none",
+                transition: "transform 200ms ease, background 200ms ease",
+              }}
+            >
               Request a consultation <Arrow />
             </Link>
           </div>
