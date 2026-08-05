@@ -506,7 +506,8 @@ export default function Home() {
                   style={{
                     position: "relative",
                     width: "100%",
-                    paddingTop: "56.25%",
+                    paddingTop: "177.78%",
+                    aspectRatio: "9 / 16",
                     background: "#0a0a0a",
                     overflow: "hidden",
                   }}

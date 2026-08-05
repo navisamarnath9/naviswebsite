@@ -946,7 +946,7 @@ export default function AdminPage() {
                         </div>
 
                         {/* LIVE THUMBNAIL PREVIEW */}
-                        <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "#0a0a0a", borderRadius: "10px", overflow: "hidden" }}>
+                        <div style={{ position: "relative", width: "100%", paddingTop: "177.78%", aspectRatio: "9 / 16", background: "#0a0a0a", borderRadius: "10px", overflow: "hidden" }}>
                           <img
                             src={pl.imageUrl || "/homepage-video-thumbnail.png"}
                             alt={pl.title || `Playlist ${index + 1}`}
