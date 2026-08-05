@@ -226,7 +226,7 @@ export default function Home() {
       <section className="sample-hero" aria-labelledby="home-heading">
         <div className="sample-hero-media">
           <Image
-            src="/hero.webp"
+            src="/hero navis.webp"
             alt="Navisamarnath"
             fill
             priority
