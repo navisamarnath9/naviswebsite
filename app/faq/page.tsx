@@ -147,31 +147,40 @@ export default function FAQPage() {
     <main id="top" className="sample-home faq-page">
       <Navbar />
 
+      {/* FAQ PAGE TOP HERO SECTION (MATCHING ABOUT & RESOURCES SPACIOUSNESS) */}
       <section className="about-top-hero">
-        <div className="about-top-hero-copy">
-          <span className="sample-overline" style={{ color: "var(--brand-accent)", fontWeight: 700 }}>
+        <div className="about-top-hero-copy" style={{ padding: "clamp(100px, 12vh, 128px) clamp(32px, 5vw, 80px) clamp(48px, 6vw, 80px)" }}>
+          <span className="sample-overline" style={{ color: "var(--brand-accent)", fontWeight: 700, marginBottom: "12px", display: "block" }}>
             TRANSPARENCY &amp; CARE
           </span>
-          <h1 className="about-hero-title">Frequently Asked Questions</h1>
-          <h2 className="about-hero-subtitle">
-            Clear Answers to Your Practice &amp; Therapy Questions
-          </h2>
-          <p className="about-hero-text">
+          <h1 className="about-hero-title" style={{ marginBottom: "28px" }}>
+            Frequently Asked Questions
+          </h1>
+          <p className="about-hero-text" style={{ marginBottom: "36px", fontSize: "clamp(0.96rem, 1.15vw, 1.1rem)", lineHeight: 1.75 }}>
             Everything you need to know about our virtual sessions, fees, therapeutic modalities, and what to expect on your journey with Navisamarnath.
           </p>
+
+          <div className="about-hero-actions" style={{ gap: "32px" }}>
+            <Link href="/book-session" className="about-btn-primary">
+              BOOK A FREE CONSULTATION ↗
+            </Link>
+            <a href="#main-content" className="about-btn-secondary">
+              EXPLORE FAQS ↓
+            </a>
+          </div>
         </div>
 
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/About - cut.jpg"
-              alt="Navisamarnath in consultation"
+              src="/faq-hero.png"
+              alt="Clear Answers & Practice Guidance"
               fill
               priority
               unoptimized
               sizes="(max-width: 900px) 100vw, 50vw"
               className="about-top-hero-img"
-              style={{ objectFit: "cover", objectPosition: "center 25%" }}
+              style={{ objectPosition: "center center" }}
             />
             <div className="about-top-hero-badge">
               <span>CLEAR ANSWERS</span>
