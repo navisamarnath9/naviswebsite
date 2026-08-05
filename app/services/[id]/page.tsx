@@ -88,6 +88,10 @@ export default function ServiceDetailPage({
     const root = rootRef.current;
     if (!root) return;
 
+    // Reveal animations are progressive enhancement. If the browser cannot
+    // observe intersections, leave the server-rendered content visible.
+    if (!("IntersectionObserver" in window)) return;
+
     root.classList.add("motion-ready");
     const revealItems = Array.from(
       root.querySelectorAll<HTMLElement>("[data-reveal]"),
@@ -137,7 +141,12 @@ export default function ServiceDetailPage({
   const otherServices = servicesData.filter((item) => item.id !== service.id);
 
   return (
-    <main className="sample-home service-detail-page" id="top" ref={rootRef}>
+    <main
+      className="sample-home service-detail-page"
+      id="top"
+      key={service.id}
+      ref={rootRef}
+    >
       <a className="sample-skip" href="#main-content">
         Skip to main content
       </a>

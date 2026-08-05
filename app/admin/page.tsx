@@ -265,8 +265,13 @@ export default function AdminPage() {
     if (!editingArticle || !editingArticle.title) return;
 
     const currentUser = auth.currentUser;
-    if (!currentUser?.email || currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
-      setBlogStatusMsg(`Please sign in with ${ADMIN_EMAIL} before saving.`);
+    if (
+      !currentUser?.email ||
+      !ALLOWED_ADMIN_EMAILS.includes(currentUser.email.toLowerCase())
+    ) {
+      setBlogStatusMsg(
+        `Please sign in with an allowed admin account: ${ALLOWED_ADMIN_EMAILS.join(", ")}.`,
+      );
       return;
     }
 

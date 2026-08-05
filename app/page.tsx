@@ -5,9 +5,18 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
+import type { BlogArticle } from "@/lib/blogArticles";
 import { defaultPlaylists, type PlaylistThumbnail } from "@/lib/playlists";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const services = [
   {
