@@ -245,51 +245,56 @@ export default function ResourcesPage() {
     <main id="top" className="sample-home resources-page">
       <Navbar />
 
-      <section className="resources-hero">
-        <div className="resources-hero-copy">
-          <span className="sample-overline">Curated knowledge base</span>
-          <h1>Resources for Transformation</h1>
-          <p className="resources-hero-lead">
-            A responsive, searchable library of books, podcasts, and trusted sites for the work between sessions.
-          </p>
-          <p className="resources-hero-text">
-            Explore curated topics for inner child healing, mindset growth, self-esteem building, and healthy relationships. Each section is designed to be quick to scan on mobile and easy to revisit on desktop.
+      {/* RESOURCES PAGE TOP HERO SECTION (MATCHING ABOUT PAGE SPACIOUSNESS & LAYOUT) */}
+      <section className="about-top-hero">
+        <div className="about-top-hero-copy" style={{ padding: "clamp(100px, 12vh, 128px) clamp(32px, 5vw, 80px) clamp(48px, 6vw, 80px)" }}>
+          <span className="sample-overline" style={{ color: "var(--brand-accent)", fontWeight: 700, marginBottom: "12px", display: "block" }}>
+            Curated Knowledge Base
+          </span>
+          <h1 className="about-hero-title" style={{ marginBottom: "28px" }}>
+            Resources for Transformation
+          </h1>
+          <p className="about-hero-text" style={{ marginBottom: "36px", fontSize: "clamp(0.96rem, 1.15vw, 1.1rem)", lineHeight: 1.75 }}>
+            A curated library of recommended books, podcasts, and trusted tools for deep personal growth, inner child healing, mindset shifts, and healthy relationships.
           </p>
 
-          <div className="resources-hero-actions">
-            <Link className="button" href="/book-session">
-              Book a session
+          <div className="about-hero-actions" style={{ gap: "32px", marginBottom: "40px" }}>
+            <Link href="/book-session" className="about-btn-primary">
+              BOOK A FREE CONSULTATION ↗
             </Link>
-            <a className="button button-light" href="#resource-library">
-              Browse resources
+            <a href="#resource-library" className="about-btn-secondary">
+              BROWSE RESOURCES ↓
             </a>
           </div>
 
-          <div className="resources-hero-stats" aria-label="Resource highlights">
+          <div style={{ display: "flex", gap: "36px", paddingTop: "24px", borderTop: "1px solid var(--sample-line)" }}>
             <div>
-              <strong>4 topics</strong>
-              <span>Focused categories</span>
+              <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--brand-accent)", fontWeight: 700 }}>4 Topics</strong>
+              <span style={{ fontSize: "0.82rem", color: "var(--sample-muted)" }}>Focused Categories</span>
             </div>
             <div>
-              <strong>20+ items</strong>
-              <span>Curated references</span>
+              <strong style={{ display: "block", fontSize: "1.3rem", color: "var(--brand-accent)", fontWeight: 700 }}>20+ Items</strong>
+              <span style={{ fontSize: "0.82rem", color: "var(--sample-muted)" }}>Curated References</span>
             </div>
           </div>
         </div>
 
-        <div className="resources-hero-visual">
-          <Image
-            src="/About - cut.jpg"
-            alt="Navisamarnath in study library"
-            fill
-            priority
-            unoptimized
-            sizes="(max-width: 900px) 100vw, 42vw"
-            className="resources-hero-img"
-          />
-          <div className="resources-hero-overlay">
-            <span>Quick start</span>
-            <p>Tap a topic to jump into a focused set of tools, books, and links.</p>
+        <div className="about-top-hero-visual">
+          <div className="about-top-hero-img-wrap">
+            <Image
+              src="/resources-hero.png"
+              alt="Curated Mental Health & Growth Library"
+              fill
+              priority
+              unoptimized
+              sizes="(max-width: 900px) 100vw, 50vw"
+              className="about-top-hero-img"
+              style={{ objectPosition: "center center" }}
+            />
+            <div className="about-top-hero-badge">
+              <span>CURATED TOOLS FOR THE</span>
+              <span>WORK BETWEEN SESSIONS</span>
+            </div>
           </div>
         </div>
       </section>
