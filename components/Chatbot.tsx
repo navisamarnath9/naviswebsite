@@ -15,14 +15,14 @@ const SERVICES = [
   },
   {
     id: "couples",
-    name: "Couples Therapy",
+    name: "Couples/Family Therapy",
     price: "₹4000 per session",
-    description: "Rebuild trust, improve communication, and foster deeper connection with your partner. Uses EFT, Gottman Method, and Imago Therapy.",
+    description: "Rebuild trust, improve communication, and foster deeper connection with your partner or family. Uses EFT, Gottman Method, and Imago Therapy.",
     link: "/services/couples",
   },
   {
     id: "coaching",
-    name: "Personal & Executive Coaching",
+    name: "Coaching",
     price: "₹3500 per session",
     description: "Goal-oriented coaching for career transitions, leadership growth, personal development, and overcoming burnout.",
     link: "/services/coaching",
@@ -42,15 +42,15 @@ const FAQS = [
   { q: "What can I expect from a therapy session?", a: "A safe, non-judgmental space where we explore your thoughts, emotions, and behaviors using CBT, DBT, psychoanalysis, and trauma-informed care." },
   { q: "What is the difference between therapy and coaching?", a: "Therapy focuses on exploring past experiences and healing emotional pain. Coaching is future-oriented, helping you set and achieve personal or professional goals." },
   { q: "How do I know which service is right for me?", a: "During a complimentary initial consultation, we can discuss your goals and decide together what kind of support fits best." },
-  { q: "What are the fees?", a: "Individual Therapy: ₹3000/session · Couples Therapy: ₹4000/session · Coaching: ₹3500/session. A sliding scale is available for those who need it." },
-  { q: "What services do you offer?", a: "Individual Therapy, Couples Therapy, Personal & Executive Coaching, Group Sessions, and Christian Counseling." },
+  { q: "What are the fees?", a: "Individual Therapy: ₹3000/session · Couples/Family Therapy: ₹4000/session · Coaching: ₹3500/session. A sliding scale is available for those who need it." },
+  { q: "What services do you offer?", a: "Individual Therapy, Couples/Family Therapy, Coaching, Group Sessions, and Christian Counseling." },
   { q: "How long does a session last?", a: "Most sessions are 45 minutes. Length may be adjusted based on your needs." },
   { q: "How many sessions will I need?", a: "It varies by individual goals. Therapy can be short-term or long-term. Coaching typically has a clear set number of sessions focused on goal achievement." },
   { q: "Do you accept insurance?", a: "You'll receive a receipt after each session which you can submit to your insurance provider for possible reimbursement. Please check with your provider beforehand." },
   { q: "What happens in the first session?", a: "Your first session focuses on understanding your unique situation, discussing your goals, and co-creating a personalized plan for your journey." },
-  { q: "What therapeutic approaches do you use?", a: "Person-centered therapy is the foundation, complemented by CBT, DBT, trauma-informed care, psychoanalysis, and psychodynamics." },
+  { q: "What therapeutic approaches do you use?", a: "Therapy is grounded in a Humanistic Approach, complemented by Psychodynamic Therapy, Trauma-Informed Practice, and Positive Psychology, as well as Gottman and Imago approaches for couples." },
   { q: "How do I prepare for a virtual session?", a: "Ensure you have a quiet, private space with a reliable internet connection. Come prepared with any concerns or questions you'd like to address." },
-  { q: "Do you offer Couples Therapy?", a: "Yes. Couples Therapy helps partners navigate relationship challenges, improve communication, resolve conflicts, and strengthen emotional connection." },
+  { q: "Do you offer Couples/Family Therapy?", a: "Yes. Couples/Family Therapy helps partners and family members navigate relationship challenges, improve communication, resolve conflicts, and strengthen emotional connection." },
   { q: "How can couples therapy benefit my relationship?", a: "It enhances understanding, facilitates conflict resolution, and provides tools to navigate challenges — fostering a healthier and more fulfilling relationship." },
   { q: "What happens in a couples therapy session?", a: "Guided discussions about relationship dynamics, identifying patterns, and developing strategies for effective communication and problem-solving." },
 ];
@@ -102,7 +102,7 @@ function matchIntent(input: string): BotMessage {
   // FEES / PRICING
   if (/fee|price|pricing|cost|how much|rate|charge|afford|sliding scale/.test(msg)) {
     return {
-      text: `Here are our current session fees:\n\n• Individual Therapy — ₹3,000 / session\n• Couples Therapy — ₹4,000 / session\n• Personal / Executive Coaching — ₹3,500 / session\n\n💛 A sliding scale is available to ensure therapy remains accessible to everyone. Please reach out to discuss flexible options.`,
+      text: `Here are our current session fees:\n\n• Individual Therapy — ₹3,000 / session\n• Couples/Family Therapy — ₹4,000 / session\n• Coaching — ₹3,500 / session\n\n💛 A sliding scale is available to ensure therapy remains accessible to everyone. Please reach out to discuss flexible options.`,
       links: [{ label: "Book a Free Consultation ↗", href: "/book-session" }],
       suggestions: ["Are sessions virtual?", "What is covered in individual therapy?", "How many sessions will I need?"],
     };
@@ -113,7 +113,7 @@ function matchIntent(input: string): BotMessage {
     return {
       text: `Navisamarnath offers the following services:\n\n${SERVICES.map((s) => `• ${s.name} — ${s.price}`).join("\n")}\n\nChristian Counseling is also available upon request. Which service would you like to know more about?`,
       links: SERVICES.map((s) => ({ label: s.name, href: s.link })),
-      suggestions: ["Individual Therapy", "Couples Therapy", "Coaching", "Group Sessions"],
+      suggestions: ["Individual Therapy", "Couples/Family Therapy", "Coaching", "Group Sessions"],
     };
   }
 
@@ -121,17 +121,17 @@ function matchIntent(input: string): BotMessage {
   if (/individual therapy|personal therapy|one.on.one|solo therapy|anxiety|depression|trauma|ptsd|burnout|stress|emotional/.test(msg)) {
     const s = SERVICES[0];
     return {
-      text: `**Individual Therapy** — ${s.price}\n\n${s.description}\n\nApproaches used: CBT, DBT, Trauma-Informed Care, Psychodynamics, and Person-Centered Therapy.`,
+      text: `**Individual Therapy** — ${s.price}\n\n${s.description}\n\nApproaches used: Humanistic Approach, Psychodynamic Therapy, Trauma-Informed Practice, and Positive Psychology.`,
       links: [{ label: "Learn more ↗", href: s.link }, { label: "Book a session ↗", href: "/book-session" }],
       suggestions: ["What are the fees?", "How many sessions will I need?", "Are sessions virtual?"],
     };
   }
 
   // COUPLES THERAPY
-  if (/couple|relationship|partner|marriage|spouse|boyfriend|girlfriend|conflict|communication/.test(msg)) {
+  if (/couple|family|relationship|partner|marriage|spouse|boyfriend|girlfriend|conflict|communication/.test(msg)) {
     const s = SERVICES[1];
     return {
-      text: `**Couples Therapy** — ${s.price}\n\n${s.description}\n\nSessions involve guided discussions on relationship dynamics, communication patterns, and practical conflict-resolution strategies.`,
+      text: `**Couples/Family Therapy** — ${s.price}\n\n${s.description}\n\nSessions involve guided discussions on relationship dynamics, communication patterns, and practical conflict-resolution strategies.`,
       links: [{ label: "Learn more ↗", href: s.link }, { label: "Book a session ↗", href: "/book-session" }],
       suggestions: ["How long is a couples session?", "What are the fees?", "Book a session"],
     };
@@ -141,7 +141,7 @@ function matchIntent(input: string): BotMessage {
   if (/coach|coaching|career|goal|professional|executive|leadership|performance|productivity|life coach/.test(msg)) {
     const s = SERVICES[2];
     return {
-      text: `**Personal & Executive Coaching** — ${s.price}\n\n${s.description}\n\nTypes offered: Life Coaching, Executive Coaching, OD Coaching, and NLP Coaching.`,
+      text: `**Coaching** — ${s.price}\n\n${s.description}\n\nTypes offered: Life Coaching, Executive Coaching, OD Coaching, and NLP Coaching.`,
       links: [{ label: "Learn more ↗", href: s.link }, { label: "Book a session ↗", href: "/book-session" }],
       suggestions: ["Difference between therapy and coaching?", "What are the fees?", "Book a session"],
     };
@@ -215,9 +215,9 @@ function matchIntent(input: string): BotMessage {
   }
 
   // THERAPEUTIC APPROACHES / MODALITIES
-  if (/cbt|dbt|approach|modality|method|psychoanalysis|trauma.informed|person.centered|technique|evidence.based/.test(msg)) {
+  if (/cbt|dbt|approach|modality|method|psychoanalysis|trauma.informed|humanistic|positive psychology|psychodynamic|technique|evidence.based/.test(msg)) {
     return {
-      text: `Navisamarnath's therapeutic foundation is **Person-Centered Therapy**, tailored to your unique needs. This is complemented by:\n\n• **CBT** — changing negative thought patterns\n• **DBT** — managing intense emotions through mindfulness\n• **Trauma-Informed Care** — processing trauma safely\n• **Psychodynamics & Psychoanalysis** — exploring unconscious patterns\n• **EFT** (for couples) — improving emotional bonds\n• **Gottman Method** (for couples) — research-based relationship tools`,
+      text: `Navisamarnath's therapy is grounded in a **Humanistic Approach**, placing your needs at the centre of care. This is complemented by:\n\n• **Humanistic Approach** — developing self-awareness and authenticity\n• **Psychodynamic Therapy** — exploring patterns and past influences\n• **Trauma-Informed Practice** — prioritizing safety, trust, and empowerment\n• **Positive Psychology** — building upon strengths, values, and resilience\n• **EFT & Gottman Method** (for couples) — strengthening relational bonds`,
       suggestions: ["What is individual therapy?", "What is couples therapy?", "Book a session"],
     };
   }
@@ -418,7 +418,7 @@ export default function Chatbot() {
             }}>🌿</div>
             <div>
               <p style={{ margin: 0, fontWeight: 700, color: "#fff", fontSize: "0.95rem" }}>Navis Virtual Assistant</p>
-              <p style={{ margin: 0, fontSize: "0.75rem", color: "rgba(255,255,255,0.65)" }}>Dr. Navisamarnath's Practice</p>
+              <p style={{ margin: 0, fontSize: "0.75rem", color: "rgba(255,255,255,0.65)" }}>Navisamarnath's Practice</p>
             </div>
             <span style={{ marginLeft: "auto", width: "8px", height: "8px", borderRadius: "50%", background: "#4ade80" }} />
           </div>

@@ -25,7 +25,7 @@ export default function BookSessionPage() {
           <div className="service-booking-copy">
             <div className="service-booking-full-image">
               <Image
-                src="/navis-consultation.png"
+                src="/DSC_5301c.jpg"
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized

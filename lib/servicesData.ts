@@ -64,7 +64,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Healing Trauma",
         description:
           "Process and heal from past emotional wounds or trauma in a supportive space.",
-        image: "/therapy-conversation.jpg",
+        image: "/DSC_5254c.jpg",
       },
       {
         title: "Life Transitions",
@@ -76,7 +76,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Behavioral Insight",
         description:
           "Gain understanding of recurring emotional patterns and behaviors that may hold you back.",
-        image: "/therapy-conversation.jpg",
+        image: "/594A1309.JPG",
       },
       {
         title: "Personal Growth",
@@ -120,27 +120,27 @@ export const servicesData: ServiceDetail[] = [
     ],
     modalitiesTitle: "Therapeutic Modalities",
     modalitiesIntro:
-      "At Navisamarnath, therapy is built on a Person-Centered approach, which ensures that your individual needs are at the heart of each session. This foundational method is complemented by other evidence-based modalities, such as:",
+      "At Navisamarnath, therapy is grounded in a humanistic approach, placing your experiences, needs, and goals at the centre of the therapeutic process. From this foundation, I draw on different evidence-informed approaches depending on what you bring to therapy and what may be most helpful for you.",
     modalitiesItems: [
       {
-        name: "Cognitive Behavioral Therapy (CBT)",
+        name: "Humanistic Approach",
         description:
-          "CBT focuses on identifying and changing negative thought patterns and behaviors, helping clients develop healthier perspectives and coping strategies.",
+          "A humanistic approach views you as a whole person, with your own experiences, strengths, values, and capacity for growth. Therapy offers a supportive and non-judgmental space to develop greater self-awareness, authenticity, and a deeper understanding of yourself.",
       },
       {
-        name: "Dialectical Behavior Therapy (DBT)",
+        name: "Psychodynamic Therapy",
         description:
-          "DBT combines cognitive-behavioral techniques with mindfulness practices to help clients manage intense emotions and improve relationships.",
+          "Psychodynamic therapy explores how past experiences, relationships, emotions, and underlying patterns can influence the way you think, feel, and relate in the present. Developing insight into these patterns can create space for meaningful and lasting change.",
       },
       {
-        name: "Trauma-Informed Care",
+        name: "Trauma-Informed Practice",
         description:
-          "Trauma-informed acknowledges the impact of trauma, focusing on safety, trust, and empowerment to help clients process their experiences and build resilience.",
+          "A trauma-informed approach recognizes how difficult or overwhelming experiences can shape emotional wellbeing, relationships, and responses to the world. Therapy prioritizes safety, trust, choice, and empowerment while respecting your pace and personal experience.",
       },
       {
-        name: "Psychodynamics & Psychoanalysis",
+        name: "Positive Psychology",
         description:
-          "This approach explores how unconscious processes and past experiences shape thoughts and behaviors, fostering deeper self-awareness and emotional growth.",
+          "Positive Psychology looks beyond difficulties to explore strengths, values, resilience, meaning, and the conditions that help people flourish. It can help you recognize and build upon the resources and possibilities already present in your life.",
       },
     ],
     ctaHeadline: "Take the next step toward your healing journey today",
@@ -149,11 +149,11 @@ export const servicesData: ServiceDetail[] = [
   {
     id: "couples",
     number: "02",
-    name: "Couples Therapy",
+    name: "Couples/Family Therapy",
     badge: "Relational",
     heroHeadline: "Strengthen Your Bond: Transformative Couples Therapy Awaits",
     heroIntro:
-      "Are you and your partner feeling disconnected, facing recurring conflicts, or struggling to navigate life’s challenges together? Relationships require effort, understanding, and growth, yet it can be hard to find clarity amidst the challenges. Couples therapy offers a supportive and nonjudgmental space where you can rebuild trust, improve communication, and foster deeper connection. It’s a journey toward a stronger, healthier partnership.",
+      "Are you and your partner feeling disconnected, facing recurring conflicts, or struggling to navigate life’s challenges together?\n\nRelationships require effort, understanding, and growth, yet it can be hard to find clarity amidst the challenges. Couples therapy offers a supportive and nonjudgmental space where you can rebuild trust, improve communication, and foster deeper connection. It’s a journey toward a stronger, healthier partnership.",
     image: "/service-couples.png",
     whyTitle: "Why Couples Therapy?",
     whySubheading:
@@ -169,13 +169,13 @@ export const servicesData: ServiceDetail[] = [
         title: "Conflict Resolution",
         description:
           "Address recurring arguments and resolve underlying issues with empathy and understanding.",
-        image: "/therapy-conversation.jpg",
+        image: "/DSC_5254c.jpg",
       },
       {
         title: "Rebuilding Trust",
         description:
           "Work through breaches of trust and rebuild emotional safety in the relationship.",
-        image: "/therapy-conversation.jpg",
+        image: "/DSC_5301c.jpg",
       },
       {
         title: "Strengthening Connection",
@@ -190,10 +190,10 @@ export const servicesData: ServiceDetail[] = [
         image: "/service-coaching.png",
       },
       {
-        title: "Shared Growth",
+        title: "Individual & Shared Growth",
         description:
-          "Explore individual and shared goals to build a fulfilling life together.",
-        image: "/service-groups.png",
+          "Explore individual therapy insights and shared relational goals to build a fulfilling life together.",
+        image: "/service-individual.png",
       },
     ],
     benefitsTitle: "Benefits of Couples Therapy",
@@ -231,27 +231,27 @@ export const servicesData: ServiceDetail[] = [
     ],
     modalitiesTitle: "Approach to Couples Therapy",
     modalitiesIntro:
-      "Couples therapy at Navisamarnath is tailored to meet the unique needs of your relationship. Rooted in evidence-based practices, it focuses on creating a supportive environment for both partners. Therapeutic methods include:",
+      "Every relationship has its own story, patterns, strengths, and challenges. At Navisamarnath, couples therapy provides a supportive space where both partners can feel heard, understand what is happening beneath recurring conflicts, and work toward a healthier and more connected relationship.\n\nMy work draws from evidence-informed and relationship-focused approaches, tailored to the needs of each couple.",
     modalitiesItems: [
       {
-        name: "Emotionally Focused Therapy (EFT)",
+        name: "Humanistic & Relational Approach",
         description:
-          "Focuses on improving emotional bonds by helping partners recognize and respond to each other’s needs. This approach fosters greater intimacy and builds a secure foundation for lasting connection.",
+          "A humanistic and relational foundation keeps both partners and the relationship at the centre of the work. It creates space for openness, empathy, and mutual understanding while helping couples explore how they experience and respond to one another.",
       },
       {
         name: "Imago Relationship Therapy",
         description:
-          "Helps couples understand and transform conflict into opportunities for growth. By exploring the unconscious dynamics of your relationship, it promotes healing and deeper empathy.",
+          "Imago helps couples look beneath recurring conflicts to understand the deeper experiences, needs, and patterns that shape their relationship. Through greater empathy and understanding, couples can begin to transform conflict into opportunities for connection and growth.",
       },
       {
-        name: "Gottman Method Couples Therapy",
+        name: "Gottman-Informed Approach",
         description:
-          "Based on decades of research, this method provides practical tools to enhance intimacy, manage conflict effectively, and create shared meaning in your relationship with a more resilient connection.",
+          "Drawing on decades of relationship research, the Gottman approach offers practical ways to strengthen friendship, communication, emotional connection, and conflict management. It also helps couples build greater resilience and shared meaning in their relationship.",
       },
       {
         name: "Integrative Behavioral Couple Therapy (IBCT)",
         description:
-          "Combines acceptance and change strategies to address relationship struggles. It encourages open communication, fosters greater emotional understanding, with more stronger and flexible partnerships.",
+          "IBCT brings together acceptance and change to help couples understand difficult patterns without losing sight of the possibility for growth. It supports greater emotional understanding, flexibility, and more constructive ways of responding to one another.",
       },
     ],
     ctaHeadline: "Take the next step toward your healing journey today",
@@ -260,7 +260,7 @@ export const servicesData: ServiceDetail[] = [
   {
     id: "coaching",
     number: "03",
-    name: "Personal & Executive Coaching",
+    name: "Coaching",
     badge: "Goal-Oriented",
     heroHeadline: "Unlock Your Potential: Transformative Coaching Awaits",
     heroIntro:
@@ -292,13 +292,13 @@ export const servicesData: ServiceDetail[] = [
         title: "Stress and Burnout",
         description:
           "Identifying stressors and implementing techniques to increase resilience.",
-        image: "/therapy-conversation.jpg",
+        image: "/DSC_5254c.jpg",
       },
       {
         title: "Personal Growth",
         description:
           "Enhancing self-awareness, confidence, and emotional intelligence.",
-        image: "/about-navisamarnath.jpg",
+        image: "/Antony.jpg",
       },
       {
         title: "Relationship Building",
@@ -390,7 +390,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Emotional Support",
         description:
           "Benefit from the encouragement and empathy of fellow participants, helping to reduce feelings of isolation.",
-        image: "/therapy-conversation.jpg",
+        image: "/DSC_5254c.jpg",
       },
       {
         title: "Diverse Perspectives",
@@ -408,7 +408,7 @@ export const servicesData: ServiceDetail[] = [
         title: "Facilitated Guidance",
         description:
           "Receive professional support to navigate group dynamics and ensure a productive environment.",
-        image: "/therapy-conversation.jpg",
+        image: "/594A1309.JPG",
       },
       {
         title: "Empowerment",

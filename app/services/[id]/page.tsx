@@ -278,7 +278,7 @@ export default function ServiceDetailPage({
           <div className="service-booking-copy" data-reveal>
             <div className="service-booking-full-image">
               <Image
-                src="/navis-consultation.png"
+                src="/DSC_5301c.jpg"
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized

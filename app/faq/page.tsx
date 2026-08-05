@@ -53,14 +53,14 @@ export const faqs: FAQItem[] = [
     category: "Fees & Accessibility",
     question: "What are the fees for your services?",
     answer:
-      "Services are priced as follows:\n• Individual Therapy: ₹3000 per session\n• Couples Therapy: ₹4000 per session\n• Coaching: ₹3500 per session\n\nI’m committed to making therapy accessible to everyone. To support this, I offer a sliding scale to ensure services remain available to all those in need. Please feel free to reach out to explore flexible options.",
+      "Services are priced as follows:\n• Individual Therapy: ₹3000 per session\n• Couples/Family Therapy: ₹4000 per session\n• Coaching: ₹3500 per session\n\nI’m committed to making therapy accessible to everyone. To support this, I offer a sliding scale to ensure services remain available to all those in need. Please feel free to reach out to explore flexible options.",
   },
   {
     id: "services-offered",
     category: "Services Overview",
     question: "What services do you offer?",
     answer:
-      "I offer a range of services, including Therapy, Coaching, Christian Counseling, Group Therapy Sessions, and Couples Therapy. Each service is designed to support your personal growth and well-being, tailored to your individual needs.",
+      "I offer a range of services, including Therapy, Coaching, Christian Counseling, Group Therapy Sessions, and Couples/Family Therapy. Each service is designed to support your personal growth and well-being, tailored to your individual needs.",
   },
   {
     id: "session-duration",
@@ -95,7 +95,7 @@ export const faqs: FAQItem[] = [
     category: "Therapy Process",
     question: "What therapeutic approaches do you use?",
     answer:
-      "The foundational approach is person-centered therapy, which prioritizes your unique experiences and needs. Additionally, therapy may incorporate various modalities, including Cognitive Behavioral Therapy (CBT), Dialectical Behavior Therapy (DBT), trauma-informed care, psychoanalysis, and psychodynamics, all tailored to support your personal growth and healing journey.",
+      "Therapy is grounded in a humanistic approach, placing your experiences, needs, and goals at the centre of the therapeutic process. From this foundation, I draw on different evidence-informed approaches—including Psychodynamic Therapy, Trauma-Informed Practice, and Positive Psychology—tailored to support your personal growth and healing journey.",
   },
   {
     id: "virtual-preparation",
@@ -106,24 +106,24 @@ export const faqs: FAQItem[] = [
   },
   {
     id: "couples-therapy-offer",
-    category: "Couples Therapy",
-    question: "Do you offer Couples Therapy?",
+    category: "Couples/Family Therapy",
+    question: "Do you offer Couples/Family Therapy?",
     answer:
-      "Yes, I provide Couples Therapy to help partners navigate their relationship challenges. Together, we work to improve communication, resolve conflicts, and strengthen your emotional connection.",
+      "Yes, I provide Couples/Family Therapy to help partners and family members navigate their relationship challenges. Together, we work to improve communication, resolve conflicts, and strengthen your emotional connection.",
   },
   {
     id: "couples-therapy-benefits",
-    category: "Couples Therapy",
-    question: "How can couples therapy benefit my relationship?",
+    category: "Couples/Family Therapy",
+    question: "How can couples/family therapy benefit my relationship?",
     answer:
-      "Couples therapy can enhance understanding between partners, facilitate conflict resolution, and provide tools to navigate challenges, ultimately fostering a healthier and more fulfilling relationship.",
+      "Couples/Family therapy can enhance understanding between partners and family members, facilitate conflict resolution, and provide tools to navigate challenges, ultimately fostering a healthier and more fulfilling relationship.",
   },
   {
     id: "couples-session-expectations",
-    category: "Couples Therapy",
-    question: "What can I expect during a couples therapy session?",
+    category: "Couples/Family Therapy",
+    question: "What can I expect during a couples/family therapy session?",
     answer:
-      "In couples therapy, sessions typically involve guided discussions about relationship dynamics, identifying patterns, and developing strategies for effective communication and problem-solving.",
+      "In couples/family therapy, sessions typically involve guided discussions about relationship dynamics, identifying patterns, and developing strategies for effective communication and problem-solving.",
   },
 ];
 

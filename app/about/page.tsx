@@ -17,13 +17,13 @@ const educationalCredentials = [
   {
     title: "MA in Clinical Counselling",
     type: "Master's Degree",
-    category: "Clinical & Counseling",
+    category: "Counseling and Psychotherapy",
     icon: "graduation",
   },
   {
     title: "MS in Counselling & Psychotherapy",
     type: "Master's Degree",
-    category: "Clinical & Counseling",
+    category: "Counseling and Psychotherapy",
     icon: "brain",
   },
   {
@@ -33,15 +33,9 @@ const educationalCredentials = [
     icon: "briefcase",
   },
   {
-    title: "MS in Innovative Education & Teaching",
-    type: "Master's Degree",
-    category: "Education & Specialized Care",
-    icon: "graduation",
-  },
-  {
     title: "Diploma in Counselling & Psychotherapy",
-    type: "Postgraduate Diploma",
-    category: "Clinical & Counseling",
+    type: "Diploma",
+    category: "Counseling and Psychotherapy",
     icon: "certificate",
   },
   {
@@ -56,12 +50,6 @@ const educationalCredentials = [
     category: "Coaching & Leadership",
     icon: "briefcase",
   },
-  {
-    title: "Diploma in Education, Teaching & Learning",
-    type: "Specialized Diploma",
-    category: "Education & Specialized Care",
-    icon: "certificate",
-  },
 ];
 
 const professionalCertifications = [
@@ -72,8 +60,8 @@ const professionalCertifications = [
     icon: "zap",
   },
   {
-    title: "Certified Clinical Trauma Professional",
-    category: "Education & Specialized Care",
+    title: "Certified Clinical Trauma Professional (CCTP)",
+    category: "Counseling and Psychotherapy",
     badge: "Clinical Specialty",
     icon: "shield",
   },
@@ -85,7 +73,7 @@ const professionalCertifications = [
   },
   {
     title: "Certified Relationship Coach",
-    category: "Clinical & Counseling",
+    category: "Counseling and Psychotherapy",
     badge: "Relational Care",
     icon: "heart",
   },
@@ -102,8 +90,8 @@ const professionalCertifications = [
     icon: "zap",
   },
   {
-    title: "Certified Grief Professional",
-    category: "Education & Specialized Care",
+    title: "Certified Grief Professional (CGP)",
+    category: "Counseling and Psychotherapy",
     badge: "Bereavement Care",
     icon: "heart",
   },
@@ -163,7 +151,7 @@ function Arrow({ down = false }: { down?: boolean }) {
 
 export default function AboutPage() {
   const rootRef = useRef<HTMLElement>(null);
-  const [activeTab, setActiveTab] = useState<"story" | "journey" | "affiliations">("story");
+  const [activeTab, setActiveTab] = useState<"story" | "journey">("story");
   const [filterCategory, setFilterCategory] = useState<string>("All");
 
   useEffect(() => {
@@ -224,7 +212,7 @@ export default function AboutPage() {
         <div className="about-top-hero-visual" data-reveal>
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/about-hero-navis.png"
+              src="/594A1309.JPG"
               alt="Navisamarnath in his therapy studio"
               fill
               priority
@@ -247,10 +235,10 @@ export default function AboutPage() {
         <section className="about-story-section" style={{ padding: "60px 24px", borderBottom: "1px solid var(--sample-line)" }}>
           <div className="about-story-layout" style={{ maxWidth: "1140px", margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(260px, 320px) 1fr", gap: "48px", alignItems: "start" }}>
             
-            {/* LEFT COLUMN: MEMBERSHIPS BADGES GRID */}
+            {/* LEFT COLUMN: MEMBERSHIPS & ETHICS / RECOGNIZED AFFILIATIONS */}
             <div className="about-affiliations" data-reveal style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <span style={{ fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--brand-accent)", fontWeight: 700 }}>
-                Recognized Affiliations
+                Memberships &amp; Ethics
               </span>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {memberships.map((m) => (
@@ -268,8 +256,7 @@ export default function AboutPage() {
               <div className="about-story-tabs" style={{ display: "flex", gap: "10px", borderBottom: "1px solid var(--sample-line)", paddingBottom: "14px", flexWrap: "wrap" }}>
                 {[
                   { id: "story", label: "My Philosophy" },
-                  { id: "journey", label: "Professional Journey" },
-                  { id: "affiliations", label: "Memberships & Ethics" }
+                  { id: "journey", label: "Professional Journey" }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -318,27 +305,6 @@ export default function AboutPage() {
                     </p>
                   </div>
                 )}
-
-                {activeTab === "affiliations" && (
-                  <div key="affiliations" className="about-tab-panel" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-                    <p style={{ margin: 0 }}>
-                      I maintain strict adherence to professional standards, ethics, and lifelong learning through active affiliations with leading professional associations:
-                    </p>
-                    <ul style={{ listStyleType: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
-                      {[
-                        { name: "Canadian Counseling and Psychotherapy Association (CCPA)", role: "Active Member" },
-                        { name: "Canadian Association for Couple and Family Therapy (CACFT)", role: "Associate Member" },
-                        { name: "American Association for Marriage and Family Therapy (AAMFT)", role: "Professional Member" },
-                        { name: "Certified Coaches Alliance (CCA)", role: "Active Member" }
-                      ].map((aff, idx) => (
-                        <li key={idx} style={{ display: "flex", justifyContent: "space-between", background: "var(--sample-paper)", border: "1px solid var(--sample-line)", padding: "12px 18px", borderRadius: "10px", fontSize: "0.92rem" }}>
-                          <span style={{ fontWeight: 500, color: "var(--sample-ink)" }}>{aff.name}</span>
-                          <span style={{ fontSize: "0.78rem", textTransform: "uppercase", color: "var(--brand-accent)", fontWeight: 600 }}>{aff.role}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -351,26 +317,24 @@ export default function AboutPage() {
               <span className="sample-overline" style={{ color: "var(--brand-accent)", fontWeight: 700 }}>
                 EXPERTISE &amp; QUALIFICATIONS
               </span>
-              <h2>Rooted in Academic Rigor &amp; Clinical Excellence</h2>
+              <h2>Grounded in Learning. Shaped by Experience.</h2>
             </div>
 
             {/* CATEGORY FILTER TABS */}
             <div className="credentials-filter-tabs" data-reveal>
               {[
-                "All",
-                "Clinical & Counseling",
+                "Counseling and Psychotherapy",
                 "Coaching & Leadership",
-                "Education & Specialized Care",
               ].map((cat) => (
                 <button
                   key={cat}
                   type="button"
                   className={`credentials-filter-btn ${
-                    filterCategory === cat ? "is-active" : ""
+                    filterCategory === cat || (filterCategory === "All" && cat === "Counseling and Psychotherapy") ? "is-active" : ""
                   }`}
                   onClick={() => setFilterCategory(cat)}
                 >
-                  {cat === "All" ? "All Qualifications" : cat}
+                  {cat}
                 </button>
               ))}
             </div>
@@ -397,7 +361,7 @@ export default function AboutPage() {
                   {educationalCredentials
                     .filter(
                       (item) =>
-                        filterCategory === "All" || item.category === filterCategory
+                        filterCategory === "All" || item.category === filterCategory || (filterCategory === "All" && item.category === "Counseling and Psychotherapy")
                     )
                     .map((cred) => (
                       <div key={cred.title} className="credential-item-card">
@@ -433,7 +397,7 @@ export default function AboutPage() {
                   {professionalCertifications
                     .filter(
                       (item) =>
-                        filterCategory === "All" || item.category === filterCategory
+                        filterCategory === "All" || item.category === filterCategory || (filterCategory === "All" && item.category === "Counseling and Psychotherapy")
                     )
                     .map((cert) => (
                       <div key={cert.title} className="credential-item-card">
@@ -452,25 +416,25 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* COMPACT SECTION 2: SIDE BY SIDE (THERAPEUTIC APPROACHES + WHY I DO WHAT I DO) */}
+        {/* COMPACT SECTION 2: SIDE BY SIDE (HOW I DO? + WHY I DO WHAT I DO) */}
         <section style={{ padding: "48px 24px", borderBottom: "1px solid var(--sample-line)" }}>
           <div style={{ maxWidth: "1140px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "48px" }}>
             
-            {/* THERAPEUTIC APPROACHES */}
+            {/* HOW I DO? */}
             <div data-reveal style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
                 <span style={{ fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--sample-cyan)", fontWeight: 600 }}>Approach</span>
-                <h2 style={{ fontSize: "1.8rem", letterSpacing: "-0.02em", margin: "4px 0 0" }}>Therapeutic Approaches</h2>
+                <h2 style={{ fontSize: "1.8rem", letterSpacing: "-0.02em", margin: "4px 0 0" }}>How I do?</h2>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", fontSize: "0.95rem", lineHeight: "1.65", color: "#52595d" }}>
                 <p style={{ margin: 0 }}>
-                  At Navisamarnath, therapy starts with a client-centered approach, creating a safe, supportive space for individuals to explore their thoughts and emotions. I blend various modalities, including Cognitive Behavioral Therapy (CBT), Dialectical Behavior Therapy (DBT), trauma-informed care, psychoanalysis, psychodynamics, and mindfulness, to meet each client’s unique needs.
+                  At Navisamarnath, therapy begins with understanding you — your experiences, relationships, patterns, and the things that matter most. I offer a warm, collaborative space to explore what you&apos;re going through with honesty, curiosity, and without judgment.
                 </p>
                 <p style={{ margin: 0 }}>
-                  By tailoring the therapeutic experience, clients receive personalized care that addresses emotional, mental, and practical aspects of their lives. This approach encourages self-discovery and emotional resilience, helping clients gain clarity, overcome obstacles, and develop lasting tools for change.
+                  My work is grounded in a humanistic, person-centred, relational, and insight-oriented approach, drawing from psychodynamic therapy, trauma-informed practice, motivational interviewing, positive psychology, and relationship-focused approaches such as Gottman and Imago. Rather than applying one method to everyone, I tailor the work to your needs, experiences, and goals.
                 </p>
                 <p style={{ margin: 0 }}>
-                  Through this process, individuals unlock their potential and move toward a more empowered, fulfilling life, equipped to handle challenges with confidence.
+                  Therapy can be a space to work through what&apos;s difficult — and to understand yourself more deeply, recognize your patterns, build on your strengths, strengthen your relationships, and make meaningful change. Together, we move toward greater clarity, authenticity, and a life that feels more aligned with who you are and who you&apos;re becoming.
                 </p>
               </div>
             </div>

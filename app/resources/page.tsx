@@ -20,9 +20,8 @@ type ResourceGroup = {
   items: ResourceItem[];
 };
 
-type ResourcePillar = {
-  id: "all" | "inner-child" | "positive-thinking" | "self-esteem";
-  pillar: string;
+type ResourceSection = {
+  id: "all" | "inner-child" | "positive-thinking" | "self-esteem" | "relationships";
   title: string;
   deck: string;
   summary: string;
@@ -30,10 +29,9 @@ type ResourcePillar = {
   groups: ResourceGroup[];
 };
 
-const resourcePillars: ResourcePillar[] = [
+const resourceSections: ResourceSection[] = [
   {
     id: "inner-child",
-    pillar: "Pillar 01",
     title: "Healing the Inner Child",
     deck: "Reparenting, trauma recovery, and reconnection with younger parts of yourself.",
     summary:
@@ -78,7 +76,6 @@ const resourcePillars: ResourcePillar[] = [
   },
   {
     id: "positive-thinking",
-    pillar: "Pillar 02",
     title: "Positive Thinking",
     deck: "Mindset tools that support resilience, hope, and practical growth under pressure.",
     summary:
@@ -123,7 +120,6 @@ const resourcePillars: ResourcePillar[] = [
   },
   {
     id: "self-esteem",
-    pillar: "Pillar 03",
     title: "Building Self-Esteem",
     deck: "References that strengthen self-worth, confidence, and a steadier sense of self.",
     summary:
@@ -166,13 +162,57 @@ const resourcePillars: ResourcePillar[] = [
       },
     ],
   },
+  {
+    id: "relationships",
+    title: "Relationships",
+    deck: "Communication, emotional awareness, empathy, and building healthier connections.",
+    summary:
+      "Healthy relationships are built through communication, trust, emotional awareness, empathy, and a willingness to understand ourselves and each other. Exploring our relationship patterns can help us build deeper, healthier, and more fulfilling connections.",
+    tags: ["Communication", "Connection", "Empathy", "Attachment"],
+    groups: [
+      {
+        title: "Books",
+        countLabel: "5 books",
+        featured: true,
+        items: [
+          { title: "The Seven Principles for Making Marriage Work", author: "John Gottman & Nan Silver", desc: "Research-informed strategies for strengthening communication, connection, and conflict management." },
+          { title: "Hold Me Tight", author: "Sue Johnson", desc: "Explores emotional connection and the patterns that can bring couples closer or create distance." },
+          { title: "Attached", author: "Amir Levine & Rachel Heller", desc: "Introduces attachment styles and how they influence the way we connect with others." },
+          { title: "Nonviolent Communication", author: "Marshall B. Rosenberg", desc: "Practical guidance for communicating with greater empathy, clarity, and understanding." },
+          { title: "Mating in Captivity", author: "Esther Perel", desc: "Explores intimacy, desire, individuality, and connection in long-term relationships." },
+        ],
+      },
+      {
+        title: "Podcasts",
+        countLabel: "4 podcasts",
+        items: [
+          { title: "Where Should We Begin? with Esther Perel", desc: "Real conversations exploring relationships, intimacy, conflict, and connection." },
+          { title: "The Gottman Institute Podcast", desc: "Research-informed conversations about communication, conflict, and stronger relationships." },
+          { title: "Dear Therapists", desc: "Therapists explore personal and relationship challenges through thoughtful conversations." },
+          { title: "The Psychology Podcast", author: "Scott Barry Kaufman", desc: "Explores psychology, human connection, relationships, and personal growth." },
+        ],
+      },
+      {
+        title: "Websites",
+        countLabel: "5 websites",
+        items: [
+          { title: "The Gottman Institute", url: "https://www.gottman.com/", desc: "Research-informed resources on communication, conflict, intimacy, and relationships." },
+          { title: "Psychology Today", url: "https://www.psychologytoday.com/us", desc: "Accessible articles covering relationships, attachment, communication, boundaries, and intimacy." },
+          { title: "Esther Perel", url: "https://www.estherperel.com/", desc: "Insights and resources on relationships, intimacy, desire, and connection." },
+          { title: "Greater Good Science Center", url: "https://greatergood.berkeley.edu/", desc: "Research-informed resources on empathy, compassion, forgiveness, and relationships." },
+          { title: "Mindful", url: "https://www.mindful.org/", desc: "Resources on mindfulness, self-awareness, compassion, and healthier relationships." },
+        ],
+      },
+    ],
+  },
 ];
 
 const tabs = [
-  { id: "all", label: "All pillars" },
+  { id: "all", label: "All topics" },
   { id: "inner-child", label: "Inner child" },
   { id: "positive-thinking", label: "Mindset" },
   { id: "self-esteem", label: "Self-esteem" },
+  { id: "relationships", label: "Relationships" },
 ] as const;
 
 function ResourceCard({ item }: { item: ResourceItem }) {
@@ -181,7 +221,7 @@ function ResourceCard({ item }: { item: ResourceItem }) {
       <strong className="resource-item-title">{item.title}</strong>
       {item.author && <span className="resource-item-author">{item.author}</span>}
       <span className="resource-item-desc">{item.desc}</span>
-      <span className="resource-item-action">{item.url ? "Open resource" : "Read more"}</span>
+      {item.url && <span className="resource-item-action">Open resource</span>}
     </>
   );
 
@@ -199,7 +239,7 @@ function ResourceCard({ item }: { item: ResourceItem }) {
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("all");
 
-  const visiblePillars = resourcePillars.filter((pillar) => activeTab === "all" || pillar.id === activeTab);
+  const visibleSections = resourceSections.filter((section) => activeTab === "all" || section.id === activeTab);
 
   return (
     <main id="top" className="sample-home resources-page">
@@ -213,7 +253,7 @@ export default function ResourcesPage() {
             A responsive, searchable library of books, podcasts, and trusted sites for the work between sessions.
           </p>
           <p className="resources-hero-text">
-            Explore focused pillars for inner child healing, mindset growth, and self-esteem building. Each section is designed to be quick to scan on mobile and easy to revisit on desktop.
+            Explore curated topics for inner child healing, mindset growth, self-esteem building, and healthy relationships. Each section is designed to be quick to scan on mobile and easy to revisit on desktop.
           </p>
 
           <div className="resources-hero-actions">
@@ -227,11 +267,11 @@ export default function ResourcesPage() {
 
           <div className="resources-hero-stats" aria-label="Resource highlights">
             <div>
-              <strong>3 pillars</strong>
+              <strong>4 topics</strong>
               <span>Focused categories</span>
             </div>
             <div>
-              <strong>15+ items</strong>
+              <strong>20+ items</strong>
               <span>Curated references</span>
             </div>
           </div>
@@ -239,7 +279,7 @@ export default function ResourcesPage() {
 
         <div className="resources-hero-visual">
           <Image
-            src="/resources-hero-navis.png"
+            src="/DSC_5254c.jpg"
             alt="Navisamarnath in study library"
             fill
             priority
@@ -249,7 +289,7 @@ export default function ResourcesPage() {
           />
           <div className="resources-hero-overlay">
             <span>Quick start</span>
-            <p>Tap a pillar to jump into a focused set of tools, books, and links.</p>
+            <p>Tap a topic to jump into a focused set of tools, books, and links.</p>
           </div>
         </div>
       </section>
@@ -271,26 +311,25 @@ export default function ResourcesPage() {
             </div>
 
             <div className="resource-stack">
-              {visiblePillars.map((pillar) => (
-                <article key={pillar.id} className="resource-pillar-card">
+              {visibleSections.map((section) => (
+                <article key={section.id} className="resource-pillar-card">
                   <div className="resource-pillar-header">
                     <div>
-                      <span className="resource-pillar-kicker">{pillar.pillar}</span>
-                      <h2>{pillar.title}</h2>
-                      <p>{pillar.deck}</p>
+                      <h2>{section.title}</h2>
+                      <p>{section.deck}</p>
                     </div>
 
-                    <div className="resource-pillar-tags" aria-label={`${pillar.title} tags`}>
-                      {pillar.tags.map((tag) => (
+                    <div className="resource-pillar-tags" aria-label={`${section.title} tags`}>
+                      {section.tags.map((tag) => (
                         <span key={tag}>{tag}</span>
                       ))}
                     </div>
                   </div>
 
-                  <p className="resource-pillar-summary">{pillar.summary}</p>
+                  <p className="resource-pillar-summary">{section.summary}</p>
 
                   <div className="resource-groups-grid">
-                    {pillar.groups.map((group) => (
+                    {section.groups.map((group) => (
                       <details key={group.title} className="resource-group-card" open={group.featured}>
                         <summary>
                           <div>

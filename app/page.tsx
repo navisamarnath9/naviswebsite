@@ -7,7 +7,6 @@ import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { faqs } from "./faq/page";
 import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 
 const services = [
@@ -21,7 +20,7 @@ const services = [
   },
   {
     number: "02",
-    title: "Personal coaching",
+    title: "Coaching",
     copy: "Focused support for meaningful ambitions, clearer decisions, and momentum that still feels like your own.",
     details: ["Clarity", "Confidence", "Purpose"],
     href: "/services/coaching",
@@ -29,7 +28,7 @@ const services = [
   },
   {
     number: "03",
-    title: "Couples therapy",
+    title: "Couples/Family Therapy",
     copy: "Guided conversations that make room for honesty, repair recurring patterns, and deepen connection.",
     details: ["Communication", "Trust", "Connection"],
     href: "/services/couples",
@@ -137,9 +136,10 @@ function Arrow({ down = false }: { down?: boolean }) {
 
 export default function Home() {
   const rootRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [latestArticles, setLatestArticles] = useState<BlogArticle[]>([]);
   const [loadingArticles, setLoadingArticles] = useState(true);
-  const [openFaqId, setOpenFaqId] = useState<string | null>("sessions-format");
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     async function fetchLatestArticles() {
@@ -209,7 +209,7 @@ export default function Home() {
       <section className="sample-hero" aria-labelledby="home-heading">
         <div className="sample-hero-media">
           <Image
-            src="/home-hero-navis.png"
+            src="/Antony.jpg"
             alt="Navisamarnath"
             fill
             priority
@@ -276,12 +276,22 @@ export default function Home() {
               }}
             >
               <video
+                ref={videoRef}
                 src="https://res.cloudinary.com/ndgpjcbs/video/upload/v1785835870/f_out_1_z2fwcd.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
+                poster="/homepage-video-thumbnail.png"
+                preload="metadata"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+                onClick={() => {
+                  if (videoRef.current) {
+                    if (videoRef.current.paused) {
+                      videoRef.current.play();
+                    } else {
+                      videoRef.current.pause();
+                    }
+                  }
+                }}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -289,19 +299,59 @@ export default function Home() {
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  objectPosition: "center 35%",
+                  cursor: "pointer",
                 }}
                 aria-label="Navisamarnath Introduction — Inspired by Magis"
               />
-              {/* Bottom gradient fade */}
-              <div style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: "120px",
-                background: "linear-gradient(to top, rgba(245,243,239,0.6), transparent)",
-                pointerEvents: "none",
-              }} />
+
+              {/* Centered Play Button Overlay */}
+              {!isPlaying && (
+                <button
+                  type="button"
+                  onClick={() => videoRef.current?.play()}
+                  aria-label="Play Introduction Video"
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "76px",
+                    height: "76px",
+                    borderRadius: "50%",
+                    background: "rgba(10, 48, 61, 0.85)",
+                    backdropFilter: "blur(8px)",
+                    border: "2px solid rgba(255, 255, 255, 0.5)",
+                    boxShadow: "0 12px 32px rgba(0, 0, 0, 0.35)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    zIndex: 10,
+                    transition: "transform 200ms ease, background 200ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translate(-50%, -50%) scale(1.08)";
+                    e.currentTarget.style.background = "#0A303D";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)";
+                    e.currentTarget.style.background = "rgba(10, 48, 61, 0.85)";
+                  }}
+                >
+                  <svg
+                    width="26"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ marginLeft: "4px" }}
+                  >
+                    <path d="M5 3L19 12L5 21V3Z" fill="#ffffff" />
+                  </svg>
+                </button>
+              )}
+
             </div>
 
           </div>
@@ -391,84 +441,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FAQ ACCORDION SECTION ON HOME PAGE */}
-        <section className="sample-section home-faq" id="faq" style={{ padding: "80px 24px", background: "var(--sample-paper)", borderTop: "1px solid var(--sample-line)" }}>
-          <div className="sample-section-heading" style={{ marginBottom: "48px" }}>
-            <p className="sample-side-label" data-reveal>
-              FAQ
-            </p>
-            <div data-reveal>
-              <p className="sample-overline">Transparency &amp; Practice Details</p>
-              <h2>Frequently Asked Questions</h2>
-            </div>
-            <p data-reveal>
-              Answers regarding virtual sessions, fees, therapeutic modalities, and what to expect during your journey with Navisamarnath.
-            </p>
-          </div>
-
-          <div className="mobile-faq-list" style={{ maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "14px" }}>
-            {faqs.map((faq) => {
-              const isOpen = openFaqId === faq.id;
-              return (
-                <div
-                  className="mobile-faq-item"
-                  key={faq.id}
-                  data-reveal
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid var(--sample-line)",
-                    borderRadius: "14px",
-                    overflow: "hidden",
-                    boxShadow: isOpen ? "0 6px 20px rgba(0,0,0,0.02)" : "none",
-                  }}
-                >
-                  <button
-                    className="mobile-faq-question"
-                    type="button"
-                    onClick={() => setOpenFaqId(isOpen ? null : faq.id)}
-                    style={{
-                      width: "100%",
-                      padding: "20px 24px",
-                      textAlign: "left",
-                      background: "none",
-                      border: "none",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      gap: "16px",
-                    }}
-                  >
-                    <span style={{ fontSize: "1.05rem", fontWeight: 600, color: "#18181b", lineHeight: 1.4 }}>
-                      {faq.question}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "1.3rem",
-                        color: "var(--brand-accent)",
-                        transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                        transition: "transform 200ms ease",
-                        lineHeight: 1,
-                        fontWeight: 700,
-                      }}
-                    >
-                      +
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <div className="mobile-faq-answer" style={{ padding: "0 24px 22px 24px", borderTop: "1px solid var(--sample-line)" }}>
-                      <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", lineHeight: 1.7, margin: "14px 0 0 0", whitespace: "pre-line" }}>
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
         <section className="sample-closing sample-section">
           <p className="sample-side-label" data-reveal>
             Your next step
@@ -481,7 +453,24 @@ export default function Home() {
               bringing you here, answer your questions, and see whether working
               together feels right.
             </p>
-            <Link href="/book-session">
+            <Link
+              href="/book-session"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                marginTop: "24px",
+                padding: "16px 36px",
+                borderRadius: "999px",
+                background: "#0A303D",
+                color: "#ffffff",
+                fontWeight: 600,
+                fontSize: "1.05rem",
+                boxShadow: "0 10px 25px rgba(10, 48, 61, 0.25)",
+                textDecoration: "none",
+                transition: "transform 200ms ease, background 200ms ease",
+              }}
+            >
               Request a consultation <Arrow />
             </Link>
           </div>
