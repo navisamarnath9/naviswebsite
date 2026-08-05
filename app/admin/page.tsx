@@ -3,7 +3,14 @@
 import { useState, useEffect, FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+} from "firebase/auth";
 import {
   collection,
   getDocs,
@@ -16,7 +23,12 @@ import {
 import { auth, db } from "@/lib/firebase";
 import { YouTubeVideo, getYouTubeVideoId, getYouTubeThumbnail } from "@/lib/videoSeries";
 
-const ADMIN_EMAIL = "navisamarnathtech@gmail.com";
+const ALLOWED_ADMIN_EMAILS = [
+  "navisamarnathtech@gmail.com",
+  ...(process.env.NEXT_PUBLIC_ADMIN_EMAILS
+    ? process.env.NEXT_PUBLIC_ADMIN_EMAILS.split(",").map((e) => e.trim().toLowerCase())
+    : []),
+];
 
 interface Article {
   id: string;
@@ -45,6 +57,8 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [signedInEmail, setSignedInEmail] = useState("");
   const [authError, setAuthError] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "videos">("bookings");
 
   // Blog State
@@ -63,22 +77,46 @@ export default function AdminPage() {
   const [isVideoSaving, setIsVideoSaving] = useState(false);
   const [videoStatusMsg, setVideoStatusMsg] = useState("");
 
+  // Handle Firebase Auth Redirect Result on Page Mount
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          console.log("[Auth] Successfully authenticated via redirect:", result.user.email);
+        }
+      })
+      .catch((err: any) => {
+        console.error("[Auth] getRedirectResult error:", err);
+        const code = err.code || "redirect-error";
+        const msg = err.message || "Redirect authentication failed.";
+        setAuthError(`[${code}] ${msg}`);
+      });
+  }, []);
+
+  // Listen to Auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setIsLoggingIn(false);
       if (!user?.email) {
         setIsAuthenticated(false);
         setSignedInEmail("");
         return;
       }
 
-      if (user.email.toLowerCase() !== ADMIN_EMAIL) {
-        setAuthError(`Email ${user.email} is not authorized. Please sign in with ${ADMIN_EMAIL}.`);
+      const userEmailLower = user.email.toLowerCase();
+      const isAllowed = ALLOWED_ADMIN_EMAILS.some((allowed) => allowed === userEmailLower);
+
+      if (!isAllowed) {
+        const errorMsg = `Access Denied: Account "${user.email}" is not authorized. Allowed accounts: ${ALLOWED_ADMIN_EMAILS.join(", ")}`;
+        console.warn("[Auth]", errorMsg);
+        setAuthError(errorMsg);
         setIsAuthenticated(false);
         setSignedInEmail("");
         await signOut(auth);
         return;
       }
 
+      console.log("[Auth] Admin authenticated successfully:", user.email);
       setSignedInEmail(user.email);
       setIsAuthenticated(true);
       setAuthError("");
@@ -95,22 +133,57 @@ export default function AdminPage() {
     fetchVideos();
   }, [isAuthenticated]);
 
-  const handleGoogleLogin = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleGoogleLoginPopup = async (e?: FormEvent) => {
+    if (e) e.preventDefault();
     setAuthError("");
+    setIsLoggingIn(true);
+
+    console.log("[Auth] Attempting Google Popup Login...");
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      const result = await signInWithPopup(auth, provider);
+      console.log("[Auth] Popup login succeeded for:", result.user.email);
+    } catch (err: any) {
+      console.warn("[Auth] Popup login error/blocked:", err);
+      const code = err.code || "popup-error";
+      const message = err.message || "Popup sign-in failed.";
+
+      if (code === "auth/unauthorized-domain") {
+        const currentHostname = typeof window !== "undefined" ? window.location.hostname : "your domain";
+        setAuthError(
+          `[auth/unauthorized-domain] Domain "${currentHostname}" is not authorized in Firebase Console. Please add "${currentHostname}" in Firebase Console -> Authentication -> Settings -> Authorized Domains.`
+        );
+        setIsLoggingIn(false);
+        return;
+      }
+
+      if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+        console.log("[Auth] Popup was blocked or closed. Falling back to redirect...");
+        handleGoogleLoginRedirect();
+        return;
+      }
+
+      setAuthError(`[${code}] ${message}`);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleLoginRedirect = async () => {
+    setAuthError("");
+    setIsLoggingIn(true);
+    console.log("[Auth] Attempting Google Redirect Login...");
 
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-      await signInWithPopup(auth, provider);
-    } catch (err) {
-      try {
-        const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
-      } catch (fallbackErr) {
-        const message = fallbackErr instanceof Error ? fallbackErr.message : "Unable to sign in with Google.";
-        setAuthError(message);
-      }
+      await signInWithRedirect(auth, provider);
+    } catch (err: any) {
+      console.error("[Auth] Redirect login error:", err);
+      const code = err.code || "redirect-error";
+      const message = err.message || "Redirect sign-in failed.";
+      setAuthError(`[${code}] ${message}`);
+      setIsLoggingIn(false);
     }
   };
 
@@ -310,6 +383,8 @@ export default function AdminPage() {
   }
 
   if (!isAuthenticated) {
+    const currentDomain = typeof window !== "undefined" ? window.location.hostname : "unknown";
+
     return (
       <main id="top" className="sample-home">
         <Navbar />
@@ -320,7 +395,7 @@ export default function AdminPage() {
               border: "1px solid var(--sample-line)",
               borderRadius: "20px",
               padding: "44px 36px",
-              maxWidth: "440px",
+              maxWidth: "480px",
               width: "100%",
               boxShadow: "0 12px 40px rgba(0,0,0,0.04)",
               textAlign: "center",
@@ -330,31 +405,103 @@ export default function AdminPage() {
               Admin sign in
             </h1>
             <p style={{ margin: "0 0 24px 0", color: "var(--sample-muted)", fontSize: "0.95rem" }}>
-              Use the Google account linked to this admin panel.
+              Sign in with an authorized Google account to manage bookings, articles, and video series.
             </p>
 
-            <form onSubmit={handleGoogleLogin} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {authError && (
-                <p style={{ color: "#dc2626", fontSize: "0.84rem", margin: 0 }}>{authError}</p>
-              )}
+            {authError && (
+              <div
+                style={{
+                  background: "#fef2f2",
+                  border: "1px solid #fca5a5",
+                  borderRadius: "12px",
+                  padding: "14px 16px",
+                  marginBottom: "20px",
+                  textAlign: "left",
+                }}
+              >
+                <p style={{ color: "#991b1b", fontSize: "0.85rem", margin: "0 0 6px 0", fontWeight: 700 }}>
+                  Authentication Alert:
+                </p>
+                <p style={{ color: "#b91c1c", fontSize: "0.82rem", margin: 0, lineHeight: 1.45, wordBreak: "break-word" }}>
+                  {authError}
+                </p>
+              </div>
+            )}
 
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <button
-                type="submit"
+                type="button"
+                onClick={handleGoogleLoginPopup}
+                disabled={isLoggingIn}
                 style={{
                   background: "var(--brand-accent)",
                   color: "#ffffff",
                   border: "none",
-                  padding: "12px 20px",
-                  borderRadius: "10px",
+                  padding: "14px 20px",
+                  borderRadius: "12px",
                   fontSize: "0.95rem",
                   fontWeight: 600,
-                  cursor: "pointer",
+                  cursor: isLoggingIn ? "not-allowed" : "pointer",
+                  opacity: isLoggingIn ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
                   transition: "opacity 200ms ease",
                 }}
               >
-                Sign in
+                {isLoggingIn ? "Signing in..." : "Sign in with Google (Popup)"}
               </button>
-            </form>
+
+              <button
+                type="button"
+                onClick={handleGoogleLoginRedirect}
+                disabled={isLoggingIn}
+                style={{
+                  background: "rgba(49, 72, 81, 0.08)",
+                  color: "var(--brand-accent)",
+                  border: "1px solid var(--sample-line)",
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  fontSize: "0.88rem",
+                  fontWeight: 600,
+                  cursor: isLoggingIn ? "not-allowed" : "pointer",
+                  opacity: isLoggingIn ? 0.7 : 1,
+                  transition: "background 200ms ease",
+                }}
+              >
+                Sign in with Google (Redirect Mode)
+              </button>
+            </div>
+
+            <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid var(--sample-line)", textAlign: "left" }}>
+              <button
+                type="button"
+                onClick={() => setShowDiagnostics(!showDiagnostics)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--sample-muted)",
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  padding: 0,
+                  textDecoration: "underline",
+                }}
+              >
+                {showDiagnostics ? "Hide diagnostic details ▲" : "Show diagnostic & domain details ▼"}
+              </button>
+
+              {showDiagnostics && (
+                <div style={{ marginTop: "12px", padding: "12px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0", fontSize: "0.78rem", color: "#475569" }}>
+                  <p style={{ margin: "0 0 4px 0" }}><strong>Current Domain:</strong> <code>{currentDomain}</code></p>
+                  <p style={{ margin: "0 0 4px 0" }}><strong>Auth Domain:</strong> <code>navisamarnath-site.firebaseapp.com</code></p>
+                  <p style={{ margin: "0 0 8px 0" }}><strong>Allowed Accounts:</strong> <code>{ALLOWED_ADMIN_EMAILS.join(", ")}</code></p>
+                  <p style={{ margin: 0, color: "#64748b", lineHeight: 1.4 }}>
+                    💡 <em>Note: If sign-in fails with <code>auth/unauthorized-domain</code>, ensure <code>{currentDomain}</code> is listed in Firebase Console -&gt; Authentication -&gt; Settings -&gt; Authorized Domains.</em>
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <Footer />
