@@ -465,12 +465,8 @@ export default function Home() {
               Playlists
             </p>
             <div data-reveal>
-              <p className="sample-overline">YouTube Series</p>
-              <h2>Conversations, Reflections &amp; Insights.</h2>
+              <h2>From Reflection to Growth</h2>
             </div>
-            <p data-reveal>
-              Explore our featured YouTube playlists dedicated to personal growth, emotional health, and practical wisdom for life&apos;s transitions.
-            </p>
           </div>
 
           <div
