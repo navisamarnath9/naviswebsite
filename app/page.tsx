@@ -147,10 +147,17 @@ export default function Home() {
   useEffect(() => {
     async function fetchLatestArticles() {
       try {
-        const q = query(collection(db, "blogs"), orderBy("date", "desc"), limit(4));
-        const querySnapshot = await getDocs(q);
+        let snapshot;
+        try {
+          const q = query(collection(db, "blogs"), orderBy("date", "desc"), limit(4));
+          snapshot = await getDocs(q);
+        } catch (orderErr) {
+          console.warn("[Firestore] orderBy query failed, falling back to basic getDocs:", orderErr);
+          snapshot = await getDocs(collection(db, "blogs"));
+        }
+
         const docs: BlogArticle[] = [];
-        querySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
           const data = doc.data();
           docs.push({
             id: doc.id,
@@ -162,7 +169,7 @@ export default function Home() {
             content: data.content || "",
           });
         });
-        setLatestArticles(docs);
+        setLatestArticles(docs.slice(0, 4));
       } catch (err) {
         console.error("Error fetching latest articles:", err);
       } finally {

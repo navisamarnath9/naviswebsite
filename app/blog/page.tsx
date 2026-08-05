@@ -19,8 +19,15 @@ export default function BlogPage() {
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const q = query(collection(db, "blogs"), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
+        let querySnapshot;
+        try {
+          const q = query(collection(db, "blogs"), orderBy("date", "desc"));
+          querySnapshot = await getDocs(q);
+        } catch (orderErr) {
+          console.warn("[Firestore] orderBy query failed, falling back to basic getDocs:", orderErr);
+          querySnapshot = await getDocs(collection(db, "blogs"));
+        }
+
         const docs: BlogArticle[] = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
