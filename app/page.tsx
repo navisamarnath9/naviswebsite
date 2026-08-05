@@ -295,7 +295,7 @@ export default function Home() {
               <video
                 ref={videoRef}
                 src="https://res.cloudinary.com/ndgpjcbs/video/upload/v1785835870/f_out_1_z2fwcd.mp4"
-                poster="/thumbnail.jpeg"
+                poster="/web. Intro. cover pic.jpg"
                 preload="metadata"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
