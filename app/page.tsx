@@ -569,9 +569,14 @@ export default function Home() {
                 </div>
 
                 <div style={{ padding: "24px", display: "flex", flexDirection: "column", flex: 1 }}>
-                  <h3 style={{ fontSize: "1.15rem", margin: "0 0 10px 0", color: "#18181b", lineHeight: 1.35 }}>
+                  <h3 style={{ fontSize: "1.15rem", margin: "0 0 8px 0", color: "#18181b", lineHeight: 1.35 }}>
                     {pl.title}
                   </h3>
+                  {pl.description && (
+                    <p style={{ fontSize: "0.88rem", color: "var(--sample-muted)", margin: "0 0 16px 0", lineHeight: 1.5, flex: 1 }}>
+                      {pl.description}
+                    </p>
+                  )}
                   <div style={{ marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.82rem", fontWeight: 600, color: "var(--brand-accent)" }}>
                     <span>Open YouTube Playlist ↗</span>
                     <span style={{ fontSize: "0.75rem", color: "var(--sample-muted)", fontWeight: 400 }}>YouTube</span>

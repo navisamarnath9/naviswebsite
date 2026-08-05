@@ -985,6 +985,29 @@ export default function AdminPage() {
 
                         <div>
                           <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
+                            Playlist Description
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={pl.description || ""}
+                            onChange={(e) => {
+                              const updated = [...playlists];
+                              updated[index] = { ...updated[index], description: e.target.value };
+                              setPlaylists(updated);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "10px 14px",
+                              borderRadius: "8px",
+                              border: "1px solid var(--sample-line)",
+                              fontSize: "0.88rem",
+                              resize: "vertical",
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
                             Thumbnail Image URL *
                           </label>
                           <input
