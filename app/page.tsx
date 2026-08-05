@@ -186,7 +186,7 @@ export default function Home() {
     fetchPlaylists();
   }, []);
 
-  const displayArticles = latestArticles.length > 0 ? latestArticles : defaultArticles.slice(0, 4);
+  const displayArticles = latestArticles;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -445,6 +445,10 @@ export default function Home() {
                   <div style={{ height: "14px", width: "100%", background: "var(--line)", borderRadius: "4px" }} />
                 </div>
               ))
+            ) : displayArticles.length === 0 ? (
+              <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--sample-muted)", gridColumn: "1 / -1", border: "1px dashed var(--sample-line)", borderRadius: "14px" }}>
+                <p style={{ margin: 0, fontSize: "0.95rem" }}>No blog articles published yet. Published articles will appear here.</p>
+              </div>
             ) : (
               displayArticles.map((article) => (
                 <Link href={`/blogs/${article.id}`} key={article.id} data-reveal style={{ display: "flex", flexDirection: "column", border: "1px solid var(--line)" }}>

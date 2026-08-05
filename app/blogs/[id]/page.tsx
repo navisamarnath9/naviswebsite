@@ -8,7 +8,7 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/lib/firebase";
-import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
+import { type BlogArticle } from "@/lib/blogArticles";
 
 export default function BlogArticlePage() {
   const params = useParams<{ id: string }>();
@@ -52,14 +52,12 @@ export default function BlogArticlePage() {
           });
         });
 
-        const list = docs.length > 0 ? docs : defaultArticles;
-        setAllArticles(list);
-
-        const match = list.find((item) => item.id === articleId) ?? defaultArticles.find((item) => item.id === articleId) ?? null;
+        setAllArticles(docs);
+        const match = docs.find((item) => item.id === articleId) ?? null;
         setArticle(match);
       } catch {
-        setAllArticles(defaultArticles);
-        setArticle(defaultArticles.find((item) => item.id === articleId) ?? null);
+        setAllArticles([]);
+        setArticle(null);
       } finally {
         setLoading(false);
       }

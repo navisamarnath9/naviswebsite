@@ -4,15 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { collection, getDocs, doc, setDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
+import type { BlogArticle } from "@/lib/blogArticles";
 
 export default function BlogPage() {
   const [articles, setArticles] = useState<BlogArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [seeding, setSeeding] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -50,32 +49,6 @@ export default function BlogPage() {
 
     fetchArticles();
   }, []);
-
-  useEffect(() => {
-  }, [articles]);
-
-  async function handleSeed() {
-    setSeeding(true);
-    setError(null);
-    try {
-      for (const article of defaultArticles) {
-        await setDoc(doc(db, "blogs", article.id), {
-          title: article.title,
-          category: article.category,
-          readTime: article.readTime,
-          date: article.date,
-          excerpt: article.excerpt,
-          content: article.content,
-        });
-      }
-      window.location.reload();
-    } catch (err) {
-      console.error("Seeding failed:", err);
-      setError("Failed to seed database: " + (err instanceof Error ? err.message : String(err)));
-    } finally {
-      setSeeding(false);
-    }
-  }
 
   const filteredArticles = articles.filter((article) => {
     const matchesSearch =
@@ -157,19 +130,8 @@ export default function BlogPage() {
               </div>
             </>
           ) : articles.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--grey)", border: "1px dashed var(--line)", borderRadius: "16px" }}>
-              <p style={{ fontSize: "1.2rem", marginBottom: "20px" }}>No articles found in the database.</p>
-              {process.env.NODE_ENV === "development" && (
-                <button
-                  type="button"
-                  className="button"
-                  disabled={seeding}
-                  onClick={handleSeed}
-                  style={{ background: "var(--cyan)", color: "var(--blue-deep)", fontWeight: 700 }}
-                >
-                  {seeding ? "Seeding database..." : "Seed Firestore with Sample Blogs"}
-                </button>
-              )}
+            <div style={{ textAlign: "center", padding: "60px 24px", color: "var(--sample-muted)", border: "1px dashed var(--sample-line)", borderRadius: "16px" }}>
+              <p style={{ fontSize: "1.1rem", margin: 0 }}>No articles published yet. Published articles will appear here.</p>
             </div>
           ) : filteredArticles.length === 0 ? (
             <div style={{ textAlign: "center", padding: "60px 0", color: "var(--grey)" }}>
