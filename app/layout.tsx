@@ -4,11 +4,11 @@ import Chatbot from "@/components/Chatbot";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://navisamarnath.com"),
-  title: "Navisamarnath | Psychology & Coaching",
+  title: "Navisamarnath | Counselling, Psychotherapy & Coaching",
   description:
-    "Thoughtful, evidence-based therapy and coaching for clarity, connection, resilience, and lasting change.",
+    "Thoughtful, evidence-based counselling, psychotherapy, and coaching for clarity, connection, resilience, and lasting change.",
   openGraph: {
-    title: "Navisamarnath | Psychology & Coaching",
+    title: "Navisamarnath | Counselling, Psychotherapy & Coaching",
     description: "Step into your greater self. Where Aspiration Meets Transformation.",
     type: "website",
     images: [
@@ -22,13 +22,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Navisamarnath | Psychology & Coaching",
+    title: "Navisamarnath | Counselling, Psychotherapy & Coaching",
     description: "Step into your greater self. Where Aspiration Meets Transformation.",
     images: ["/og-home.png"],
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/favicon.png",
+    shortcut: "/favicon.ico",
   },
 };
 

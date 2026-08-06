@@ -30,7 +30,7 @@ test("server-renders the production home page and all service links", async () =
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Navisamarnath \| Psychology &amp; Coaching<\/title>/i);
+  assert.match(html, /<title>Navisamarnath \| Counselling, Psychotherapy &amp; Coaching<\/title>/i);
   assert.match(html, /href="\/services\/individual"/);
   assert.match(html, /href="\/services\/coaching"/);
   assert.match(html, /href="\/services\/couples"/);
