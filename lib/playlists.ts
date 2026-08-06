@@ -25,7 +25,7 @@ export const defaultPlaylists: PlaylistThumbnail[] = [
     id: "playlist-3",
     title: "Becoming Me",
     description: "Exploring the journey of becoming more self-aware, authentic, and intentional in the way we live, relate, and grow.",
-    imageUrl: "/SM intro cover pic.jpg",
+    imageUrl: "/B.Me cover pic.jpg",
     playlistUrl: "https://www.youtube.com/@navisamarnath/playlists",
   },
 ];

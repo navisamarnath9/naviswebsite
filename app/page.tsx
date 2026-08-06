@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import type { BlogArticle } from "@/lib/blogArticles";
+import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 import { defaultPlaylists, type PlaylistThumbnail } from "@/lib/playlists";
 import {
   collection,
@@ -178,9 +178,11 @@ export default function Home() {
             content: data.content || "",
           });
         });
-        setLatestArticles(docs.slice(0, 4));
+        const list = docs.length > 0 ? docs : defaultArticles;
+        setLatestArticles(list.slice(0, 4));
       } catch (err) {
         console.error("Error fetching latest articles:", err);
+        setLatestArticles(defaultArticles.slice(0, 4));
       } finally {
         setLoadingArticles(false);
       }
@@ -435,7 +437,7 @@ export default function Home() {
                     <li key={detail}>{detail}</li>
                   ))}
                 </ul>
-                <i aria-hidden="true">↗</i>
+                <span className="service-read-more">Read more</span>
               </Link>
             ))}
           </div>

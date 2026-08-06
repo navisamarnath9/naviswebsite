@@ -24,7 +24,7 @@ function clean(value: string | undefined, max = 500) {
   return (value ?? "").trim().slice(0, max);
 }
 
-// Function to send email notification to navisamarnathofc@gmail.com via Resend
+// Function to send email notification to navisamarnathtech@gmail.com via Resend
 async function sendBookingNotificationEmail(payload: {
   name: string;
   email: string;
@@ -34,7 +34,7 @@ async function sendBookingNotificationEmail(payload: {
   appointmentTime: string;
   note: string;
 }) {
-  const adminEmail = "navisamarnathofc@gmail.com";
+  const adminEmail = "navisamarnathtech@gmail.com";
   const resendApiKey =
     cfEnv?.RESEND_API_KEY || (process as any).env?.RESEND_API_KEY;
 
@@ -93,7 +93,7 @@ async function sendBookingNotificationEmail(payload: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Navisamarnath Bookings <onboarding@resend.dev>",
+      from: "onboarding@resend.dev",
       to: [adminEmail],
       subject: `⚡ New Booking: ${payload.name} — ${payload.sessionType}`,
       html: htmlContent,
@@ -133,19 +133,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Dispatch background email notification to navisamarnathofc@gmail.com
-    sendBookingNotificationEmail({
-      name,
-      email,
-      phone,
-      sessionType,
-      appointmentDate,
-      appointmentTime: appointmentTime || "To be arranged",
-      note,
-    }).catch((err) => console.warn("Background email notification error:", err));
+    // Send email notification to navisamarnathtech@gmail.com
+    try {
+      await sendBookingNotificationEmail({
+        name,
+        email,
+        phone,
+        sessionType,
+        appointmentDate,
+        appointmentTime: appointmentTime || "To be arranged",
+        note,
+      });
+    } catch (err) {
+      console.warn("Email notification error:", err);
+    }
 
     return Response.json(
-      { success: true, message: "Booking received and email notification sent to navisamarnathofc@gmail.com" },
+      { success: true, message: "Booking received and email notification sent to navisamarnathtech@gmail.com" },
       { status: 201 },
     );
   } catch (error) {

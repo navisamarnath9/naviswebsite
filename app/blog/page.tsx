@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import type { BlogArticle } from "@/lib/blogArticles";
+import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 
 export default function BlogPage() {
   const [articles, setArticles] = useState<BlogArticle[]>([]);
@@ -41,14 +41,15 @@ export default function BlogPage() {
             content: data.content || "",
           });
         });
-        setArticles(docs);
+
+        if (docs.length === 0) {
+          setArticles(defaultArticles);
+        } else {
+          setArticles(docs);
+        }
       } catch (err) {
         console.error("Error fetching articles from Firestore:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Could not connect to Firestore. Please verify your config."
-        );
+        setArticles(defaultArticles);
       } finally {
         setLoading(false);
       }

@@ -308,6 +308,7 @@ export default function AdminPage() {
     }
   }
 
+
   // Delete Blog Article
   async function deleteArticle(id: string) {
     if (!confirm(`Are you sure you want to delete article "${id}"?`)) return;
@@ -518,6 +519,8 @@ export default function AdminPage() {
       <div id="main-content" className="sample-surface">
         <section className="sample-section" style={{ padding: "60px 24px" }}>
           <div style={{ maxWidth: "1180px", margin: "0 auto" }}>
+
+
             {/* ADMIN MODULE TABS */}
             <div className="credentials-filter-tabs" style={{ marginBottom: "48px", justifyContent: "flex-start" }}>
               <button
@@ -966,26 +969,23 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
-                            Playlist Title *
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "var(--sample-muted)" }}>
+                            Playlist Topic (Fixed)
                           </label>
-                          <input
-                            type="text"
-                            required
-                            value={pl.title || ""}
-                            onChange={(e) => {
-                              const updated = [...playlists];
-                              updated[index] = { ...updated[index], title: e.target.value };
-                              setPlaylists(updated);
-                            }}
+                          <div
                             style={{
                               width: "100%",
                               padding: "10px 14px",
                               borderRadius: "8px",
                               border: "1px solid var(--sample-line)",
+                              background: "#f1f5f9",
                               fontSize: "0.9rem",
+                              fontWeight: 600,
+                              color: "#334155",
                             }}
-                          />
+                          >
+                            {pl.title || "Untitled Playlist"}
+                          </div>
                         </div>
 
                         <div>
@@ -1012,27 +1012,23 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "#18181b" }}>
-                            Thumbnail Image URL *
+                          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "var(--sample-muted)" }}>
+                            Thumbnail Image (Fixed)
                           </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="e.g. /thumbnail.jpeg or https://..."
-                            value={pl.imageUrl || ""}
-                            onChange={(e) => {
-                              const updated = [...playlists];
-                              updated[index] = { ...updated[index], imageUrl: e.target.value };
-                              setPlaylists(updated);
-                            }}
+                          <div
                             style={{
                               width: "100%",
                               padding: "10px 14px",
                               borderRadius: "8px",
                               border: "1px solid var(--sample-line)",
-                              fontSize: "0.9rem",
+                              background: "#f1f5f9",
+                              fontSize: "0.82rem",
+                              color: "#64748b",
+                              wordBreak: "break-all",
                             }}
-                          />
+                          >
+                            <code>{pl.imageUrl || "/homepage-video-thumbnail.png"}</code>
+                          </div>
                         </div>
 
                         <div>

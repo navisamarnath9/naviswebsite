@@ -3458,7 +3458,28 @@ body:has(.sample-home) {
   font-weight: 500;
 }
 
-.sample-service-card i,
+.service-read-more {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand-accent, #314851);
+  background: rgba(49, 72, 81, 0.08);
+  padding: 8px 20px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sample-service-card:hover .service-read-more,
+.sample-service-card:focus-visible .service-read-more {
+  background: var(--brand-accent, #314851);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(49, 72, 81, 0.25);
+}
+
 .sample-journal-grid i,
 .sample-footer-cards i,
 .service-more-grid i {
@@ -3472,8 +3493,6 @@ body:has(.sample-home) {
   transition: opacity 260ms ease, transform 260ms ease, color 260ms ease;
 }
 
-.sample-service-card:hover i,
-.sample-service-card:focus-visible i,
 .sample-journal-grid a:hover i,
 .sample-journal-grid a:focus-visible i,
 .sample-footer-cards a:hover i,
@@ -3654,7 +3673,7 @@ body:has(.sample-home) {
 
 .sample-journal-grid {
   display: grid;
-  gap: 1px;
+  gap: 20px;
   grid-template-columns: 1fr 1fr;
 }
 
@@ -3665,12 +3684,15 @@ body:has(.sample-home) {
   position: relative;
   transition: all 320ms cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1;
+  border: 1px solid var(--sample-line, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
 }
 
 .sample-journal-grid a:hover,
 .sample-journal-grid a:focus-visible {
   background: var(--white) !important;
   box-shadow: 0 16px 36px rgba(49, 72, 81, 0.12), inset 0 3px 0 0 #314851 !important;
+  border-color: rgba(49, 72, 81, 0.25) !important;
   transform: translateY(-4px) !important;
   z-index: 5;
 }
