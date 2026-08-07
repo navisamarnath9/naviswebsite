@@ -6091,6 +6091,16 @@ mark,
     white-space: nowrap;
   }
 
+  .about-story-tabs::after,
+  .mobile-scroll-tabs::after,
+  .credentials-filter-tabs::after {
+    content: "";
+    display: block;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 1px;
+  }
+
   .credentials-section {
     padding: 58px 20px;
     overflow: hidden;
