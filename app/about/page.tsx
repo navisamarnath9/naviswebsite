@@ -211,7 +211,7 @@ export default function AboutPage() {
         <div className="about-top-hero-visual" data-reveal>
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/About - cut.jpg"
+              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116749/About_-_cut_jtxbui.jpg"
               alt="Navisamarnath in his therapy studio"
               fill
               priority

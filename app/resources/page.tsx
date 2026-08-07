@@ -282,7 +282,7 @@ export default function ResourcesPage() {
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/resources-hero.png"
+              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116865/resources-hero_etwt8i.jpg"
               alt="Curated Mental Health & Growth Library"
               fill
               priority

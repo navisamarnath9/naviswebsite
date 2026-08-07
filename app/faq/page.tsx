@@ -173,7 +173,7 @@ export default function FAQPage() {
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
             <Image
-              src="/faq-hero.png"
+              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116850/faq-hero_hnpo5g.jpg"
               alt="Clear Answers & Practice Guidance"
               fill
               priority
