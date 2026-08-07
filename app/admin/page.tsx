@@ -59,7 +59,6 @@ export default function AdminPage() {
   const [signedInEmail, setSignedInEmail] = useState("");
   const [authError, setAuthError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "playlists">("bookings");
 
   // Blog State
@@ -351,8 +350,6 @@ export default function AdminPage() {
   }
 
   if (!isAuthenticated) {
-    const currentDomain = typeof window !== "undefined" ? window.location.hostname : "unknown";
-
     return (
       <main id="top" className="sample-home">
         <Navbar />
@@ -442,34 +439,6 @@ export default function AdminPage() {
               </button>
             </div>
 
-            <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid var(--sample-line)", textAlign: "left" }}>
-              <button
-                type="button"
-                onClick={() => setShowDiagnostics(!showDiagnostics)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "var(--sample-muted)",
-                  fontSize: "0.78rem",
-                  cursor: "pointer",
-                  padding: 0,
-                  textDecoration: "underline",
-                }}
-              >
-                {showDiagnostics ? "Hide diagnostic details ▲" : "Show diagnostic & domain details ▼"}
-              </button>
-
-              {showDiagnostics && (
-                <div style={{ marginTop: "12px", padding: "12px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0", fontSize: "0.78rem", color: "#475569" }}>
-                  <p style={{ margin: "0 0 4px 0" }}><strong>Current Domain:</strong> <code>{currentDomain}</code></p>
-                  <p style={{ margin: "0 0 4px 0" }}><strong>Auth Domain:</strong> <code>navisamarnath-site.firebaseapp.com</code></p>
-                  <p style={{ margin: "0 0 8px 0" }}><strong>Allowed Accounts:</strong> <code>{ALLOWED_ADMIN_EMAILS.join(", ")}</code></p>
-                  <p style={{ margin: 0, color: "#64748b", lineHeight: 1.4 }}>
-                    💡 <em>Note: If sign-in fails with <code>auth/unauthorized-domain</code>, ensure <code>{currentDomain}</code> is listed in Firebase Console -&gt; Authentication -&gt; Settings -&gt; Authorized Domains.</em>
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
         </div>
         <Footer />
