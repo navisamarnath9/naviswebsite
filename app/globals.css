@@ -5628,6 +5628,7 @@ mark,
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .credential-item-icon {
@@ -5654,6 +5655,7 @@ mark,
   font-weight: 600;
   color: #18181b;
   line-height: 1.35;
+  overflow-wrap: break-word;
 }
 
 .credential-item-type {
@@ -6043,6 +6045,7 @@ mark,
 
   .about-story-section {
     padding: 54px 20px !important;
+    overflow: hidden;
   }
 
   .about-story-layout {
@@ -6088,6 +6091,7 @@ mark,
 
   .credentials-section {
     padding: 58px 20px;
+    overflow: hidden;
   }
 
   .credentials-header {
@@ -6124,6 +6128,7 @@ mark,
   .resources-content-section,
   .faq-content-section {
     padding: 54px 20px 68px !important;
+    overflow: hidden;
   }
 
   .resource-pillars {
