@@ -4229,6 +4229,7 @@ body:has(.sample-home) {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
 }
 
 .service-detail-actions {
@@ -4976,6 +4977,7 @@ body:has(.sample-home) {
     font-size: 0.78rem !important;
     max-width: 92%;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .service-detail-actions {
@@ -6494,6 +6496,7 @@ mark,
   .sample-service-card p {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     display: -webkit-box;
     overflow: hidden;
   }
