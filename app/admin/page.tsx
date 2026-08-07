@@ -7,8 +7,6 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   signOut,
 } from "firebase/auth";
 import {
@@ -76,21 +74,6 @@ export default function AdminPage() {
   const [isPlaylistSaving, setIsPlaylistSaving] = useState(false);
   const [playlistStatusMsg, setPlaylistStatusMsg] = useState("");
 
-  // Handle Firebase Auth Redirect Result on Page Mount
-  useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          console.log("[Auth] Successfully authenticated via redirect:", result.user.email);
-        }
-      })
-      .catch((err: any) => {
-        console.error("[Auth] getRedirectResult error:", err);
-        const code = err.code || "redirect-error";
-        const msg = err.message || "Redirect authentication failed.";
-        setAuthError(`[${code}] ${msg}`);
-      });
-  }, []);
 
   // Listen to Auth state changes
   useEffect(() => {
@@ -158,29 +141,11 @@ export default function AdminPage() {
       }
 
       if (code === "auth/popup-blocked" || code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
-        console.log("[Auth] Popup was blocked or closed. Falling back to redirect...");
-        handleGoogleLoginRedirect();
+        setAuthError("Sign-in popup was blocked or closed. Please allow popups for this site and try again.");
+        setIsLoggingIn(false);
         return;
       }
 
-      setAuthError(`[${code}] ${message}`);
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleGoogleLoginRedirect = async () => {
-    setAuthError("");
-    setIsLoggingIn(true);
-    console.log("[Auth] Attempting Google Redirect Login...");
-
-    try {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: "select_account" });
-      await signInWithRedirect(auth, provider);
-    } catch (err: any) {
-      console.error("[Auth] Redirect login error:", err);
-      const code = err.code || "redirect-error";
-      const message = err.message || "Redirect sign-in failed.";
       setAuthError(`[${code}] ${message}`);
       setIsLoggingIn(false);
     }
@@ -415,27 +380,7 @@ export default function AdminPage() {
                   transition: "opacity 200ms ease",
                 }}
               >
-                {isLoggingIn ? "Signing in..." : "Sign in with Google (Popup)"}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleGoogleLoginRedirect}
-                disabled={isLoggingIn}
-                style={{
-                  background: "rgba(49, 72, 81, 0.08)",
-                  color: "var(--brand-accent)",
-                  border: "1px solid var(--sample-line)",
-                  padding: "12px 20px",
-                  borderRadius: "12px",
-                  fontSize: "0.88rem",
-                  fontWeight: 600,
-                  cursor: isLoggingIn ? "not-allowed" : "pointer",
-                  opacity: isLoggingIn ? 0.7 : 1,
-                  transition: "background 200ms ease",
-                }}
-              >
-                Sign in with Google (Redirect Mode)
+                {isLoggingIn ? "Signing in..." : "Sign in with Google"}
               </button>
             </div>
 
