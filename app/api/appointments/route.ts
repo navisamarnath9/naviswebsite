@@ -45,7 +45,7 @@ async function sendBookingNotificationEmail(payload: {
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e4e4e7; border-radius: 12px; background-color: #fafafa;">
-      <h2 style="color: #314851; margin-top: 0;">⚡ New Consultation Request Received</h2>
+      <h2 style="color: #314851; margin-top: 0;">New Consultation Request Received</h2>
       <p style="font-size: 15px; color: #333;">You have received a new consultation appointment booking from your website:</p>
 
       <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -69,20 +69,13 @@ async function sendBookingNotificationEmail(payload: {
           <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Requested Date:</td>
           <td style="padding: 10px; border-bottom: 1px solid #eee;">${payload.appointmentDate}</td>
         </tr>
-        <tr>
-          <td style="padding: 10px; font-weight: bold; border-bottom: 1px solid #eee;">Client Notes:</td>
-          <td style="padding: 10px; border-bottom: 1px solid #eee;">${payload.note || "None provided"}</td>
-        </tr>
       </table>
 
       <div style="margin-top: 24px; text-align: center;">
         <a href="https://navisamarnath-site.firebaseapp.com/admin" style="background-color: #314851; color: #ffffff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
-          View in Admin Portal ↗
+          View in Admin Portal
         </a>
       </div>
-
-      <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;" />
-      <p style="font-size: 12px; color: #888; text-align: center;">Navisamarnath Psychology &amp; Coaching Practice — Automated Booking Notification</p>
     </div>
   `;
 
@@ -95,7 +88,7 @@ async function sendBookingNotificationEmail(payload: {
     body: JSON.stringify({
       from: "onboarding@resend.dev",
       to: [adminEmail],
-      subject: `⚡ New Booking: ${payload.name} — ${payload.sessionType}`,
+      subject: `New Booking: ${payload.name} — ${payload.sessionType}`,
       html: htmlContent,
     }),
   });
