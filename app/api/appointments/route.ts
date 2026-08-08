@@ -176,6 +176,7 @@ export async function GET() {
       cfEnv: cfEnvKeys.includes("RESEND_API_KEY"),
       globalEnv: globalEnvKeys.includes("RESEND_API_KEY"),
       processEnv: processEnvKeys.includes("RESEND_API_KEY"),
-    }
+    },
+    senderConfig: "Navis Booking <bookings@navisamarnath.com>"
   });
 }
