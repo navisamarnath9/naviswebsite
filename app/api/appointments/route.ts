@@ -158,3 +158,31 @@ export async function POST(request: Request) {
     return Response.json({ error: message }, { status: 500 });
   }
 }
+
+export async function GET() {
+  let cfEnvKeys: string[] = [];
+  try {
+    // @ts-ignore
+    const importedEnv = (await import("cloudflare:workers")).env;
+    cfEnvKeys = importedEnv ? Object.keys(importedEnv) : [];
+  } catch (e) {
+    cfEnvKeys = [`Error importing: ${(e as Error).message}`];
+  }
+
+  const globalEnv = (globalThis as any).env;
+  const globalEnvKeys = globalEnv ? Object.keys(globalEnv) : [];
+
+  const processEnvKeys = typeof process !== "undefined" && process.env ? Object.keys(process.env) : [];
+
+  return Response.json({
+    cfEnvKeys,
+    globalEnvKeys,
+    processEnvKeys,
+    hasNextRuntime: typeof process !== "undefined" ? process.env.NEXT_RUNTIME : "undefined",
+    hasResendApiKey: {
+      cfEnv: cfEnvKeys.includes("RESEND_API_KEY"),
+      globalEnv: globalEnvKeys.includes("RESEND_API_KEY"),
+      processEnv: processEnvKeys.includes("RESEND_API_KEY"),
+    }
+  });
+}
