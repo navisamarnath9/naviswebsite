@@ -86,7 +86,7 @@ async function sendBookingNotificationEmail(payload: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "onboarding@resend.dev",
+      from: "Navis Booking <bookings@navisamarnath.com>",
       to: [adminEmail],
       subject: `New Booking: ${payload.name} — ${payload.sessionType}`,
       html: htmlContent,
