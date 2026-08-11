@@ -427,21 +427,17 @@ export default function Home() {
                     sizes="(max-width: 768px) 100vw, 25vw"
                     className="sample-card-img"
                   />
-                  <span className="service-card-index">{service.number}</span>
-                  <span className="service-card-kind">Signature support</span>
                 </div>
-                <div className="service-card-copy">
+                <div>
                   <h3>{service.title}</h3>
                   <p>{service.copy}</p>
                 </div>
-                <ul className="service-card-details" aria-label={`${service.title} focus areas`}>
+                <ul>
                   {service.details.map((detail) => (
                     <li key={detail}>{detail}</li>
                   ))}
                 </ul>
-                <span className="service-read-more">
-                  Explore service <span aria-hidden="true">→</span>
-                </span>
+                <span className="service-read-more">Read more</span>
               </Link>
             ))}
           </div>

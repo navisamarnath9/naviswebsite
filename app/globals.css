@@ -3345,176 +3345,140 @@ body:has(.sample-home) {
 }
 
 .sample-service-grid {
+  border-left: 1px solid var(--sample-line);
   display: grid;
-  gap: 18px;
   grid-template-columns: repeat(4, 1fr);
 }
 
 .sample-service-card {
-  background: #fcfcfa;
-  border: 1px solid rgba(49, 72, 81, 0.12);
-  border-radius: 18px;
-  box-shadow: 0 3px 12px rgba(23, 41, 46, 0.04);
+  background: var(--white);
+  border-bottom: 1px solid var(--sample-line);
+  border-right: 1px solid var(--sample-line);
+  border-top: 1px solid var(--sample-line);
   display: flex;
   flex-direction: column;
-  min-height: 490px;
-  overflow: hidden;
-  padding: 12px 12px 16px;
+  min-height: 460px;
+  padding: 24px;
   position: relative;
-  text-decoration: none;
   transition:
-    border-color 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1;
 }
 
 .sample-service-card-image {
-  aspect-ratio: 4 / 3;
-  border-radius: 11px;
-  margin-bottom: 0;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  margin-bottom: 20px;
   overflow: hidden;
   position: relative;
   width: 100%;
 }
 
-.sample-service-card-image::after {
-  background: linear-gradient(180deg, rgba(14, 28, 32, 0.04) 30%, rgba(14, 28, 32, 0.4));
-  content: "";
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
 .sample-card-img {
-  filter: saturate(0.82) contrast(1.04);
+  filter: saturate(1.05) contrast(1.02);
   object-fit: cover;
-  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1), filter 650ms ease;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), filter 450ms ease;
 }
 
 .sample-service-card:hover .sample-card-img {
-  filter: saturate(1) contrast(1.02);
-  transform: scale(1.07);
+  transform: scale(1.04);
 }
 
 .sample-service-card:hover,
 .sample-service-card:focus-visible {
-  background: #fcfcfa !important;
-  border-color: rgba(49, 72, 81, 0.32) !important;
-  box-shadow: 0 20px 42px rgba(23, 41, 46, 0.13) !important;
-  transform: translateY(-7px) !important;
+  background: #f0f5f7 !important;
+  border-color: var(--brand-accent) !important;
+  box-shadow: 0 16px 36px rgba(49, 72, 81, 0.14), inset 0 3px 0 0 #314851 !important;
+  transform: translateY(-6px) !important;
   z-index: 5;
 }
 
-.service-card-index,
-.service-card-kind {
-  color: #fff;
-  font-size: 0.61rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  position: absolute;
-  text-transform: uppercase;
-  z-index: 1;
-}
-
-.service-card-index {
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 999px;
-  left: 14px;
-  padding: 8px 10px;
-  top: 14px;
-}
-
-.service-card-kind {
-  bottom: 15px;
-  left: 16px;
-}
-
-.service-card-copy {
-  margin: 22px 10px 18px !important;
-}
-
-.sample-service-card .service-card-copy h3 {
-  color: var(--slate);
-  font-size: clamp(1.4rem, 1.75vw, 1.92rem);
-  letter-spacing: -0.04em;
-  line-height: 1.03;
-  margin: 0 0 12px;
+.sample-card-number {
+  align-self: end;
+  color: var(--sample-muted);
+  font-size: 0.58rem;
+  font-weight: 600;
   transition: color 240ms ease;
 }
 
-.sample-service-card:hover .service-card-copy h3 {
+.sample-service-card:hover .sample-card-number {
+  color: var(--brand-accent) !important;
+  font-weight: 700;
+}
+
+.sample-service-card > div {
+  margin: auto 0 34px;
+}
+
+.sample-service-card h3 {
+  color: var(--slate);
+  font-size: clamp(1.5rem, 2vw, 2.25rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 18px;
+  transition: color 240ms ease;
+}
+
+.sample-service-card:hover h3 {
   color: var(--brand-accent) !important;
 }
 
-.sample-service-card .service-card-copy p {
+.sample-service-card p {
   color: #3f3f46;
-  font-size: 0.79rem;
-  line-height: 1.65;
+  font-size: 0.75rem;
+  line-height: 1.55;
   max-width: 265px;
   opacity: 0.85;
   transition: color 240ms ease, opacity 240ms ease;
 }
 
-.sample-service-card:hover .service-card-copy p {
+.sample-service-card:hover p {
   color: #18181b !important;
   opacity: 0.95 !important;
 }
 
-.sample-service-card .service-card-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.sample-service-card ul {
+  color: #3f3f46;
+  font-size: 0.58rem;
+  line-height: 1.7;
   list-style: none;
-  margin: auto 10px 16px;
+  margin: 0;
+  opacity: 0.75;
   padding: 0;
+  text-transform: uppercase;
+  transition: color 240ms ease;
 }
 
-.sample-service-card .service-card-details li {
-  background: #edf2f1;
-  border-radius: 999px;
-  color: #41565c;
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 7px 8px;
-  text-transform: uppercase;
+.sample-service-card:hover ul {
+  color: var(--brand-accent) !important;
+  opacity: 0.9 !important;
+  font-weight: 500;
 }
 
 .service-read-more {
-  align-items: center;
-  border-top: 1px solid rgba(49, 72, 81, 0.11);
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--brand-accent, #314851);
-  display: flex;
-  font-size: 0.68rem;
-  font-weight: 800;
-  justify-content: space-between;
-  letter-spacing: 0.09em;
-  margin: 0 10px;
-  padding-top: 14px;
-  text-transform: uppercase;
-  transition: color 280ms ease;
-}
-
-.service-read-more span {
-  align-items: center;
-  background: var(--brand-accent, #314851);
+  background: rgba(49, 72, 81, 0.08);
+  padding: 8px 18px;
   border-radius: 999px;
-  color: #fff;
-  display: inline-flex;
-  font-size: 1rem;
-  height: 30px;
-  justify-content: center;
-  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), background-color 280ms ease;
-  width: 30px;
+  letter-spacing: 0.02em;
+  transition: all 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
 }
 
-.sample-service-card:hover .service-read-more span,
-.sample-service-card:focus-visible .service-read-more span {
-  background: #486c75;
-  transform: translateX(4px);
+.sample-service-card:hover .service-read-more,
+.sample-service-card:focus-visible .service-read-more {
+  background: var(--brand-accent, #314851);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(49, 72, 81, 0.25);
 }
 
 .sample-journal-grid i,
