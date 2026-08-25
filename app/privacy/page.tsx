@@ -1,10 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function PrivacyPolicyPage() {
+  const [privacyText, setPrivacyText] = useState("");
+  useEffect(() => { getDoc(doc(db, "settings", "legal")).then((snapshot) => { if (snapshot.exists()) setPrivacyText(snapshot.data().privacyText || ""); }).catch(() => undefined); }, []);
   return (
     <main className="sample-home privacy-page" id="top">
       <Navbar />
@@ -21,6 +26,8 @@ export default function PrivacyPolicyPage() {
             Last Updated: {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
 
+          {privacyText && <div className="privacy-body" style={{ whiteSpace: "pre-line", color: "#27272a", fontSize: "1rem", lineHeight: 1.75, marginBottom: "40px" }}>{privacyText}</div>}
+          {!privacyText && <>
           <div style={{ background: "rgba(49, 72, 81, 0.04)", borderLeft: "4px solid #314851", padding: "24px 28px", borderRadius: "8px", marginBottom: "48px" }}>
             <h3 style={{ margin: "0 0 10px 0", color: "#314851", fontSize: "1.15rem", fontWeight: 600 }}>
               🔒 Essential Data Promise
@@ -95,6 +102,7 @@ export default function PrivacyPolicyPage() {
             </section>
           </div>
 
+          </>}
           <div style={{ marginTop: "56px", paddingTop: "28px", borderTop: "1px solid var(--sample-line)" }}>
             <Link href="/" style={{ color: "#314851", fontWeight: 600, textDecoration: "none" }}>
               ← Return to Home

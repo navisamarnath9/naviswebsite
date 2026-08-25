@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 type ResourceItem = {
   title: string;
@@ -29,7 +31,7 @@ type ResourceSection = {
   groups: ResourceGroup[];
 };
 
-const resourceSections: ResourceSection[] = [
+export const resourceSections: ResourceSection[] = [
   {
     id: "inner-child",
     title: "Healing the Inner Child",
@@ -238,8 +240,15 @@ function ResourceCard({ item }: { item: ResourceItem }) {
 
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("all");
+  const [sections, setSections] = useState<ResourceSection[]>(resourceSections);
 
-  const visibleSections = resourceSections.filter((section) => activeTab === "all" || section.id === activeTab);
+  useEffect(() => {
+    getDoc(doc(db, "settings", "resources")).then((snapshot) => {
+      if (snapshot.exists() && Array.isArray(snapshot.data().items)) setSections(snapshot.data().items);
+    }).catch(() => undefined);
+  }, []);
+
+  const visibleSections = sections.filter((section) => activeTab === "all" || section.id === activeTab);
 
   return (
     <main id="top" className="sample-home resources-page">

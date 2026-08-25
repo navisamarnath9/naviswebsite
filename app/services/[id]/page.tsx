@@ -1,12 +1,14 @@
 "use client";
 
-import { use, useEffect, useRef } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import BookingForm from "@/components/BookingForm";
 import Footer from "@/components/Footer";
 import { getServiceById, servicesData } from "@/lib/servicesData";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 function Arrow() {
   return <span aria-hidden="true">↗</span>;
@@ -81,6 +83,14 @@ export default function ServiceDetailPage({
       : (params as { id: string });
   const service = getServiceById(resolvedParams.id);
   const rootRef = useRef<HTMLElement>(null);
+  const [groupWhyImage, setGroupWhyImage] = useState("");
+
+  useEffect(() => {
+    if (resolvedParams.id !== "groups") return;
+    getDoc(doc(db, "settings", "site-content")).then((snapshot) => {
+      if (snapshot.exists()) setGroupWhyImage(snapshot.data().groupWhyImage || "");
+    }).catch(() => undefined);
+  }, [resolvedParams.id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -213,7 +223,7 @@ export default function ServiceDetailPage({
           <div className="service-reasons-visual" data-reveal>
             <div className="service-reasons-image">
               <Image
-                src={service.whyReasons[0]?.image || service.image}
+                src={service.id === "groups" && groupWhyImage ? groupWhyImage : service.whyReasons[0]?.image || service.image}
                 alt="A calm, supportive setting"
                 fill
                 unoptimized
@@ -276,7 +286,7 @@ export default function ServiceDetailPage({
             </p>
             <div data-reveal>
               <p className="sample-overline">How we work</p>
-              <h2>{service.modalitiesTitle}</h2>
+              <h2 className={service.id === "coaching" ? "coaching-modalities-title" : undefined}>{service.modalitiesTitle}</h2>
             </div>
             {service.modalitiesIntro && <p data-reveal>{service.modalitiesIntro}</p>}
           </div>

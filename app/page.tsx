@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { defaultArticles, type BlogArticle } from "@/lib/blogArticles";
 import { defaultPlaylists, type PlaylistThumbnail } from "@/lib/playlists";
+import { defaultSiteSettings, type SiteSettings } from "@/lib/siteSettings";
 import {
   collection,
   doc,
@@ -152,6 +153,7 @@ export default function Home() {
 
   // Playlists State (3 Featured Playlists)
   const [playlists, setPlaylists] = useState<PlaylistThumbnail[]>(defaultPlaylists);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSiteSettings);
 
   useEffect(() => {
     async function fetchLatestArticles() {
@@ -200,8 +202,18 @@ export default function Home() {
       }
     }
 
+    async function fetchSiteSettings() {
+      try {
+        const snapshot = await getDoc(doc(db, "settings", "site-content"));
+        if (snapshot.exists()) setSiteSettings({ ...defaultSiteSettings, ...snapshot.data() } as SiteSettings);
+      } catch (err) {
+        console.error("Error fetching site settings:", err);
+      }
+    }
+
     fetchLatestArticles();
     fetchPlaylists();
+    fetchSiteSettings();
   }, []);
 
   const displayArticles = latestArticles;
@@ -312,8 +324,8 @@ export default function Home() {
             >
               <video
                 ref={videoRef}
-                src="https://res.cloudinary.com/ndgpjcbs/video/upload/v1785835870/f_out_1_z2fwcd.mp4"
-                poster="/web. Intro. cover pic.jpg"
+                src={siteSettings.introVideoSource}
+                poster={siteSettings.introVideoPoster}
                 preload="metadata"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}

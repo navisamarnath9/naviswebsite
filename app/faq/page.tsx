@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export interface FAQItem {
   id: string;
@@ -131,13 +133,20 @@ export const faqs: FAQItem[] = [
 export default function FAQPage() {
   const [openId, setOpenId] = useState<string | null>("sessions-format");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [faqItems, setFaqItems] = useState<FAQItem[]>(faqs);
 
-  const categories = ["All", ...Array.from(new Set(faqs.map((f) => f.category)))];
+  useEffect(() => {
+    getDoc(doc(db, "settings", "faqs")).then((snapshot) => {
+      if (snapshot.exists() && Array.isArray(snapshot.data().items)) setFaqItems(snapshot.data().items as FAQItem[]);
+    }).catch(() => undefined);
+  }, []);
+
+  const categories = ["All", ...Array.from(new Set(faqItems.map((f) => f.category)))];
 
   const filteredFaqs =
     selectedCategory === "All"
-      ? faqs
-      : faqs.filter((f) => f.category === selectedCategory);
+      ? faqItems
+      : faqItems.filter((f) => f.category === selectedCategory);
 
   const toggle = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
@@ -275,8 +284,8 @@ export default function FAQPage() {
             <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "48px 40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)", display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ width: "72px", height: "72px", borderRadius: "50%", overflow: "hidden", marginBottom: "20px", position: "relative", boxShadow: "0 8px 20px rgba(0,0,0,0.1)", flexShrink: 0 }}>
                 <Image
-                  src="/About - cut.jpg"
-                  alt="Navisamarnath"
+                  src="/logo-white.png"
+                  alt="Navisamarnath logo"
                   fill
                   unoptimized
                   style={{ objectFit: "cover", objectPosition: "center 20%" }}

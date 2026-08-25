@@ -21,6 +21,7 @@ import {
 import { getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { PlaylistThumbnail, defaultPlaylists } from "@/lib/playlists";
+import AdminSiteContent from "@/components/AdminSiteContent";
 
 const ALLOWED_ADMIN_EMAILS = [
   "navisamarnathtech@gmail.com",
@@ -57,7 +58,7 @@ export default function AdminPage() {
   const [signedInEmail, setSignedInEmail] = useState("");
   const [authError, setAuthError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "playlists">("bookings");
+  const [activeTab, setActiveTab] = useState<"bookings" | "blogs" | "playlists" | "site-content">("bookings");
 
   // Blog State
   const [articles, setArticles] = useState<Article[]>([]);
@@ -458,7 +459,16 @@ export default function AdminPage() {
               >
                 YouTube Playlists ({playlists.length})
               </button>
+              <button
+                type="button"
+                className={`credentials-filter-btn ${activeTab === "site-content" ? "is-active" : ""}`}
+                onClick={() => setActiveTab("site-content")}
+              >
+                Website content
+              </button>
             </div>
+
+            {activeTab === "site-content" && <AdminSiteContent />}
 
             {/* TAB 1: CONSULTATION BOOKINGS */}
             {activeTab === "bookings" && (
@@ -884,7 +894,7 @@ export default function AdminPage() {
 
                         <div>
                           <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "var(--sample-muted)" }}>
-                            Playlist Topic (Fixed)
+                            Playlist Topic
                           </label>
                           <div
                             style={{
@@ -927,22 +937,14 @@ export default function AdminPage() {
 
                         <div>
                           <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "var(--sample-muted)" }}>
-                            Thumbnail Image (Fixed)
+                            Thumbnail Image URL
                           </label>
-                          <div
-                            style={{
-                              width: "100%",
-                              padding: "10px 14px",
-                              borderRadius: "8px",
-                              border: "1px solid var(--sample-line)",
-                              background: "#f1f5f9",
-                              fontSize: "0.82rem",
-                              color: "#64748b",
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            <code>{pl.imageUrl || "/homepage-video-thumbnail.png"}</code>
-                          </div>
+                          <input
+                            type="url"
+                            value={pl.imageUrl || ""}
+                            onChange={(e) => { const updated = [...playlists]; updated[index] = { ...updated[index], imageUrl: e.target.value }; setPlaylists(updated); }}
+                            style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--sample-line)", fontSize: "0.88rem" }}
+                          />
                         </div>
 
                         <div>

@@ -6557,3 +6557,8 @@ mark,
   transform: translate(-50%, -50%) scale(1.1) !important;
   background: #314851 !important;
 }
+
+
+/* Keep the coaching heading on one line on desktop without compromising small screens. */
+.coaching-modalities-title { white-space: nowrap; }
+@media (max-width: 620px) { .coaching-modalities-title { white-space: normal; } }
