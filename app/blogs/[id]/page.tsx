@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import { useParams } from "next/navigation";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import Navbar from "@/components/Navbar";
@@ -360,8 +360,8 @@ export default function BlogArticlePage() {
                 }}
               >
                 <div style={{ position: "relative", width: "52px", height: "52px", borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
-                  <Image
-                    src="/About - cut.jpg"
+                  <EditableImage
+                    defaultSrc="/About - cut.jpg"
                     alt="Navisamarnath"
                     fill
                     unoptimized
@@ -405,8 +405,8 @@ export default function BlogArticlePage() {
                 }}
               >
                 <div style={{ position: "relative", width: "76px", height: "76px", borderRadius: "50%", overflow: "hidden", flexShrink: 0, boxShadow: "0 6px 18px rgba(0,0,0,0.1)" }}>
-                  <Image
-                    src="/About - cut.jpg"
+                  <EditableImage
+                    defaultSrc="/About - cut.jpg"
                     alt="Navisamarnath"
                     fill
                     unoptimized

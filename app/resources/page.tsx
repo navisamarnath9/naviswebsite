@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -290,8 +290,8 @@ export default function ResourcesPage() {
 
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
-            <Image
-              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116865/resources-hero_etwt8i.jpg"
+            <EditableImage
+              defaultSrc="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116865/resources-hero_etwt8i.jpg"
               alt="Curated Mental Health & Growth Library"
               fill
               priority

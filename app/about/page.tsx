@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -210,8 +210,8 @@ export default function AboutPage() {
 
         <div className="about-top-hero-visual" data-reveal>
           <div className="about-top-hero-img-wrap">
-            <Image
-              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116749/About_-_cut_jtxbui.jpg"
+            <EditableImage
+              defaultSrc="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116749/About_-_cut_jtxbui.jpg"
               alt="Navisamarnath in his therapy studio"
               fill
               priority

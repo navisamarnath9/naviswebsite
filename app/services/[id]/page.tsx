@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import Navbar from "@/components/Navbar";
 import BookingForm from "@/components/BookingForm";
 import Footer from "@/components/Footer";
@@ -186,8 +186,8 @@ export default function ServiceDetailPage({
         </div>
 
         <div className="service-detail-hero-media">
-          <Image
-            src={service.image}
+          <EditableImage
+            defaultSrc={service.image}
             alt={`${service.name} at Navisamarnath`}
             fill
             priority
@@ -222,8 +222,8 @@ export default function ServiceDetailPage({
         <section className="service-reasons sample-section" aria-label={service.whyTitle}>
           <div className="service-reasons-visual" data-reveal>
             <div className="service-reasons-image">
-              <Image
-                src={service.id === "groups" && groupWhyImage ? groupWhyImage : service.whyReasons[0]?.image || service.image}
+              <EditableImage
+                defaultSrc={service.id === "groups" && groupWhyImage ? groupWhyImage : service.whyReasons[0]?.image || service.image}
                 alt="A calm, supportive setting"
                 fill
                 unoptimized
@@ -304,8 +304,8 @@ export default function ServiceDetailPage({
         <section className="service-booking sample-section" id="booking-section">
           <div className="service-booking-copy" data-reveal>
             <div className="service-booking-full-image">
-              <Image
-                src={service.bookingImage || "/Individual Therapy.jpg"}
+              <EditableImage
+                defaultSrc={service.bookingImage || "/Individual Therapy.jpg"}
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized
@@ -335,8 +335,8 @@ export default function ServiceDetailPage({
                 style={{ "--card-delay": `${index * 70}ms` } as React.CSSProperties}
               >
                 <div className="service-more-image">
-                  <Image
-                    src={other.image}
+                  <EditableImage
+                    defaultSrc={other.image}
                     alt={`${other.name} service`}
                     fill
                     unoptimized

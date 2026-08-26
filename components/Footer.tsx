@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { defaultSiteSettings, type SiteSettings } from "@/lib/siteSettings";
@@ -36,8 +36,8 @@ export default function Footer() {
               overflow: "hidden",
             }}
           >
-            <Image
-              src="/logo-white.png"
+            <EditableImage
+              defaultSrc="/logo-white.png"
               alt="Navisamarnath Logo"
               width={42}
               height={42}

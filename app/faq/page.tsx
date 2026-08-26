@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { doc, getDoc } from "firebase/firestore";
@@ -181,8 +181,8 @@ export default function FAQPage() {
 
         <div className="about-top-hero-visual">
           <div className="about-top-hero-img-wrap">
-            <Image
-              src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116850/faq-hero_hnpo5g.jpg"
+            <EditableImage
+              defaultSrc="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116850/faq-hero_hnpo5g.jpg"
               alt="Clear Answers & Practice Guidance"
               fill
               priority
@@ -283,8 +283,8 @@ export default function FAQPage() {
 
             <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "48px 40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)", display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ width: "72px", height: "72px", borderRadius: "50%", overflow: "hidden", marginBottom: "20px", position: "relative", boxShadow: "0 8px 20px rgba(0,0,0,0.1)", flexShrink: 0 }}>
-                <Image
-                  src="/logo-white.png"
+                <EditableImage
+                  defaultSrc="/logo-white.png"
                   alt="Navisamarnath logo"
                   fill
                   unoptimized

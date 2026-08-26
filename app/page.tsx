@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 import { useEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -255,8 +255,8 @@ export default function Home() {
 
       <section className="sample-hero" aria-labelledby="home-heading">
         <div className="sample-hero-media">
-          <Image
-            src="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116768/hero-navis-pic_uf9rl2.jpg"
+          <EditableImage
+            defaultSrc="https://res.cloudinary.com/ndgpjcbs/image/upload/v1786116768/hero-navis-pic_uf9rl2.jpg"
             alt="Navisamarnath"
             fill
             priority
@@ -431,8 +431,8 @@ export default function Home() {
                 style={{ "--card-delay": `${index * 70}ms` } as React.CSSProperties}
               >
                 <div className="sample-service-card-image">
-                  <Image
-                    src={service.image}
+                  <EditableImage
+                    defaultSrc={service.image}
                     alt={service.title}
                     fill
                     unoptimized

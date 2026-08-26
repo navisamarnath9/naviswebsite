@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import BookingForm from "@/components/BookingForm";
 import Link from "next/link";
 
-import Image from "next/image";
+import EditableImage from "@/components/EditableImage";
 
 function ArrowIcon() {
   return <span aria-hidden="true">↗</span>;
@@ -36,8 +36,8 @@ export default function BookSessionPage() {
         <section className="service-booking sample-section" id="booking-section">
           <div className="service-booking-copy">
             <div className="service-booking-full-image">
-              <Image
-                src={bookingImage}
+              <EditableImage
+                defaultSrc={bookingImage}
                 alt="Navisamarnath consultation session"
                 fill
                 unoptimized

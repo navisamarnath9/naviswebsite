@@ -3,14 +3,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { defaultSiteSettings, type SiteSettings } from "@/lib/siteSettings";
+import { defaultSiteSettings, imageLibrary, type SiteSettings } from "@/lib/siteSettings";
 import { faqs as defaultFaqs, type FAQItem } from "@/app/faq/page";
 import { resourceSections as defaultResources } from "@/app/resources/page";
 
 type ResourceItem = { title: string; author?: string; desc: string; url?: string };
 type ResourceGroup = { title: string; countLabel: string; featured?: boolean; items: ResourceItem[] };
 type ResourceSection = { id: string; title: string; deck: string; summary: string; tags: string[]; groups: ResourceGroup[] };
-type ContentTab = "media" | "social" | "faqs" | "resources" | "legal";
+type ContentTab = "media" | "images" | "social" | "faqs" | "resources" | "legal";
 
 const inputStyle = { width: "100%", padding: "11px 13px", borderRadius: "8px", border: "1px solid var(--sample-line)", fontSize: "0.9rem" };
 const cardStyle = { background: "#ffffff", border: "1px solid var(--sample-line)", borderRadius: "16px", padding: "24px", marginBottom: "20px" };
@@ -101,6 +101,7 @@ export default function AdminSiteContent() {
 
   const contentTabs: Array<{ id: ContentTab; label: string }> = [
     { id: "media", label: "Media & images" },
+    { id: "images", label: "Image library" },
     { id: "social", label: "Social media" },
     { id: "faqs", label: "FAQs" },
     { id: "resources", label: "Resources library" },
@@ -118,6 +119,16 @@ export default function AdminSiteContent() {
       {([['Introduction video URL', 'introVideoSource'], ['Video cover / poster URL', 'introVideoPoster'], ['Group page “Why Join” image URL', 'groupWhyImage']] as const).map(([label, key]) => <label key={key} style={{ display: "block", marginTop: "14px", fontWeight: 650 }}>{label}<input type="url" value={site[key]} onChange={(e) => setSite({ ...site, [key]: e.target.value })} style={{ ...inputStyle, marginTop: "6px" }} /></label>)}
     </div>}
 
+    {activeTab === "images" && <div style={cardStyle}>
+      <h2 style={{ marginTop: 0 }}>Image library</h2>
+      <p style={{ color: "var(--sample-muted)", marginTop: 0 }}>Paste a replacement image URL for any site image below. The same image is updated everywhere it appears. Playlists have their own thumbnail controls in the YouTube Playlists tab.</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
+        {imageLibrary.map((image) => <label key={image.src} style={{ display: "block", border: "1px solid var(--sample-line)", borderRadius: "12px", padding: "14px", fontWeight: 650 }}>{image.label}
+          <img src={site.imageOverrides?.[image.src] || image.src} alt="" style={{ display: "block", width: "100%", height: "120px", objectFit: "cover", borderRadius: "8px", margin: "10px 0" }} />
+          <input type="url" value={site.imageOverrides?.[image.src] || image.src} onChange={(e) => setSite({ ...site, imageOverrides: { ...(site.imageOverrides || {}), [image.src]: e.target.value } })} style={inputStyle} />
+        </label>)}
+      </div>
+    </div>}
     {activeTab === "social" && <div style={cardStyle}>
       <h2 style={{ marginTop: 0 }}>Social media</h2>
       <p style={{ color: "var(--sample-muted)", marginTop: 0 }}>All footer social icons are managed together here. Add the profile URL for any channel you want to show.</p>
