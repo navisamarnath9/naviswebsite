@@ -422,7 +422,14 @@ export default function AdminPage() {
               </p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <span style={{ fontSize: "0.85rem", color: "var(--sample-muted)" }}>
+              <a
+                href="https://console.cloudinary.com/app/c-abdd79de824462edbe9a61fc742795/assets/media_library/search?q=%7B%22resourceTypes%22%3A%5B%22image%22%5D%7D&view_mode=mosaic"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ background: "var(--brand-accent)", color: "#ffffff", padding: "8px 14px", borderRadius: "12px", fontSize: "0.85rem", fontWeight: 600, textDecoration: "none" }}
+              >
+                Open Cloudinary Library ↗
+              </a>              <span style={{ fontSize: "0.85rem", color: "var(--sample-muted)" }}>
                 {signedInEmail}
               </span>
               <button
