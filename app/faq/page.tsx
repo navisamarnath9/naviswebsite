@@ -282,15 +282,6 @@ export default function FAQPage() {
             </div>
 
             <div className="faq-contact-card" style={{ marginTop: "64px", textAlign: "center", padding: "48px 40px", background: "#ffffff", borderRadius: "20px", border: "1px solid var(--sample-line)", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{ width: "72px", height: "72px", borderRadius: "50%", overflow: "hidden", marginBottom: "20px", position: "relative", boxShadow: "0 8px 20px rgba(0,0,0,0.1)", flexShrink: 0 }}>
-                <EditableImage
-                  defaultSrc="/logo-white.png"
-                  alt="Navisamarnath logo"
-                  fill
-                  unoptimized
-                  style={{ objectFit: "cover", objectPosition: "center 20%" }}
-                />
-              </div>
               <h3 style={{ fontSize: "1.4rem", margin: "0 0 10px 0", color: "#18181b" }}>Have additional questions?</h3>
               <p style={{ fontSize: "0.95rem", color: "var(--sample-muted)", margin: "0 0 24px 0", maxWidth: "480px" }}>
                 Reach out directly or schedule a complimentary 15-minute consultation.
