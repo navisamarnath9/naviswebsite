@@ -70,7 +70,7 @@ export default function AdminPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
-  // Playlists State (3 Playlists)
+  // Playlist state
   const [playlists, setPlaylists] = useState<PlaylistThumbnail[]>(defaultPlaylists);
   const [isPlaylistSaving, setIsPlaylistSaving] = useState(false);
   const [playlistStatusMsg, setPlaylistStatusMsg] = useState("");
@@ -206,7 +206,22 @@ export default function AdminPage() {
     }
   }
 
-  // Save all 3 Playlist Thumbnails to Firestore
+  function addPlaylist() {
+    const id = `playlist-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    setPlaylists((current) => [
+      ...current,
+      {
+        id,
+        title: "New Playlist",
+        description: "",
+        imageUrl: "",
+        playlistUrl: "",
+      },
+    ]);
+    setPlaylistStatusMsg("");
+  }
+
+  // Save playlists to Firestore
   async function savePlaylists(e: FormEvent) {
     e.preventDefault();
     setIsPlaylistSaving(true);
@@ -215,7 +230,7 @@ export default function AdminPage() {
     try {
       const docRef = doc(db, "settings", "playlists");
       await setDoc(docRef, { items: playlists, updatedAt: new Date().toISOString() });
-      setPlaylistStatusMsg("✓ All 3 Playlist Thumbnails saved successfully!");
+      setPlaylistStatusMsg(`✓ ${playlists.length} playlist${playlists.length === 1 ? "" : "s"} saved successfully!`);
       fetchPlaylists();
     } catch (err: any) {
       setPlaylistStatusMsg("Error saving playlists: " + err.message);
@@ -849,10 +864,10 @@ export default function AdminPage() {
               >
                 <div style={{ marginBottom: "28px", paddingBottom: "20px", borderBottom: "1px solid var(--sample-line)" }}>
                   <h2 style={{ fontSize: "1.6rem", margin: "0 0 4px 0", color: "#18181b", letterSpacing: "-0.02em" }}>
-                    Manage YouTube Playlists (3 Thumbnails)
+                    Manage YouTube Playlists ({playlists.length})
                   </h2>
                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--sample-muted)" }}>
-                    Configure the 3 featured playlist thumbnail images and their target YouTube links displayed on the home page.
+                    Add playlists, rename them, and configure the thumbnail images and YouTube links displayed on the home page.
                   </p>
                 </div>
 
@@ -894,9 +909,18 @@ export default function AdminPage() {
 
                         <div>
                           <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, marginBottom: "6px", color: "var(--sample-muted)" }}>
-                            Playlist Topic
+                            Playlist Name *
                           </label>
-                          <div
+                          <input
+                            type="text"
+                            required
+                            value={pl.title || ""}
+                            onChange={(e) => {
+                              const updated = [...playlists];
+                              updated[index] = { ...updated[index], title: e.target.value };
+                              setPlaylists(updated);
+                            }}
+                            placeholder="e.g. Relationship Engineering"
                             style={{
                               width: "100%",
                               padding: "10px 14px",
@@ -907,9 +931,7 @@ export default function AdminPage() {
                               fontWeight: 600,
                               color: "#334155",
                             }}
-                          >
-                            {pl.title || "Untitled Playlist"}
-                          </div>
+                          />
                         </div>
 
                         <div>
@@ -980,7 +1002,25 @@ export default function AdminPage() {
                     </p>
                   )}
 
-                  <div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+                    <button
+                      type="button"
+                      onClick={addPlaylist}
+                      disabled={isPlaylistSaving}
+                      style={{
+                        background: "#ffffff",
+                        color: "var(--brand-accent)",
+                        border: "1px solid var(--brand-accent)",
+                        padding: "14px 22px",
+                        borderRadius: "12px",
+                        fontSize: "0.95rem",
+                        fontWeight: 600,
+                        cursor: isPlaylistSaving ? "not-allowed" : "pointer",
+                        opacity: isPlaylistSaving ? 0.7 : 1,
+                      }}
+                    >
+                      + Add Playlist
+                    </button>
                     <button
                       type="submit"
                       disabled={isPlaylistSaving}
