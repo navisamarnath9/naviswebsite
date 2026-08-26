@@ -16,9 +16,9 @@ export const defaultSiteSettings: SiteSettings = {
     "https://res.cloudinary.com/ndgpjcbs/video/upload/v1785835870/f_out_1_z2fwcd.mp4",
   introVideoPoster: "/web. Intro. cover pic.jpg",
   groupWhyImage: "/Group Sessions.jpg",
-  xUrl: "",
+  xUrl: "https://x.com",
   instagramUrl: "https://www.instagram.com/navisamarnath?igsh=MWw5aHRob3FzaWpybg==",
   facebookUrl: "https://www.facebook.com/share/14nQckuA18H/?mibextid=wwXIfr",
   youtubeUrl: "https://www.youtube.com/@navisamarnath",
-  threadsUrl: "",
+  threadsUrl: "https://www.threads.net",
 };

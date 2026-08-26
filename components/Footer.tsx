@@ -191,8 +191,8 @@ export default function Footer() {
               </svg>
             </a>
 
-            {site.xUrl && <a href={site.xUrl} target="_blank" rel="noopener noreferrer" aria-label="X" style={socialStyle}>𝕏</a>}
-            {site.threadsUrl && <a href={site.threadsUrl} target="_blank" rel="noopener noreferrer" aria-label="Threads" style={{ ...socialStyle, fontSize: "0.76rem", fontWeight: 800 }}>@</a>}
+            <a href={site.xUrl || "https://x.com"} target="_blank" rel="noopener noreferrer" aria-label="X" style={socialStyle}>𝕏</a>
+            <a href={site.threadsUrl || "https://www.threads.net"} target="_blank" rel="noopener noreferrer" aria-label="Threads" style={{ ...socialStyle, fontSize: "0.76rem", fontWeight: 800 }}>@</a>
           </div>
         </div>
       </div>
