@@ -114,7 +114,7 @@ export default function Footer() {
           </p>
           <div style={{ marginTop: "16px", display: "flex", gap: "12px", alignItems: "center" }}>
             <a
-              href="https://www.instagram.com/navisamarnath?igsh=MWw5aHRob3FzaWpybg=="
+              href={site.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -140,7 +140,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://www.facebook.com/share/14nQckuA18H/?mibextid=wwXIfr"
+              href={site.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
@@ -166,7 +166,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://www.youtube.com/@navisamarnath"
+              href={site.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"

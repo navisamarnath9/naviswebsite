@@ -2,6 +2,9 @@ export type SiteSettings = {
   introVideoSource: string;
   introVideoPoster: string;
   groupWhyImage: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  youtubeUrl: string;
   xUrl: string;
   threadsUrl: string;
 };
@@ -14,5 +17,8 @@ export const defaultSiteSettings: SiteSettings = {
   introVideoPoster: "/web. Intro. cover pic.jpg",
   groupWhyImage: "/Group Sessions.jpg",
   xUrl: "",
+  instagramUrl: "https://www.instagram.com/navisamarnath?igsh=MWw5aHRob3FzaWpybg==",
+  facebookUrl: "https://www.facebook.com/share/14nQckuA18H/?mibextid=wwXIfr",
+  youtubeUrl: "https://www.youtube.com/@navisamarnath",
   threadsUrl: "",
 };
