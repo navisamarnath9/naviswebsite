@@ -202,16 +202,15 @@ export default function FAQPage() {
       <div id="main-content" className="sample-surface">
         <section className="sample-section faq-content-section" style={{ padding: "80px 24px" }}>
           <div className="faq-content" style={{ maxWidth: "1000px", margin: "0 auto" }}>
-            
+
             {/* CATEGORY TABS */}
             <div className="credentials-filter-tabs mobile-scroll-tabs" style={{ marginBottom: "56px" }}>
               {categories.map((cat) => (
                 <button
                   key={cat}
                   type="button"
-                  className={`credentials-filter-btn ${
-                    selectedCategory === cat ? "is-active" : ""
-                  }`}
+                  className={`credentials-filter-btn ${selectedCategory === cat ? "is-active" : ""
+                    }`}
                   onClick={() => setSelectedCategory(cat)}
                 >
                   {cat}
